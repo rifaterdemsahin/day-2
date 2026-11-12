@@ -9,7 +9,7 @@
 
 1. 😀 **Emojis everywhere:** in chat replies, in every website page, in the menu and in this spec.
 2. 🚀 **Update and deploy every time:** after every change, update this spec and the website, commit, push to `main`, confirm GitHub Pages is live, then open the pages in Google Chrome (`open -a "Google Chrome" <url>`). Do not wait to be asked.
-3. 💬 **Feedback comes from the owner on the web pages:** every page has a feedback box and 📋 copy-to-clipboard buttons; the owner pastes the copied text back to Claude. Each piece of feedback carries its pipeline code (for example `S2-03`).
+3. 💬 **Collect feedback from the owner on the deployed website, after they review it:** after every deploy, Claude opens the deployed site (`https://<user>.github.io/<repo>/`) in Google Chrome on the owner's machine (`open -a "Google Chrome" <url>`) and asks the owner to review it. The owner writes feedback in the page boxes and uses the 📋 copy-to-clipboard buttons (per card, or 📋 Copy all on the 💬 All feedback page), then pastes the copied text back to Claude. Claude does not guess feedback: it waits for the owner's review, applies the pasted notes, and redeploys. Each piece of feedback carries its pipeline code (for example `S2-03`). If Pages is not live yet, open the local files (`file://<repo>/index.html`) and say so.
 4. 🔒 **Public repo:** never put personal account details (the owner's Gmail address), keys, or media in the repo or on the site.
 
 <!--TOC-->
@@ -814,7 +814,7 @@ Every page on the site carries its code in the menu and the heading. Feedback is
 - Built by `scripts/build_short_site.py` from `assets/short.json` (all facts in data, none in code, as in Part A).
 - Pages: 🏠 hub, one page per pipeline code, 💬 a feedback page that gathers everything with one 📋 copy-all button, 📖 the master spec.
 - Each scene/prompt card has its own feedback box with ✅ approve, 🔧 change, ❌ cut, and a 📋 copy button.
-- Feedback is saved in the browser (localStorage); it only reaches Claude when the owner pastes it back.
+- Feedback is saved in the browser (localStorage); it only reaches Claude when the owner pastes it back. Review loop: deploy → Claude opens the deployed site in Chrome → owner reviews and copies feedback with the 📋 buttons → owner pastes it to Claude → Claude updates the spec and site and redeploys.
 - Deploy: push to `main`, GitHub Pages from `main` and `/`, keep an empty `.nojekyll`.
 
 ## B5. ✅ Short-form checklist
