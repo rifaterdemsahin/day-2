@@ -1,4 +1,16 @@
-# MASTER SPEC v3.18: long-form 1080p screen-recording video (YouTube)
+# MASTER SPEC v4.0: 🎬 long-form (Part A) and 📱 short-form (Part B) video
+
+| Part | Format | Made with | Where |
+|---|---|---|---|
+| 🅰️ **Part A: long form** | 16:9, 1920x1080, screen recordings + voice | ffmpeg, Whisper, Remotion | the rest of this file, from "Contents" down to section 11 |
+| 🅱️ **Part B: short form** | 9:16, 1080x1920, 45 s, AI-generated clips | **Google Flow** (by hand), CapCut or ffmpeg | [Part B at the end of this file](#part-b-short-form-google-flow) |
+
+## 🔁 Standing rules (both parts, never skip)
+
+1. 😀 **Emojis everywhere:** in chat replies, in every website page, in the menu and in this spec.
+2. 🚀 **Update and deploy every time:** after every change, update this spec and the website, commit, push to `main`, confirm GitHub Pages is live, then open the pages in Google Chrome (`open -a "Google Chrome" <url>`). Do not wait to be asked.
+3. 💬 **Feedback comes from the owner on the web pages:** every page has a feedback box and 📋 copy-to-clipboard buttons; the owner pastes the copied text back to Claude. Each piece of feedback carries its pipeline code (for example `S2-03`).
+4. 🔒 **Public repo:** never put personal account details (the owner's Gmail address), keys, or media in the repo or on the site.
 
 <!--TOC-->
 ## 📑 Contents
@@ -746,3 +758,70 @@ Support files every page loads: `project.js` (from `project.json`), `nav.js` (me
 ## 11. Start prompt for a new Claude session (short form; the full prompt is at the top of this file)
 
 > Use MASTER_SPEC.md (v3) in this repo. Brief: title `…`; source folder `~/Downloads/<name>/`; CTA `…`. Sync the clips to the voice, render a 1920x1080 base video, transcribe, write title/description/chapters, set up Remotion and open Studio, build the site and open it in Chrome. Work on a branch, commit and push, never commit the media files. Show every file as a clickable URL and use emojis.
+
+
+---
+
+# Part B: 📱 Short form (Google Flow)
+
+## B0. 🎯 What a short is (and how it differs from Part A)
+
+| | 🅰️ Long form | 🅱️ Short form |
+|---|---|---|
+| Length | whatever the voice is (minutes) | **45 s or less** |
+| Frame | 16:9, 1920x1080 | **9:16, 1080x1920** |
+| Footage | screen recordings + own voice | **AI-generated clips from Google Flow** |
+| Tools | ffmpeg, Whisper, Remotion | Flow (by hand), then CapCut or ffmpeg to assemble |
+| Success | chapters, retention at minutes | **watch time of 200%+: people loop and rewatch** |
+
+The first draft of each short's script lives in the repo `README.md` (title, visual mental model, scene breakdown). The site is built from it.
+
+## B1. 🙋 Google Flow has no API (standing assumption)
+
+- Assume **Flow cannot be automated**. Claude writes every Flow prompt in the site (page `S2-03`), with a 📋 copy button per prompt.
+- The **owner creates the clips by hand** in Flow, logged in with their own personal Google account, then downloads each clip and names it by its code (`S2-04-c1.mp4`, `c2`, ...). The account address is never written in the repo (public).
+- Flow clips are about 8 s each: plan **one clip per beat of at most 8 s** (a longer scene gets two clips).
+- If Flow gets an official API later, replace only step `S2-04` with a script; keep every other step.
+- Never commit media. Clips live in `~/Downloads/<slug>/` and in a private cloud folder.
+
+## B2. 🔢 The numbered pipeline (`S2` = short number 2; the next short uses `S3-xx`)
+
+| Code | Step | Output | Who |
+|---|---|---|---|
+| `S2-00` | 🧭 Brief, hook and loop design | one-line promise, loop plan | Claude + owner |
+| `S2-01` | 📝 Script (voice-over lines per scene) | VO text with timings | Claude, owner reviews |
+| `S2-02` | 🗺️ Storyboard (scenes, camera, on-screen text) | scene cards | Claude, owner reviews |
+| `S2-03` | 🪄 Flow prompts (one per clip) | copy-paste prompts | Claude |
+| `S2-04` | 🎞️ Generate in Flow (manual) | clips `S2-04-cN.mp4` | owner |
+| `S2-05` | 🎙️ Voice-over | `S2-05-vo.wav` | owner or TTS |
+| `S2-06` | ✂️ Assemble and loop check | `S2-06-final.mp4` | owner, Claude advises |
+| `S2-07` | 💬 Captions, title, description, hashtags | `metadata` | Claude |
+| `S2-08` | 📈 Publish and analytics (rewatch rate) | numbers back into the next short | owner |
+
+Every page on the site carries its code in the menu and the heading. Feedback is always tagged with the code.
+
+## B3. 🔄 Rewatch rules (why people watch twice)
+
+1. **Hook in the first second:** a question or a strange image, never a logo or intro.
+2. **Seamless loop:** the last line leads into the first line, and the last frame matches the first frame, so the replay does not feel like a restart.
+3. **Rewatch bait:** one small detail seen only the second time (a number or object that returns).
+4. **Density:** a visual change every 2 to 3 seconds; one idea per short.
+5. **Payoff late, teaser last:** the aha moment sits in the last third; the final beat opens a question the next short answers (series tie-in).
+6. **Captions always on**, large, in the safe area (not under the platform buttons).
+
+## B4. 🌐 The short-form website
+
+- Built by `scripts/build_short_site.py` from `assets/short.json` (all facts in data, none in code, as in Part A).
+- Pages: 🏠 hub, one page per pipeline code, 💬 a feedback page that gathers everything with one 📋 copy-all button, 📖 the master spec.
+- Each scene/prompt card has its own feedback box with ✅ approve, 🔧 change, ❌ cut, and a 📋 copy button.
+- Feedback is saved in the browser (localStorage); it only reaches Claude when the owner pastes it back.
+- Deploy: push to `main`, GitHub Pages from `main` and `/`, keep an empty `.nojekyll`.
+
+## B5. ✅ Short-form checklist
+
+- [ ] 9:16 at 1080x1920, 45 s or less, captions on
+- [ ] Hook visible in the first second
+- [ ] Last frame matches the first; last line flows into the first line
+- [ ] One rewatch-bait detail placed and listed on `S2-06`
+- [ ] No private data, no media in git, no personal address in the repo
+- [ ] Site updated, pushed to `main`, Pages live, opened in Chrome (standing rules)

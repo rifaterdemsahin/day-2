@@ -1,3 +1,5 @@
+> 🌐 **Live site:** https://rifaterdemsahin.github.io/day-2/ · [📖 Master spec](https://rifaterdemsahin.github.io/day-2/spec.html) · [💬 Feedback](https://rifaterdemsahin.github.io/day-2/feedback.html)
+
 # day-2
 
 From Numbers to Meaning: High-Dimensional Embeddings
