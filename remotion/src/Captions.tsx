@@ -10,7 +10,7 @@ const C = short.captions;
 // Real word timings (Whisper, assets/words.json) when present; otherwise spread the
 // script words over the scene by length, with a short lead-in and tail.
 const wordsFor = (s: Scene, fps: number): W[] => {
-  const dur = (s.end - s.start) * fps;
+  const dur = Math.round((s.end - s.start) * fps);
   const real = (avail.words as {word: string; start: number; end: number}[]).filter((w) => w.start >= s.start && w.start < s.end);
   if (real.length) {
     return real.map((w) => ({text: String(w.word).trim(), from: Math.round((w.start - s.start) * fps), to: Math.round((w.end - s.start) * fps)}));

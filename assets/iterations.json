@@ -1,5 +1,17 @@
 [
   {
+    "v": "v0.11",
+    "date": "2026-11-12",
+    "emoji": "🔑",
+    "codes": [
+      "S2-05",
+      "S2-06"
+    ],
+    "change": "Voice generated (37.5 s, ElevenLabs on fal.ai). Word timings aligned to the script's own words and scene cuts now follow the voice (assets/scene_timing.json → Remotion, 38 s timeline; scenes c1 8.8 s and c3 9.3 s are longer than one Flow clip). 7-day key process documented as numbered sub-steps S2-05.1 to S2-05.9 on the S2-05 page and in the spec (B2c). Whisper fallback made robust.",
+    "why": "Owner ran the voice step with a 7-day key and asked to document the process in the pipeline and get the steps to follow.",
+    "status": "🚀 deployed"
+  },
+  {
     "v": "v0.10",
     "date": "2026-11-12",
     "emoji": "🎙️",
@@ -9,7 +21,7 @@
     ],
     "change": "Voice step automated: scripts/make_voice.py calls ElevenLabs eleven-v3 on fal.ai (voice Aria by default, from data), saves S2-05-vo.wav and word timings (assets/words.json) for the animated captions. Key from env or Keychain only; dry run available. Spec: B2c, retrain row 12.",
     "why": "Owner: get the audio from fal.ai with ElevenLabs.",
-    "status": "🛠️ tool deployed · ⏳ voice not generated yet (needs your FAL_KEY)"
+    "status": "🛠️ tool deployed · ✅ voice generated (see v0.11)"
   },
   {
     "v": "v0.9",

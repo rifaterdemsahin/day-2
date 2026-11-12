@@ -9,7 +9,7 @@ export const Root: React.FC = () => (
   <Composition
     id="Short"
     component={Short}
-    durationInFrames={short.length_s * FPS}
+    durationInFrames={Math.ceil(short.length_s * FPS)}
     fps={FPS}
     width={1080}
     height={1920}

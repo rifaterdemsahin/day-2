@@ -5,7 +5,18 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(here, '..');
-fs.copyFileSync(path.join(root, '..', 'assets', 'short.json'), path.join(root, 'src', 'short.json'));
+const data = JSON.parse(fs.readFileSync(path.join(root, '..', 'assets', 'short.json'), 'utf8'));
+// the voice drives the cuts: assets/scene_timing.json (written by scripts/make_voice.py) overrides scene times
+const tp = path.join(root, '..', 'assets', 'scene_timing.json');
+if (fs.existsSync(tp)) {
+  const tm = JSON.parse(fs.readFileSync(tp, 'utf8'));
+  data.length_s = tm.length_s;
+  for (const sc of data.scenes) {
+    const r = tm.scenes.find((x) => x.clip === sc.clips[0]);
+    if (r) { sc.start = r.start; sc.end = r.end; }
+  }
+}
+fs.writeFileSync(path.join(root, 'src', 'short.json'), JSON.stringify(data, null, 2));
 const clipsDir = path.join(root, 'public', 'clips');
 const clips = fs.existsSync(clipsDir) ? fs.readdirSync(clipsDir).filter((f) => /^S2-04-.+\.mp4$/.test(f)) : [];
 const vo = fs.existsSync(path.join(root, 'public', 'S2-05-vo.wav')) ? 'S2-05-vo.wav' : null;

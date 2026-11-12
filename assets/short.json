@@ -52,7 +52,63 @@
       "emoji": "🎙️",
       "name": "Voice-over",
       "slug": "s2-05",
-      "intro": "Record or generate the voice from the S2-01 lines. Calm, curious, a little fast; leave no silence at the end so the loop is tight."
+      "intro": "Record or generate the voice from the S2-01 lines. Calm, curious, a little fast; leave no silence at the end so the loop is tight.",
+      "substeps": [
+        {
+          "code": "S2-05.1",
+          "emoji": "🔑",
+          "text": "Create a fal.ai API key that expires in 7 days: fal.ai dashboard → Keys → Add key, scope API, expiration 7 days. Name it for the short (for example day2-voice). Copy it once; you cannot see it again.",
+          "cmd": null
+        },
+        {
+          "code": "S2-05.2",
+          "emoji": "🗝️",
+          "text": "Store it in the macOS Keychain once, in your own Terminal (it asks you to paste the key, so it never appears in chat or shell history).",
+          "cmd": "security add-generic-password -U -a \"$USER\" -s fal-key -w"
+        },
+        {
+          "code": "S2-05.3",
+          "emoji": "🧪",
+          "text": "Dry run: prints the exact request, calls nothing, costs nothing.",
+          "cmd": "cd ~/projects/day-2 && python3 -I scripts/make_voice.py --dry-run"
+        },
+        {
+          "code": "S2-05.4",
+          "emoji": "🎙️",
+          "text": "Generate the voice. It saves remotion/public/S2-05-vo.wav, the word timings (assets/words.json) and the scene timing from the voice (assets/scene_timing.json).",
+          "cmd": "cd ~/projects/day-2 && python3 -I scripts/make_voice.py"
+        },
+        {
+          "code": "S2-05.5",
+          "emoji": "✅",
+          "text": "Read the report it prints: total length at most the short's length, and no ⚠️ on a scene (a scene over about 8 s is longer than one Flow clip: speed it up or make two clips).",
+          "cmd": null
+        },
+        {
+          "code": "S2-05.6",
+          "emoji": "🔁",
+          "text": "Free re-timing without the key or any cost (after you replace the audio yourself, or if Whisper failed the first time).",
+          "cmd": "cd ~/projects/day-2 && python3 -I scripts/make_voice.py --timing-only"
+        },
+        {
+          "code": "S2-05.7",
+          "emoji": "🎛️",
+          "text": "Check it in Remotion Studio: play it with sound and watch the captions follow the voice. If Studio is not running, start it first.",
+          "cmd": "cd ~/projects/day-2/remotion && npm run studio"
+        },
+        {
+          "code": "S2-05.8",
+          "emoji": "🗑️",
+          "text": "When the voice is final, revoke the key in the fal.ai dashboard (it also expires by itself after 7 days) and remove the Keychain item. A key must never outlive the work it was made for.",
+          "cmd": "security delete-generic-password -s fal-key"
+        },
+        {
+          "code": "S2-05.9",
+          "emoji": "📝",
+          "text": "Review the result: tick ✔️ reviewed in the 📝 panel and tell Claude what to change (voice, speed, wording). Claude logs the round on 🔁 Iterations.",
+          "cmd": null
+        }
+      ]
     },
     {
       "code": "S2-06",
@@ -228,6 +284,7 @@
     "stability": 0.5,
     "output_format": "mp3_44100_128",
     "language_code": "en",
-    "tone": "calm, curious, a little fast; no silence at the end so the loop is tight"
+    "tone": "calm, curious, a little fast; no silence at the end so the loop is tight",
+    "key_policy": "short-lived fal.ai key (7 days), stored in the macOS Keychain (service fal-key) or an env var for one command, revoked when the voice is final"
   }
 }

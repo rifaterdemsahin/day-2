@@ -818,7 +818,10 @@ Every page on the site carries its code in the menu and the heading. Feedback is
 
 - Default: `python3 -I scripts/make_voice.py` calls **`fal-ai/elevenlabs/tts/eleven-v3`** through fal's queue API (`https://queue.fal.run/<endpoint>`, header `Authorization: Key <key>`), with the full voice-over text from `assets/short.json` (all `scenes[].vo`) and the settings in its `voice` block (`voice`, `stability`, `output_format`, `language_code`). Inputs the endpoint documents: `text`, `voice`, `stability`, `timestamps`, `language_code`, `apply_text_normalization`, `output_format` (not `speed` or `style`).
 - Output: `remotion/public/S2-05-vo.wav` (+ the `.mp3` original) and `assets/words.json` (word timings in seconds). Timings come from the endpoint's `timestamps`; if their shape is not recognised the script runs local Whisper on the audio instead. Remotion's animated captions read `words.json` automatically.
-- 🔑 **Key handling:** `FAL_KEY` in the environment for one command, or the macOS Keychain item with service name `fal-key`. Never in the repo, the site, chat logs or a file. `--dry-run` prints the request and calls nothing; run it first.
+- 🔑 **Key handling (short-lived keys):** create a **fal.ai key with a 7-day expiry**, keep it in the macOS Keychain (service `fal-key`, added in the owner's own Terminal so it never touches chat or shell history) or in `FAL_KEY` for one command. Never in the repo, the site, chat logs or a file. Revoke it in the fal.ai dashboard and delete the Keychain item (`security delete-generic-password -s fal-key`) when the voice is final. `--dry-run` prints the request and calls nothing; run it first. `--timing-only` redoes the word timings from the existing audio with no key and no cost.
+- 🎯 **The voice drives the cuts:** `make_voice.py` aligns the real word timings onto the script's own words (so captions keep the script's spelling) and writes `assets/scene_timing.json`: each scene starts when its first word is spoken. `remotion/scripts/sync.mjs` overlays it on `short.json`, so the Remotion timeline length and cuts follow the voice. A scene longer than about 8 s is longer than one Flow clip: speed it up or make two clips.
+
+**`S2-05` sub-steps (numbered; each is a tick-box on the S2-05 page):** `S2-05.1` 🔑 create a 7-day key · `.2` 🗝️ store it in the Keychain · `.3` 🧪 dry run · `.4` 🎙️ generate · `.5` ✅ read the report · `.6` 🔁 free re-timing · `.7` 🎛️ check captions in Studio · `.8` 🗑️ revoke the key and delete the Keychain item · `.9` 📝 owner review and log.
 - ⚠️ After generating, check the report the script prints: total length must be at most the short's length, and each scene's first word should land near its scene start. If the single take drifts from the clip cuts, tighten the script (S2-01) or generate per scene.
 - Cost is per character (a 45 s script is about 450 characters); regenerate on purpose, not in a loop.
 
@@ -873,5 +876,7 @@ Every page on the site carries its code in the menu and the heading. Feedback is
 | 11 | 2026-11-12 | Plain caption boxes are static; shorts need captions that move with the voice | B2b/B3: animated word-by-word captions, styled from data, timed from Whisper words when available |
 
 | 12 | 2026-11-12 | Voice should be generated, not recorded by hand, and the key must not leak | B2c: ElevenLabs on fal.ai via `make_voice.py`, key from env or Keychain only, dry run first, word timings feed the captions |
+
+| 13 | 2026-11-12 | An API key should not outlive its job; Whisper mishears numbers and words, which would put typos in captions; the real voice was shorter than the planned timeline | B2c: 7-day keys revoked after use; align timings onto the script's words; scene cuts follow the voice (`scene_timing.json`) |
 
 **How to retrain:** at the end of each project add rows here, then copy the whole file to the next project. Keep rows short: lesson, then the rule.

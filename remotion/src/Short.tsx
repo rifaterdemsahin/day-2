@@ -50,7 +50,7 @@ const SceneView: React.FC<{s: Scene}> = ({s}) => {
 export const Short: React.FC = () => (
   <AbsoluteFill style={{background: '#000'}}>
     {short.scenes.map((s) => (
-      <Sequence key={s.clips[0]} from={s.start * FPS} durationInFrames={(s.end - s.start) * FPS}>
+      <Sequence key={s.clips[0]} from={Math.round(s.start * FPS)} durationInFrames={Math.max(1, Math.round((s.end - s.start) * FPS))}>
         <SceneView s={s} />
       </Sequence>
     ))}
