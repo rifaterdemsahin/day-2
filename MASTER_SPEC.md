@@ -11,7 +11,9 @@
 2. 🚀 **Update and deploy every time:** after every change, update this spec and the website, commit, push to `main`, confirm GitHub Pages is live, then open the pages in Google Chrome (`open -a "Google Chrome" <url>`). Do not wait to be asked.
 3. 💬 **Collect feedback from the owner on the deployed website, after they review it:** after every deploy, Claude opens the deployed site (`https://<user>.github.io/<repo>/`) in Google Chrome on the owner's machine (`open -a "Google Chrome" <url>`) and asks the owner to review it. The owner writes feedback in the page boxes and uses the 📋 copy-to-clipboard buttons (per card, or 📋 Copy all on the 💬 All feedback page), then pastes the copied text back to Claude. Claude does not guess feedback: it waits for the owner's review, applies the pasted notes, and redeploys. Each piece of feedback carries its pipeline code (for example `S2-03`). If Pages is not live yet, open the local files (`file://<repo>/index.html`) and say so.
 4. 🔁 **We always iterate, and every round is documented on one page:** the 🔁 Iterations page (`iterations.html`, data in `assets/iterations.json`, newest first). Each round adds one entry (version, date, what changed, why/which feedback, pipeline codes, status) before the deploy. Also update `README.md` (live links and pipeline) when the structure changes.
-5. 🔒 **Public repo:** never put personal account details (the owner's Gmail address), keys, or media in the repo or on the site.
+5. ✔️ **Review UX is part of every site (owner's requirement):** (a) every page has a **floating 📝 notes button** (bottom right, key `N`) opening a panel with ✅ approve / 🔧 change / ❌ cut, a quick page note, **📋 Copy this page** and **📋 Copy all**; (b) every page has an **"I have reviewed this page" check box**; a reviewed page shows a **✔️ check mark in the menu**; (c) the hub and the 💬 All feedback page show **review progress** (`n / total pages reviewed`, a bar and a list); (d) notes and marks persist in the browser. Notes must be reachable from anywhere on the page without scrolling: never only at the bottom.
+6. 🧠 **This spec is the project's memory and is copied into every new project, and we retrain ourselves:** copy `MASTER_SPEC.md` (and the site generator in `scripts/`, plus the empty data templates) into each new project first. After every project, fold what was learned back into this file (new rules, UX fixes, lessons, pipeline changes) in the **🧠 Retrain log** (Part B, B6) so the next project starts smarter. Anything the owner asks us to "remember" goes here, not only in chat.
+7. 🔒 **Public repo:** never put personal account details (the owner's Gmail address), keys, or media in the repo or on the site.
 
 <!--TOC-->
 ## 📑 Contents
@@ -789,7 +791,7 @@ The first draft of each short's script lives in the repo `README.md` (title, vis
 
 | Code | Step | Output | Who |
 |---|---|---|---|
-| `S2-00` | 🧭 Brief, hook and loop design | one-line promise, loop plan | Claude + owner |
+| `S2-00` | 🧭 **Why (first principles, producer only)**, brief, hook and loop design | why section, one-line promise, loop plan | Claude + owner |
 | `S2-01` | 📝 Script (voice-over lines per scene) | VO text with timings | Claude, owner reviews |
 | `S2-02` | 🗺️ Storyboard (scenes, camera, on-screen text) | scene cards | Claude, owner reviews |
 | `S2-03` | 🪄 Flow prompts (one per clip) | copy-paste prompts | Claude |
@@ -820,9 +822,24 @@ Every page on the site carries its code in the menu and the heading. Feedback is
 
 ## B5. ✅ Short-form checklist
 
+- [ ] 🧭 `S2-00` starts with a **Why section: first principles of why this short matters to the producer** (not audience copy), owner-reviewed
 - [ ] 9:16 at 1080x1920, 45 s or less, captions on
 - [ ] Hook visible in the first second
 - [ ] Last frame matches the first; last line flows into the first line
 - [ ] One rewatch-bait detail placed and listed on `S2-06`
 - [ ] No private data, no media in git, no personal address in the repo
 - [ ] Site updated, pushed to `main`, Pages live, opened in Chrome (standing rules)
+
+## B6. 🧠 Retrain log (lessons folded back into the spec; copy this file to new projects)
+
+| # | Date | Lesson | Rule it created |
+|---|---|---|---|
+| 1 | 2026-11-12 | Owner reviews on the deployed site and pastes feedback back | Standing rule 3: review loop with 📋 copy buttons |
+| 2 | 2026-11-12 | One page documents every round | Standing rule 4: 🔁 Iterations page |
+| 3 | 2026-11-12 | Per-card feedback boxes at the bottom of a long page are hard to use; the owner wants to see when a document is finished | Standing rule 5: floating 📝 notes, ✔️ reviewed check marks, progress |
+| 4 | 2026-11-12 | The permission system blocked a chained commit + push + Pages call | Run commit and push as separate commands; if blocked, give the owner the `!` command |
+| 5 | 2026-11-12 | Flow has no API | B1: Claude writes prompts, the owner creates clips by hand |
+
+| 6 | 2026-11-12 | The brief page needs the reason before the plan; decisions are cheaper when the producer's first principles are written down | B2/B5: every project's `S0-00`-style brief page starts with a 🧭 Why section (first principles, producer only) |
+
+**How to retrain:** at the end of each project add rows here, then copy the whole file to the next project. Keep rows short: lesson, then the rule.

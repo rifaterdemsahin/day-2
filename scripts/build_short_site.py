@@ -30,6 +30,7 @@ def nav(active):
 
 
 def page(fname, title, body, extra_head=""):
+    pages = json.dumps(NAV, ensure_ascii=False)
     out = f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -39,6 +40,7 @@ def page(fname, title, body, extra_head=""):
 {nav(fname)}
 <main>{body}</main>
 <footer>🔁 Update → deploy → feedback. Copy your feedback with 📋 and paste it back to Claude.</footer>
+<script>window.PAGES={pages};</script>
 <script src="app.js"></script>
 </body></html>"""
     (ROOT / fname).write_text(out, encoding="utf-8")
@@ -73,10 +75,11 @@ def hub():
 <p class="intro">🎯 {E(D['series'])} · ⏱️ {D['length_s']} s · 📐 {E(D['format'])} · 🛠️ Google Flow (by hand, no API)</p>
 <div class="card hero"><b>🪝 Hook</b><p>{E(D['hook'])}</p>
 <b>🔄 Why people will rewatch</b><p>{E(D['loop']['plan'])}</p><p>🥚 {E(D['loop']['bait'])}</p></div>
+<h2>✔️ Review progress</h2><div id="progress" class="card"></div>
 <h2>🔢 Numbered production pipeline</h2><div class="grid">{rows}</div>
 <h2>👉 How to give feedback</h2>
 <ol><li>Open a step page (start with 📝 S2-01 Script).</li>
-<li>On each card tap ✅ approve, 🔧 change or ❌ cut and type what you want.</li>
+<li>Press 📝 (bottom right, or the key <b>N</b>) on any page to write a quick note, then tick ✔️ <b>I have reviewed this page</b>: a check mark appears in the menu.</li><li>On any card you can also tap ✅ approve, 🔧 change or ❌ cut and type what you want.</li>
 <li>Tap 📋 Copy, or go to 💬 All feedback and tap 📋 Copy all, then paste it to Claude.</li></ol>
 {fb('S2', '🏠 Overall')}"""
     page("index.html", f"{D['code']} Short Hub", body)
@@ -86,7 +89,12 @@ def hub():
 def s00():
     st = step_by_code("S2-00")
     m = D["scenes"]
-    body = step_head(st) + f"""
+    w = D["why"]
+    pts = "".join(f'<li><b>{x["emoji"]} {E(x["principle"])}</b><br>{E(x["meaning"])}</li>' for x in w["points"])
+    wtxt = w["title"] + "\n" + "\n".join(f'- {x["principle"]} {x["meaning"]}' for x in w["points"])
+    why = (f'<div class="card hero"><h2 style="margin-top:0">🧭 {E(w["title"])}</h2><p class="intro">{E(w["note"])}</p>'
+           f'<ol class="why">{pts}</ol>{copybtn(wtxt, "📋 Copy why")}{fb("S2-00.why", "🧭 Why (first principles)")}</div>')
+    body = step_head(st) + why + f"""
 <div class="card"><b>🪝 Hook (first second)</b><p id="hook">{E(D['hook'])}</p>{copybtn(D['hook'])}</div>
 <div class="card"><b>🔄 Loop plan</b><p>{E(D['loop']['plan'])}</p>{copybtn(D['loop']['plan'])}</div>
 <div class="card"><b>🥚 Rewatch bait</b><p>{E(D['loop']['bait'])}</p>{copybtn(D['loop']['bait'])}</div>
@@ -192,6 +200,7 @@ def s08():
 def feedback():
     ids = json.dumps(FB_IDS, ensure_ascii=False)
     body = f"""<h1>💬 All feedback</h1><p class="intro">Everything you wrote on any page, in pipeline order. 📋 Copy all and paste it to Claude.</p>
+<div id="progress" class="card"></div>
 <div class="bar"><button id="copy-all" class="primary">📋 Copy all feedback</button><button id="clear-all">🗑️ Clear all</button><span id="count"></span></div>
 <pre id="all"></pre>
 <script>window.FB_IDS={ids};</script>"""

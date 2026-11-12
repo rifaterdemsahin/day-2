@@ -1,5 +1,74 @@
 [
-  {"v": "v0.3", "date": "2026-11-12", "emoji": "🔁", "codes": ["S2-00", "S2-08"], "change": "Added this Iterations page, made README a navigation hub, and wrote the iteration rule into the master spec.", "why": "Owner: we always iterate, so every round must be documented in one place.", "status": "🚀 deployed"},
-  {"v": "v0.2", "date": "2026-11-12", "emoji": "💬", "codes": ["S2-00"], "change": "Master spec: feedback is collected after the owner reviews the deployed site opened in Chrome, using the 📋 copy buttons.", "why": "Owner asked the spec to remember the review and copy-paste loop.", "status": "🚀 deployed"},
-  {"v": "v0.1", "date": "2026-11-12", "emoji": "🎬", "codes": ["S2-00", "S2-01", "S2-02", "S2-03", "S2-04", "S2-05", "S2-06", "S2-07", "S2-08"], "change": "First draft: master spec v4.0 (Part B, Google Flow), the S2 pipeline site with 13 pages, drafted voice-over, storyboard and 6 Flow prompts, loop plan and rewatch bait.", "why": "Owner's README script and the goal of a 200%+ watch-time short like the example.", "status": "🚀 deployed"}
+  {
+    "v": "v0.5",
+    "date": "2026-11-12",
+    "emoji": "🧭",
+    "codes": [
+      "S2-00"
+    ],
+    "change": "S2-00 now starts with a producer-only 'Why' section: six first principles (attention and rewatch, one idea per short, series compounding, out-iterate not out-spend, your time and Flow, define done). Spec: the Why section is required on every project's brief page.",
+    "why": "Owner: wanted a why section with first principles on top of the brief page, for the producer only.",
+    "status": "🚀 deployed"
+  },
+  {
+    "v": "v0.4",
+    "date": "2026-11-12",
+    "emoji": "✔️",
+    "codes": [
+      "S2-00",
+      "S2-01",
+      "S2-02",
+      "S2-03",
+      "S2-04",
+      "S2-05",
+      "S2-06",
+      "S2-07",
+      "S2-08"
+    ],
+    "change": "Floating 📝 notes panel on every page (key N), ✔️ 'I have reviewed this page' check marks in the menu, review progress on the hub and the feedback page, copy this page / copy all. Spec: standing rules 5 and 6, Retrain log B6.",
+    "why": "Owner: wants check marks when a document review is complete, and floating, easier note taking. The spec is copied to new projects and we retrain ourselves.",
+    "status": "🚀 deployed"
+  },
+  {
+    "v": "v0.3",
+    "date": "2026-11-12",
+    "emoji": "🔁",
+    "codes": [
+      "S2-00",
+      "S2-08"
+    ],
+    "change": "Added this Iterations page, made README a navigation hub, and wrote the iteration rule into the master spec.",
+    "why": "Owner: we always iterate, so every round must be documented in one place.",
+    "status": "🚀 deployed"
+  },
+  {
+    "v": "v0.2",
+    "date": "2026-11-12",
+    "emoji": "💬",
+    "codes": [
+      "S2-00"
+    ],
+    "change": "Master spec: feedback is collected after the owner reviews the deployed site opened in Chrome, using the 📋 copy buttons.",
+    "why": "Owner asked the spec to remember the review and copy-paste loop.",
+    "status": "🚀 deployed"
+  },
+  {
+    "v": "v0.1",
+    "date": "2026-11-12",
+    "emoji": "🎬",
+    "codes": [
+      "S2-00",
+      "S2-01",
+      "S2-02",
+      "S2-03",
+      "S2-04",
+      "S2-05",
+      "S2-06",
+      "S2-07",
+      "S2-08"
+    ],
+    "change": "First draft: master spec v4.0 (Part B, Google Flow), the S2 pipeline site with 13 pages, drafted voice-over, storyboard and 6 Flow prompts, loop plan and rewatch bait.",
+    "why": "Owner's README script and the goal of a 200%+ watch-time short like the example.",
+    "status": "🚀 deployed"
+  }
 ]
