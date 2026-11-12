@@ -26,6 +26,8 @@ Deploy → open the site in Chrome → owner reviews and copies feedback with th
 
 `python3 -I scripts/build_short_site.py` regenerates every page from `assets/short.json` and `assets/iterations.json`. Never commit media.
 
+🎙️ **Voice (S2-05):** `FAL_KEY=… python3 -I scripts/make_voice.py` (ElevenLabs on fal.ai; `--dry-run` first, see Master spec B2c).
+
 🎛️ **Remotion (S2-06):** `cd remotion && npm install && npm run studio` → http://localhost:3001 (see Master spec B2b).
 
 ---

@@ -220,5 +220,14 @@
     "pop_frames": 9,
     "lead_s": 0.15,
     "tail_s": 0.25
+  },
+  "voice": {
+    "provider": "ElevenLabs via fal.ai",
+    "endpoint": "fal-ai/elevenlabs/tts/eleven-v3",
+    "voice": "Aria",
+    "stability": 0.5,
+    "output_format": "mp3_44100_128",
+    "language_code": "en",
+    "tone": "calm, curious, a little fast; no silence at the end so the loop is tight"
   }
 }

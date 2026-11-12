@@ -814,6 +814,14 @@ Every page on the site carries its code in the menu and the heading. Feedback is
 - Renders and stills use **Google Chrome** (`--browser-executable`, already in the npm scripts): Remotion's own downloaded headless shell failed to start here (`spawn` error -88).
 - When asked to "open Remotion": open this project's Studio on 3001 in Google Chrome, not another project's.
 
+### B2c. 🎙️ Voice-over with ElevenLabs on fal.ai (step `S2-05`)
+
+- Default: `python3 -I scripts/make_voice.py` calls **`fal-ai/elevenlabs/tts/eleven-v3`** through fal's queue API (`https://queue.fal.run/<endpoint>`, header `Authorization: Key <key>`), with the full voice-over text from `assets/short.json` (all `scenes[].vo`) and the settings in its `voice` block (`voice`, `stability`, `output_format`, `language_code`). Inputs the endpoint documents: `text`, `voice`, `stability`, `timestamps`, `language_code`, `apply_text_normalization`, `output_format` (not `speed` or `style`).
+- Output: `remotion/public/S2-05-vo.wav` (+ the `.mp3` original) and `assets/words.json` (word timings in seconds). Timings come from the endpoint's `timestamps`; if their shape is not recognised the script runs local Whisper on the audio instead. Remotion's animated captions read `words.json` automatically.
+- 🔑 **Key handling:** `FAL_KEY` in the environment for one command, or the macOS Keychain item with service name `fal-key`. Never in the repo, the site, chat logs or a file. `--dry-run` prints the request and calls nothing; run it first.
+- ⚠️ After generating, check the report the script prints: total length must be at most the short's length, and each scene's first word should land near its scene start. If the single take drifts from the clip cuts, tighten the script (S2-01) or generate per scene.
+- Cost is per character (a 45 s script is about 450 characters); regenerate on purpose, not in a loop.
+
 ## B3. 🔄 Rewatch rules (why people watch twice)
 
 1. **Hook in the first second:** a question or a strange image, never a logo or intro.
@@ -863,5 +871,7 @@ Every page on the site carries its code in the menu and the heading. Feedback is
 | 10 | 2026-11-12 | Remotion's downloaded headless shell would not spawn (error -88) | B2b: always pass the local Chrome as the browser for render and still |
 
 | 11 | 2026-11-12 | Plain caption boxes are static; shorts need captions that move with the voice | B2b/B3: animated word-by-word captions, styled from data, timed from Whisper words when available |
+
+| 12 | 2026-11-12 | Voice should be generated, not recorded by hand, and the key must not leak | B2c: ElevenLabs on fal.ai via `make_voice.py`, key from env or Keychain only, dry run first, word timings feed the captions |
 
 **How to retrain:** at the end of each project add rows here, then copy the whole file to the next project. Keep rows short: lesson, then the rule.

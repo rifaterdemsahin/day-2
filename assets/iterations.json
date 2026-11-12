@@ -1,5 +1,17 @@
 [
   {
+    "v": "v0.10",
+    "date": "2026-11-12",
+    "emoji": "🎙️",
+    "codes": [
+      "S2-05",
+      "S2-06"
+    ],
+    "change": "Voice step automated: scripts/make_voice.py calls ElevenLabs eleven-v3 on fal.ai (voice Aria by default, from data), saves S2-05-vo.wav and word timings (assets/words.json) for the animated captions. Key from env or Keychain only; dry run available. Spec: B2c, retrain row 12.",
+    "why": "Owner: get the audio from fal.ai with ElevenLabs.",
+    "status": "🛠️ tool deployed · ⏳ voice not generated yet (needs your FAL_KEY)"
+  },
+  {
     "v": "v0.9",
     "date": "2026-11-12",
     "emoji": "💬",
