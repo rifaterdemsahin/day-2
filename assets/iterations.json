@@ -1,0 +1,5 @@
+[
+  {"v": "v0.3", "date": "2026-11-12", "emoji": "🔁", "codes": ["S2-00", "S2-08"], "change": "Added this Iterations page, made README a navigation hub, and wrote the iteration rule into the master spec.", "why": "Owner: we always iterate, so every round must be documented in one place.", "status": "🚀 deployed"},
+  {"v": "v0.2", "date": "2026-11-12", "emoji": "💬", "codes": ["S2-00"], "change": "Master spec: feedback is collected after the owner reviews the deployed site opened in Chrome, using the 📋 copy buttons.", "why": "Owner asked the spec to remember the review and copy-paste loop.", "status": "🚀 deployed"},
+  {"v": "v0.1", "date": "2026-11-12", "emoji": "🎬", "codes": ["S2-00", "S2-01", "S2-02", "S2-03", "S2-04", "S2-05", "S2-06", "S2-07", "S2-08"], "change": "First draft: master spec v4.0 (Part B, Google Flow), the S2 pipeline site with 13 pages, drafted voice-over, storyboard and 6 Flow prompts, loop plan and rewatch bait.", "why": "Owner's README script and the goal of a 200%+ watch-time short like the example.", "status": "🚀 deployed"}
+]

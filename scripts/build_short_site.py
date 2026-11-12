@@ -18,7 +18,7 @@ SCENE_NAMES = {s["clips"][0]: s["readme"] for s in D["scenes"]}
 FULL_VO = " ".join(s["vo"] for s in D["scenes"])
 
 NAV = [("index.html", "🏠 Hub")] + [(f"{st['slug']}.html", f"{st['emoji']} {st['code']} {st['name']}") for st in D["steps"]] + [
-    ("feedback.html", "💬 All feedback"), ("spec.html", "📖 Master spec"), ("readme.html", "📄 Script (README)")]
+    ("iterations.html", "🔁 Iterations"), ("feedback.html", "💬 All feedback"), ("spec.html", "📖 Master spec"), ("readme.html", "📄 Script (README)")]
 
 
 def nav(active):
@@ -198,6 +198,21 @@ def feedback():
     page("feedback.html", "All feedback", body)
 
 
+# ---------- iterations (one page documents every round)
+def iterations():
+    its = json.loads((ROOT / "assets/iterations.json").read_text(encoding="utf-8"))
+    rows = ""
+    for it in its:
+        codes = " ".join(f'<span class="code">{c}</span>' for c in it["codes"])
+        txt = f'{it["v"]} ({it["date"]}) {it["change"]} Why: {it["why"]}'
+        rows += (f'<div class="card"><div class="meta">{it["emoji"]} <b>{E(it["v"])}</b> · 📅 {E(it["date"])} · {E(it["status"])}</div>'
+                 f'<p>🔧 {E(it["change"])}</p><p>🎯 <i>{E(it["why"])}</i></p><p>{codes}</p>{copybtn(txt)}</div>')
+    body = f"""<h1>🔁 Iterations</h1><p class="intro">We always iterate. Every round (your feedback → my change → deploy) is logged here, newest first. 📋 Copy any entry to reference it.</p>
+<div class="card hero"><b>🔄 The loop</b><p>1️⃣ Claude deploys and opens the site in Chrome → 2️⃣ you review and copy feedback with 📋 → 3️⃣ you paste it to Claude → 4️⃣ Claude changes the spec and site, adds a row here, redeploys → back to 1️⃣</p></div>
+{rows}{fb('S2-iter', '🔁 Iteration process')}"""
+    page("iterations.html", "Iterations", body)
+
+
 # ---------- spec + readme pages (markdown rendered in browser)
 def md_page(fname, title, src, emoji):
     text = (ROOT / src).read_text(encoding="utf-8")
@@ -206,8 +221,8 @@ def md_page(fname, title, src, emoji):
     page(fname, title, body)
 
 
-hub(); s00(); s01(); s02(); s03(); s04(); s05(); s06(); s07(); s08(); feedback()
+hub(); s00(); s01(); s02(); s03(); s04(); s05(); s06(); s07(); s08(); iterations(); feedback()
 md_page("spec.html", "Master spec", "MASTER_SPEC.md", "📖")
 md_page("readme.html", "Script draft (README)", "README.md", "📄")
 (ROOT / ".nojekyll").write_text("")
-print("built", 4 + len(D["steps"]), "pages;", len(FB_IDS), "feedback boxes")
+print("built", 5 + len(D["steps"]), "pages;", len(FB_IDS), "feedback boxes")
