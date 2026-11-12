@@ -145,7 +145,7 @@ def s00():
 def s01():
     st = step_by_code("S2-01")
     cards = "".join(
-        f'<div class="card"><div class="meta">🎬 {clip_label(i, s)} · {E(s["readme"])}</div>'
+        f'<div class="card"><div class="meta">{clip_label(i, s)} · {E(s["readme"])}</div>'
         f'<p class="vo">“{E(s["vo"])}”</p>{copybtn(s["vo"])}{fb("S2-01." + c, "📝 " + c + " VO")}</div>'
         for i, (c, s) in enumerate(CLIPS))
     body = step_head(st) + f"""<p>⚠️ Draft by Claude from the README beats. Edit freely.</p>

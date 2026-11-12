@@ -50,3 +50,8 @@ ol.why{padding-left:20px}ol.why li{margin:10px 0}
 .tt{display:flex;gap:20px;flex-wrap:wrap}.tt-img{flex:0 0 220px;max-width:100%}.tt-txt{flex:1 1 300px}
 svg.thumb{width:220px;max-width:100%;height:auto;border-radius:14px;border:1px solid var(--line);display:block}
 li.ttl{margin:12px 0}
+::highlight(d2note){background-color:#ffcf5a77;color:inherit}
+.hlpop{position:absolute;z-index:30;width:min(300px,calc(100vw - 16px));background:var(--panel);border:1px solid var(--gold);border-radius:12px;padding:6px;box-shadow:0 8px 24px #000a}
+.hlpop[hidden]{display:none}.hlpop textarea{width:100%;min-height:70px;margin:6px 0;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:8px;font:inherit}
+.hlq{font-size:13px;color:var(--mut);margin:2px 4px 6px;font-style:italic}.hlpop .st button.on{background:var(--acc);color:#001}
+.hltitle{margin-top:6px;font-weight:600}.hli{display:flex;gap:4px;align-items:flex-start;border-top:1px dashed var(--line);padding:4px 0}.hli .hlt{flex:1;font-size:13px}.hli button{padding:2px 6px;margin:0}

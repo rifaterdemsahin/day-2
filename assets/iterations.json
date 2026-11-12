@@ -1,5 +1,24 @@
 [
   {
+    "v": "v0.7",
+    "date": "2026-11-12",
+    "emoji": "🖍️",
+    "codes": [
+      "S2-00",
+      "S2-01",
+      "S2-02",
+      "S2-03",
+      "S2-04",
+      "S2-05",
+      "S2-06",
+      "S2-07",
+      "S2-08"
+    ],
+    "change": "Highlight to comment: select any text on any page, tap 💬 Note on this, optionally ✅/🔧/❌, save. The passage stays highlighted, is listed in the 📝 panel (🔎 jump, ✖️ delete) and is included in Copy this page / Copy all with the quoted text and section. Spec: rule 5(e), retrain row 8.",
+    "why": "Owner: wants to highlight and give feedback on sections of the page.",
+    "status": "🚀 deployed"
+  },
+  {
     "v": "v0.6",
     "date": "2026-11-12",
     "emoji": "🖼️",
