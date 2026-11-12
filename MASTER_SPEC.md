@@ -807,7 +807,9 @@ Every page on the site carries its code in the menu and the heading. Feedback is
 
 - Each short has a `remotion/` project (1080x1920, 30 fps, length from `assets/short.json`). Start it with `cd remotion && npm run studio` (Studio on **port 3001**: port 3000 may already be used by another project's Studio, check with `lsof -iTCP:3000`), render with `npm run render` → `out/S2-06-final.mp4`.
 - `scripts/sync.mjs` copies `assets/short.json` next to the code and records which `S2-04-cN.mp4` clips and `S2-05-vo.wav` exist; **a missing clip renders as a placeholder card**, so the timeline, captions and loop can be reviewed before any Flow clip exists.
-- Captions are the scene VO lines, placed in the safe area (bottom 20% and right 15% free). Hard cuts, no transitions. Facts stay in data: change `assets/short.json`, never the components.
+- 💬 **Animated captions (standing for every short):** word-by-word TikTok-style captions (`remotion/src/Captions.tsx`): each word **pops in** with a spring, the **word being spoken is highlighted** (gold glow, slightly larger), spoken words turn white, pages of about 4 words (a page also ends at . ? ! ,), heavy uppercase font with a dark stroke, placed in the safe area (bottom 20% and right 15% free). Style lives in data: `assets/short.json` → `captions` (`words_per_page`, `font_size`, `active_color`, `text_color`, `stroke`, `pop_frames`, `lead_s`, `tail_s`).
+- ⏱️ **Word timing:** with no voice yet, words are spread over the scene by length (an estimate, good enough to review style). Once the voice exists (`S2-05`), run Whisper with word timestamps and save `assets/words.json` as `[{"word","start","end"}]` in seconds on the final timeline; `sync.mjs` picks it up and the captions follow the real speech.
+- Hard cuts, no transitions. Facts stay in data: change `assets/short.json`, never the components.
 - Clips, voice and `out/` are never committed (`remotion/.gitignore`). Pinned: remotion + cli 4.0.250, react 18.3.1, typescript 5.6.3 (same as Part A).
 - Renders and stills use **Google Chrome** (`--browser-executable`, already in the npm scripts): Remotion's own downloaded headless shell failed to start here (`spawn` error -88).
 - When asked to "open Remotion": open this project's Studio on 3001 in Google Chrome, not another project's.
@@ -819,7 +821,7 @@ Every page on the site carries its code in the menu and the heading. Feedback is
 3. **Rewatch bait:** one small detail seen only the second time (a number or object that returns).
 4. **Density:** a visual change every 2 to 3 seconds; one idea per short.
 5. **Payoff late, teaser last:** the aha moment sits in the last third; the final beat opens a question the next short answers (series tie-in).
-6. **Captions always on**, large, in the safe area (not under the platform buttons).
+6. **Animated captions always on** (word pop-in and highlight, see B2b), large, in the safe area (not under the platform buttons).
 
 ## B4. 🌐 The short-form website
 
@@ -859,5 +861,7 @@ Every page on the site carries its code in the menu and the heading. Feedback is
 | 9 | 2026-11-12 | "Open Remotion" would have opened another project's Studio on port 3000 | B2b: each short has its own `remotion/` and Studio on port 3001; check the port and the project before opening |
 
 | 10 | 2026-11-12 | Remotion's downloaded headless shell would not spawn (error -88) | B2b: always pass the local Chrome as the browser for render and still |
+
+| 11 | 2026-11-12 | Plain caption boxes are static; shorts need captions that move with the voice | B2b/B3: animated word-by-word captions, styled from data, timed from Whisper words when available |
 
 **How to retrain:** at the end of each project add rows here, then copy the whole file to the next project. Keep rows short: lesson, then the rule.

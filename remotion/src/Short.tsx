@@ -2,6 +2,7 @@ import React from 'react';
 import {AbsoluteFill, Audio, OffthreadVideo, Sequence, staticFile} from 'remotion';
 import short from './short.json';
 import avail from '../public/available.json';
+import {AnimatedCaptions} from './Captions';
 
 const FPS = 30;
 type Scene = (typeof short.scenes)[number];
@@ -40,12 +41,8 @@ const SceneView: React.FC<{s: Scene}> = ({s}) => {
       <div style={{position: 'absolute', left: 60, right: 60, top: 300, textAlign: 'center', color: '#fff', fontFamily: 'system-ui', fontWeight: 900, fontSize: 112, textShadow: '0 0 30px #4dd8ff'}}>
         {s.text}
       </div>
-      {/* caption: safe area (bottom 20% and right 15% stay free) */}
-      <div style={{position: 'absolute', left: 60, right: 170, bottom: 400, textAlign: 'center'}}>
-        <span style={{display: 'inline-block', background: '#000a', color: '#fff', fontFamily: 'system-ui', fontWeight: 700, fontSize: 58, lineHeight: 1.3, padding: '14px 26px', borderRadius: 24}}>
-          {s.vo}
-        </span>
-      </div>
+      {/* animated captions: safe area (bottom 20% and right 15% stay free) */}
+      <AnimatedCaptions s={s} />
     </AbsoluteFill>
   );
 };

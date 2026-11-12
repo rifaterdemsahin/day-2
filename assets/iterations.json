@@ -1,5 +1,17 @@
 [
   {
+    "v": "v0.9",
+    "date": "2026-11-12",
+    "emoji": "💬",
+    "codes": [
+      "S2-06",
+      "S2-05"
+    ],
+    "change": "Animated captions in the Remotion project: words pop in one by one, the spoken word is highlighted, pages of ~4 words, safe-area placement, styled from data and timed from Whisper words (assets/words.json) when they exist, otherwise estimated. Spec: B2b, B3 rule 6, retrain row 11.",
+    "why": "Owner asked for animated captions.",
+    "status": "🚀 deployed"
+  },
+  {
     "v": "v0.8",
     "date": "2026-11-12",
     "emoji": "🎛️",

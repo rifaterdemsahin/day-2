@@ -210,5 +210,15 @@
     "How AI Knows King − Man + Woman = Queen 🤯 #shorts",
     "AI does math with meaning (King − Man + Woman = ?) 👑 #shorts",
     "Why 1,536 numbers make an AI understand words 🧠 #shorts"
-  ]
+  ],
+  "captions": {
+    "words_per_page": 4,
+    "font_size": 88,
+    "active_color": "#ffcf5a",
+    "text_color": "#ffffff",
+    "stroke": "#050816",
+    "pop_frames": 9,
+    "lead_s": 0.15,
+    "tail_s": 0.25
+  }
 }
