@@ -12,7 +12,12 @@
 <label class="card check"><input type="checkbox" data-check="S2-06.c"> 🥚 Tiny 9246 visible in the Queen on the 2nd watch</label>
 <label class="card check"><input type="checkbox" data-check="S2-06.d"> 💬 Captions in safe area, large</label>
 <label class="card check"><input type="checkbox" data-check="S2-06.e"> ⏱️ 45 s or less, 9:16</label>
-<p>🛠️ Assemble in CapCut or ffmpeg: hard cuts, no transitions, captions from the table, voice from S2-05. Export <code>S2-06-final.mp4</code>.</p>
+<div class="card hero"><b>🎛️ Remotion Studio (assembly in code)</b>
+<p>Opens a 9:16, 45 s timeline from <code>assets/short.json</code>: clips that exist are used, missing ones show a placeholder card, captions sit in the safe area, voice is added when <code>S2-05-vo.wav</code> exists.</p>
+<p>▶️ <a href="http://localhost:3001" target="_blank">http://localhost:3001</a> (only works while Studio runs on your Mac)</p>
+<button class="copy" data-copy="cd ~/projects/day-2/remotion &amp;&amp; npm run studio">📋 Copy: start Studio</button><button class="copy" data-copy="cd ~/projects/day-2/remotion &amp;&amp; npm run render">📋 Copy: render S2-06-final.mp4</button>
+<p>📁 Put clips in <code>remotion/public/clips/S2-04-cN.mp4</code> and the voice in <code>remotion/public/S2-05-vo.wav</code> (never committed).</p></div>
+<p>🛠️ Or assemble in CapCut or ffmpeg: hard cuts, no transitions, captions from the table, voice from S2-05. Export <code>S2-06-final.mp4</code>.</p>
 <div class="fb" data-fb="S2-06" data-label="✂️ Edit notes (pace, cuts, loop feel)"></div></main>
 <footer>🔁 Update → deploy → feedback. Copy your feedback with 📋 and paste it back to Claude.</footer>
 <script>window.PAGES=[["index.html", "🏠 Hub"], ["s2-00.html", "🧭 S2-00 Brief, hook and loop"], ["s2-01.html", "📝 S2-01 Script"], ["s2-02.html", "🗺️ S2-02 Storyboard"], ["s2-03.html", "🪄 S2-03 Flow prompts"], ["s2-04.html", "🎞️ S2-04 Generate in Flow"], ["s2-05.html", "🎙️ S2-05 Voice-over"], ["s2-06.html", "✂️ S2-06 Assemble and loop check"], ["s2-07.html", "💬 S2-07 Captions, title, description"], ["s2-08.html", "📈 S2-08 Publish and analytics"], ["iterations.html", "🔁 Iterations"], ["feedback.html", "💬 All feedback"], ["spec.html", "📖 Master spec"], ["readme.html", "📄 Script (README)"]];</script>

@@ -803,6 +803,15 @@ The first draft of each short's script lives in the repo `README.md` (title, vis
 
 Every page on the site carries its code in the menu and the heading. Feedback is always tagged with the code.
 
+### B2b. 🎛️ Remotion assembly (optional, step `S2-06`)
+
+- Each short has a `remotion/` project (1080x1920, 30 fps, length from `assets/short.json`). Start it with `cd remotion && npm run studio` (Studio on **port 3001**: port 3000 may already be used by another project's Studio, check with `lsof -iTCP:3000`), render with `npm run render` → `out/S2-06-final.mp4`.
+- `scripts/sync.mjs` copies `assets/short.json` next to the code and records which `S2-04-cN.mp4` clips and `S2-05-vo.wav` exist; **a missing clip renders as a placeholder card**, so the timeline, captions and loop can be reviewed before any Flow clip exists.
+- Captions are the scene VO lines, placed in the safe area (bottom 20% and right 15% free). Hard cuts, no transitions. Facts stay in data: change `assets/short.json`, never the components.
+- Clips, voice and `out/` are never committed (`remotion/.gitignore`). Pinned: remotion + cli 4.0.250, react 18.3.1, typescript 5.6.3 (same as Part A).
+- Renders and stills use **Google Chrome** (`--browser-executable`, already in the npm scripts): Remotion's own downloaded headless shell failed to start here (`spawn` error -88).
+- When asked to "open Remotion": open this project's Studio on 3001 in Google Chrome, not another project's.
+
 ## B3. 🔄 Rewatch rules (why people watch twice)
 
 1. **Hook in the first second:** a question or a strange image, never a logo or intro.
@@ -846,5 +855,9 @@ Every page on the site carries its code in the menu and the heading. Feedback is
 | 7 | 2026-11-12 | The owner judges a short by its title and thumbnail first, so they must be visible at the start | B2/B5: title options + thumbnail draft on the hub and the first step, before the Why; prompt for the still in the Flow step |
 
 | 8 | 2026-11-12 | Feedback on a card or a whole page is too coarse; the owner wants to point at the exact words | Standing rule 5(e): highlight-to-comment with quote + section in the copied feedback |
+
+| 9 | 2026-11-12 | "Open Remotion" would have opened another project's Studio on port 3000 | B2b: each short has its own `remotion/` and Studio on port 3001; check the port and the project before opening |
+
+| 10 | 2026-11-12 | Remotion's downloaded headless shell would not spawn (error -88) | B2b: always pass the local Chrome as the browser for render and still |
 
 **How to retrain:** at the end of each project add rows here, then copy the whole file to the next project. Keep rows short: lesson, then the rule.

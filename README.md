@@ -26,6 +26,8 @@ Deploy → open the site in Chrome → owner reviews and copies feedback with th
 
 `python3 -I scripts/build_short_site.py` regenerates every page from `assets/short.json` and `assets/iterations.json`. Never commit media.
 
+🎛️ **Remotion (S2-06):** `cd remotion && npm install && npm run studio` → http://localhost:3001 (see Master spec B2b).
+
 ---
 
 ## 📝 Original script draft (owner's source of truth for the beats)

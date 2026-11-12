@@ -1,5 +1,16 @@
 [
   {
+    "v": "v0.8",
+    "date": "2026-11-12",
+    "emoji": "🎛️",
+    "codes": [
+      "S2-06"
+    ],
+    "change": "Added a Remotion project for the short (9:16, 45 s, six clip slots, safe-area captions, placeholders for clips not made yet) with Studio on port 3001, linked from S2-06. Spec: B2b and retrain row 9.",
+    "why": "Owner: 'open remotion'. day-2 had no Remotion project and port 3000 was another project's Studio.",
+    "status": "🚀 deployed"
+  },
+  {
     "v": "v0.7",
     "date": "2026-11-12",
     "emoji": "🖍️",

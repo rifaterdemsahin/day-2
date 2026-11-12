@@ -1,0 +1,8 @@
+node_modules
+out
+src/short.json
+public/available.json
+public/clips/*
+!public/clips/.gitkeep
+public/*.wav
+public/*.mp3

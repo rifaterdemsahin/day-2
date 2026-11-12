@@ -1,0 +1,22 @@
+{
+  "name": "day-2-short",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "sync": "node scripts/sync.mjs",
+    "studio": "node scripts/sync.mjs && remotion studio --port=3001",
+    "render": "node scripts/sync.mjs && remotion render Short out/S2-06-final.mp4 --browser-executable=\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\"",
+    "tsc": "node scripts/sync.mjs && tsc --noEmit",
+    "still": "node scripts/sync.mjs && remotion still Short out/frame.png --frame=700 --browser-executable=\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\""
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.250",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.250"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.12",
+    "typescript": "5.6.3"
+  }
+}
