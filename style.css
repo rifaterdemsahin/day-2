@@ -47,3 +47,6 @@ nav a.done{border-color:var(--ok);color:var(--ok)}nav a.active.done{color:#001}
 ul.rv{columns:2;list-style:none;padding:0;margin:8px 0 0}ul.rv a{color:var(--fg);text-decoration:none}
 @media (max-width:600px){ul.rv{columns:1}}
 ol.why{padding-left:20px}ol.why li{margin:10px 0}
+.tt{display:flex;gap:20px;flex-wrap:wrap}.tt-img{flex:0 0 220px;max-width:100%}.tt-txt{flex:1 1 300px}
+svg.thumb{width:220px;max-width:100%;height:auto;border-radius:14px;border:1px solid var(--line);display:block}
+li.ttl{margin:12px 0}

@@ -791,7 +791,7 @@ The first draft of each short's script lives in the repo `README.md` (title, vis
 
 | Code | Step | Output | Who |
 |---|---|---|---|
-| `S2-00` | 🧭 **Why (first principles, producer only)**, brief, hook and loop design | why section, one-line promise, loop plan | Claude + owner |
+| `S2-00` | 🧭 **Title + thumbnail first**, Why (first principles, producer only), brief, hook and loop design | title options, thumbnail draft, why section, loop plan | Claude + owner |
 | `S2-01` | 📝 Script (voice-over lines per scene) | VO text with timings | Claude, owner reviews |
 | `S2-02` | 🗺️ Storyboard (scenes, camera, on-screen text) | scene cards | Claude, owner reviews |
 | `S2-03` | 🪄 Flow prompts (one per clip) | copy-paste prompts | Claude |
@@ -822,7 +822,8 @@ Every page on the site carries its code in the menu and the heading. Feedback is
 
 ## B5. ✅ Short-form checklist
 
-- [ ] 🧭 `S2-00` starts with a **Why section: first principles of why this short matters to the producer** (not audience copy), owner-reviewed
+- [ ] 🖼️ **Title options and a thumbnail draft are shown at the very start** (top of the hub and `S2-00`), with copy buttons, before any other work; the lead title is reused in the metadata step
+- [ ] 🧭 `S2-00` has next a **Why section: first principles of why this short matters to the producer** (not audience copy), owner-reviewed
 - [ ] 9:16 at 1080x1920, 45 s or less, captions on
 - [ ] Hook visible in the first second
 - [ ] Last frame matches the first; last line flows into the first line
@@ -841,5 +842,7 @@ Every page on the site carries its code in the menu and the heading. Feedback is
 | 5 | 2026-11-12 | Flow has no API | B1: Claude writes prompts, the owner creates clips by hand |
 
 | 6 | 2026-11-12 | The brief page needs the reason before the plan; decisions are cheaper when the producer's first principles are written down | B2/B5: every project's `S0-00`-style brief page starts with a 🧭 Why section (first principles, producer only) |
+
+| 7 | 2026-11-12 | The owner judges a short by its title and thumbnail first, so they must be visible at the start | B2/B5: title options + thumbnail draft on the hub and the first step, before the Why; prompt for the still in the Flow step |
 
 **How to retrain:** at the end of each project add rows here, then copy the whole file to the next project. Keep rows short: lesson, then the rule.

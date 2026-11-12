@@ -197,5 +197,18 @@
         "meaning": "Done means: you are proud to post it, the loop feels seamless on replay, the idea lands in one watch and the bait is caught on the second. Anti-goal: beautiful clips that explain nothing, or a first-time view that feels like a loop restart."
       }
     ]
-  }
+  },
+  "thumbnail": {
+    "line1": "KING − MAN",
+    "line2": "+ WOMAN = ?",
+    "badge": "DAY 2",
+    "sub": "AI MATH 🤯",
+    "note": "Vertical cover frame. Big text readable at thumbnail size, one glowing dot to hint at the hidden 9246. A draft drawn from the data: swap it for a Flow still if you prefer (prompt on S2-03).",
+    "prompt": "Vertical 9:16 still image, YouTube Shorts cover. Dark deep-space background, deep blue and violet. Large bold white text at the top: 'KING − MAN' and below it '+ WOMAN = ?' with a soft cyan glow. In the lower half a cluster of warm orange dots on the left and a cluster of shining gold dots on the right connected by a glowing cyan arrow curve pointing at one bright gold dot. A small badge 'DAY 2' in a corner. Clean, high contrast, minimal, no people, no logos."
+  },
+  "titles": [
+    "How AI Knows King − Man + Woman = Queen 🤯 #shorts",
+    "AI does math with meaning (King − Man + Woman = ?) 👑 #shorts",
+    "Why 1,536 numbers make an AI understand words 🧠 #shorts"
+  ]
 }
