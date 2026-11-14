@@ -1,5 +1,17 @@
 [
  {
+  "v": "v0.22",
+  "date": "2026-11-14",
+  "emoji": "📝",
+  "codes": [
+   "S2-DEV",
+   "S2-08"
+  ],
+  "change": "Added https://token-lens-6a52e9.fly.dev/ as a sample project link on the S2-DEV Development page, and added one bullet \"🧪 BROWSERTEST-1 notes-button check\" to the metrics list on S2-08 Publish and analytics.",
+  "why": "Owner feedback: 💬 [page:development.html] add https://token-lens-6a52e9.fly.dev/ as a sample project · 💬 [page:s2-08.html] add one more bullet to the metrics list: \"🧪 BROWSERTEST-1 notes-button check\". Nothing else.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.21",
   "date": "2026-11-14",
   "emoji": "🖥️",

@@ -562,6 +562,11 @@ target_vector = [k - m + w for k, m, w in zip(EMBEDDINGS["king"], EMBEDDINGS["ma
 <pre><code>{E(py_code)}</code></pre>
 </div>
 
+<div class="card hero"><b>🔗 Sample project</b>
+<p>A live build of this same vector-math short, running end to end: <a href="https://token-lens-6a52e9.fly.dev/" target="_blank" rel="noopener">https://token-lens-6a52e9.fly.dev/</a></p>
+{copybtn("https://token-lens-6a52e9.fly.dev/", "📋 Copy sample project URL")}
+</div>
+
 {fb('S2-DEV', '💻 Development overall: what to add, clarify, or fix?')}"""
 
     page("development.html", "S2-DEV Development", body)
@@ -976,7 +981,7 @@ def s07():
 def s08():
     st = step_by_code("S2-08")
     body = step_head(st) + """<ul><li>📈 Average percentage viewed (target: <b>200%+</b>)</li><li>🔁 Loops per view</li>
-<li>⏱️ Swipe-away in the first 3 s</li><li>💬 Comments mentioning the hidden number 9246</li></ul>
+<li>⏱️ Swipe-away in the first 3 s</li><li>💬 Comments mentioning the hidden number 9246</li><li>🧪 BROWSERTEST-1 notes-button check</li></ul>
 <p>📝 Paste the numbers below and into the next short's S3-00 brief.</p>""" + fb('S2-08', '📈 Numbers after 24 h / 7 days')
     page("s2-08.html", "S2-08 Analytics", body)
 
