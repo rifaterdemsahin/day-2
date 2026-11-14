@@ -1,5 +1,17 @@
 [
  {
+  "v": "v0.31",
+  "date": "2026-11-14",
+  "emoji": "🐛",
+  "codes": [
+   "S2-SP",
+   "S2-X"
+  ],
+  "change": "Owner signed in to claude (and agy) on the sprite. All three agents now show ready. First claude run FAILED: \"Invalid API key\" because the runner injected the vault ANTHROPIC-API-KEY (401), which overrides the login. Fix: claude gets no key and uses its sprite login. Re-run: note \"add a one-sentence summary under the S2-X title\" went sprite → patch → commit 57532fd → push → Fly deploy, live (v0.30 entry written by the agent). Skill and S2-SP step updated.",
+  "why": "Owner: logged in to claude on the sprite, add a note, test it, check it works, fix the website from the feedback, commit push deploy.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.30",
   "date": "2026-11-14",
   "emoji": "💡",
