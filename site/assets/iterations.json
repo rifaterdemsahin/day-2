@@ -1,5 +1,16 @@
 [
  {
+  "v": "v0.25",
+  "date": "2026-11-14",
+  "emoji": "📊",
+  "codes": [
+   "S2-V"
+  ],
+  "change": "New S2-V page: top 10 similar YouTube videos (King − Man + Woman = Queen) with views, age, length, a copy button, what the numbers say and honest limits. Data in assets/similar_videos.json from a YouTube search read in Chrome (no API key).",
+  "why": "Owner: add a page and mention similar videos on YouTube, top 10 with stats.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.24",
   "date": "2026-11-14",
   "emoji": "🧪",
