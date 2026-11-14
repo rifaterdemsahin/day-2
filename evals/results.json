@@ -1,5 +1,5 @@
 {
- "when": "2026-11-14 15:20",
+ "when": "2026-11-14 15:24",
  "mode": "offline",
  "passed": 21,
  "total": 21,
@@ -9,7 +9,7 @@
    "name": "builds without error and is idempotent",
    "ok": true,
    "detail": "second build changed files",
-   "s": 0.2
+   "s": 0.1
   },
   {
    "group": "pages",

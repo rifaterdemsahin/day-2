@@ -839,10 +839,15 @@ def sX():
 <div class="bar"><button id="xgo" class="primary">▶️ Compute</button><button id="xcopy">📋 Copy result</button></div>
 <pre id="xout">Pick three words and press ▶️ Compute.</pre></div>
 <h2>🧪 Test the idea (3 presets, computed live)</h2><div class="tablewrap"><table class="cmp" id="xtab"><tr><th></th><th>Equation</th><th>Expected</th><th>Top 3 (cosine)</th><th>Verdict</th></tr></table></div>
+<h2>🧭 Reach virtue from vanity and pride</h2>
+<div class="card hero"><p><b>Plain version:</b> vanity and virtue are far apart (they barely point the same way). Pride is already close to virtue. The gap between them is the <b>hollow, applause-hungry part</b> that vanity has and pride does not. So: <b>start at pride, take away what vanity adds, then add one good ingredient.</b> The sandbox tries every ingredient and keeps the ones that land on virtue.</p>
+<div id="xreach"></div></div>
+<div class="card"><b>🚶 The walk, step by step</b> <small>(pick an ingredient)</small> <select id="xing"></select><div id="xwalk"></div><div id="xbars"></div></div>
 <div class="card hero"><b>⚠️ What this does and does not prove</b><ul>
 <li>🛠️ These are <b>toy vectors I wrote by hand</b> on 5 dimensions ({E(", ".join(sb["dims"]))}). The arithmetic is real; the language is my judgment. A test that passes here shows the <i>mechanism</i>, not that a real model agrees.</li>
 <li>📏 Preset 1 is a near tie: the expected word (arrogance) comes 3rd, within 0.01 of the winner. That is how real analogies often look: right neighbourhood, not always rank 1.</li>
 <li>🪤 Untick the box: the answer becomes one of the input words. That is the known trap of the original demo.</li>
+<li>🎯 "Virtue" is also one of my five dimensions, so reaching it is partly built in. The honest check is the real-model script, which now includes <code>pride − vanity + honor → virtue</code>.</li>
 <li>🔬 Real test: run <code>python3 -I scripts/pride_vanity_real.py</code> (needs <code>pip install gensim</code> and downloads GloVe, about 130 MB). <b>Not run yet.</b></li></ul></div>
 <script>(function(){{var S={json.dumps(sb, ensure_ascii=False)};var W=S.words,names=Object.keys(W);
 function cos(a,b){{var s=0,x=0,y=0;for(var i=0;i<a.length;i++){{s+=a[i]*b[i];x+=a[i]*a[i];y+=b[i]*b[i];}}return s/Math.sqrt(x*y)}}
@@ -853,6 +858,19 @@ function run(){{var r=calc(A.value,B.value,C.value,document.getElementById("xex"
 document.getElementById("xgo").onclick=run;document.getElementById("xex").onchange=run;
 document.getElementById("xcopy").onclick=function(){{var t=document.getElementById("xout").textContent;try{{navigator.clipboard.writeText(t);this.textContent="✅ Copied"}}catch(e){{}}}};
 run();
+var ING=names.filter(function(w){{return ["pride","vanity","virtue"].indexOf(w)<0}}),rec=[];
+ING.forEach(function(c){{var v=W.pride.map(function(_,i){{return W.pride[i]-W.vanity[i]+W[c][i]}}),r=calc("pride","vanity",c,true);rec.push({{c:c,top:r[0][0],cv:cos(v,W.virtue)}})}});
+var hit=rec.filter(function(x){{return x.top==="virtue"}}).sort(function(a,b){{return b.cv-a.cv}});
+var rd=document.getElementById("xreach");
+rd.innerHTML="<p>cosine to virtue: <b>vanity "+cos(W.vanity,W.virtue).toFixed(2)+"</b> (unrelated) · <b>pride "+cos(W.pride,W.virtue).toFixed(2)+"</b> (close).</p>"+(hit.length?"<ol>"+hit.slice(0,4).map(function(x){{return "<li><b>pride − vanity + "+x.c+" ≈ virtue</b> <small>("+x.cv.toFixed(2)+")</small><br>Say it: take pride, drop what vanity adds, add "+x.c+".</li>"}}).join("")+"</ol>":"<p>❌ No single ingredient lands on virtue.</p>")+"<p><small>"+hit.length+" of "+ING.length+" ingredients make virtue the nearest word.</small></p>";
+var SEL=document.getElementById("xing");SEL.innerHTML=ING.map(function(c){{return "<option>"+c+"</option>"}}).join("");SEL.value=hit.length?hit[0].c:"honor";
+function bars(rows){{var out="<table class='cmp'><tr><th></th>"+S.dims.map(function(d){{return "<th>"+d+"</th>"}}).join("")+"</tr>";rows.forEach(function(r){{out+="<tr><td><b>"+r[0]+"</b></td>"+r[1].map(function(x){{var w=Math.min(100,Math.abs(x)*50);return "<td><div style='height:10px;width:"+w+"%;min-width:2px;background:"+(x<0?"#e5484d":"#3fb950")+"'></div><small>"+x.toFixed(1)+"</small></td>"}}).join("")+"</tr>"}});return out+"</table><small>green = positive, red = negative; the longer, the stronger</small>"}}
+function walk(){{var c=SEL.value,p=W.pride,v=W.vanity,s1=p.map(function(x,i){{return x-v[i]}}),s2=s1.map(function(x,i){{return x+W[c][i]}});
+function nr(vec,ex){{var r=names.filter(function(w){{return ex.indexOf(w)<0}}).map(function(w){{return [w,cos(vec,W[w])]}}).sort(function(a,b){{return b[1]-a[1]}});return r[0][0]+" "+r[0][1].toFixed(2)}}
+document.getElementById("xwalk").innerHTML="<ol><li>🧍 <b>Start at pride</b>: already "+cos(p,W.virtue).toFixed(2)+" close to virtue.</li><li>➖ <b>Take away vanity</b> (the hollow, applause part): the leftover points to <i>"+nr(s1,["pride","vanity"])+"</i>. Closeness to virtue: "+cos(s1,W.virtue).toFixed(2)+".</li><li>➕ <b>Add "+c+"</b>: nearest word is <i>"+nr(s2,["pride","vanity",c])+"</i>. Closeness to virtue: "+cos(s2,W.virtue).toFixed(2)+(nr(s2,["pride","vanity",c]).indexOf("virtue")===0?" ✅ <b>we reached virtue</b>":" ❌ not virtue")+".</li></ol>";
+document.getElementById("xbars").innerHTML=bars([["vanity",v],["pride",p],["pride − vanity + "+c,s2],["virtue",W.virtue]])}}
+SEL.onchange=walk;walk();
+
 var tb=document.getElementById("xtab"),ok=0;S.presets.forEach(function(p){{var r=calc(p.a,p.b,p.c,true),top=r[0][0],rank=r.map(function(x){{return x[0]}}).indexOf(p.expect)+1,pass=top===p.expect;if(pass)ok++;
 var tr=document.createElement("tr");tr.innerHTML="<td>"+(pass?"✅":"❌")+"</td><td>"+p.a+" − "+p.b+" + "+p.c+"<br><small>"+p.why+"</small></td><td>"+p.expect+"</td><td>"+r.slice(0,3).map(function(x){{return x[0]+" "+x[1].toFixed(2)}}).join("<br>")+"</td><td>"+(pass?"top 1":"expected is #"+rank)+"</td>";tb.appendChild(tr)}});
 var s=document.createElement("p");s.innerHTML="<b>"+ok+" / "+S.presets.length+"</b> presets put the expected word first.";tb.parentNode.appendChild(s)}})();</script>""" + fb("S2-X", "🪞 Sandbox: pride & vanity, what next?")

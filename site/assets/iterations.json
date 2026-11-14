@@ -1,5 +1,16 @@
 [
  {
+  "v": "v0.28",
+  "date": "2026-11-14",
+  "emoji": "🧭",
+  "codes": [
+   "S2-X"
+  ],
+  "change": "S2-X: \"Reach virtue\" section. Plain-language path: start at pride, take away what vanity adds (the hollow, applause-hungry part), add one good ingredient. The sandbox tries every ingredient: 4 of 10 land on virtue (honor 0.96, praise 0.95, confidence 0.92, humility 0.87). A step-by-step walk with an ingredient picker and a per-dimension bar table shows each move. Vanity alone is 0.04 from virtue, pride 0.86. Caveat added: virtue is also one of the toy dimensions; real-model script gets a virtue test (not run).",
+  "why": "Owner: use vanity and pride, find a way to reach virtue and make it easy to understand.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.27",
   "date": "2026-11-14",
   "emoji": "🪞",
