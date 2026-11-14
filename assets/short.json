@@ -391,7 +391,21 @@
   "note": "Vertical cover frame. Big text readable at thumbnail size, one glowing dot to hint at the hidden 9246. A draft drawn from the data: swap it for a Flow still if you prefer (prompt on S2-03).",
   "prompt": "Vertical 9:16 still image, YouTube Shorts cover. Dark deep-space background, deep blue and violet. Large bold white text at the top: 'KING − MAN' and below it '+ WOMAN = ?' with a soft cyan glow. In the lower half a cluster of warm orange dots on the left and a cluster of shining gold dots on the right connected by a glowing cyan arrow curve pointing at one bright gold dot. A small badge 'DAY 2' in a corner. Clean, high contrast, minimal, no people, no logos."
  },
-"titles": [
+"title_selected": "The accidental discovery that let computers understand human meaning 👑 #shorts",
+ "curiosity_gap": {
+  "title": "Curiosity gap: how the title options were engineered",
+  "intro": "The technique: strip out the explanation (the what) and replace it with tension (the gap). The viewer must click to close the gap.",
+  "formula": "Curiosity Gap = a known topic + a missing piece (a secret, a surprise or an unfinished claim) + a promise that the answer is in the video",
+  "subs": [
+   {"emoji": "🕵️", "name": "Secret", "formula": "The hidden [thing] behind [familiar topic]"},
+   {"emoji": "😲", "name": "Accident", "formula": "The accidental [discovery] that [big result]"},
+   {"emoji": "❓", "name": "Open question", "formula": "Why does [familiar thing] work? (answer withheld)"},
+   {"emoji": "🔢", "name": "Specific detail", "formula": "One concrete number or object, without saying what it does"},
+   {"emoji": "🚫", "name": "Common mistake", "formula": "What everyone gets wrong about [topic]"}
+  ],
+  "why_rejected": "Rejected titles were too complex, uninteresting, old/tech, or did not reveal a secret: they explained the what instead of leaving a gap."
+ },
+ "titles": [
    "How AI Solves King − Man + Woman = Queen 🤯 #shorts",
    "AI Turns Words Into Math 👑 #shorts",
    "Why This Word Math Works 🧠 #shorts",

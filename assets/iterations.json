@@ -1,5 +1,16 @@
 [
   {
+   "v": "v0.52",
+   "date": "2026-11-14",
+   "emoji": "🕳️",
+   "codes": [
+    "S2-00"
+   ],
+   "change": "🕳️ S2-00 Brief, hook and loop: added the selected title (✅ card with copy and feedback buttons) and a curiosity-gap technique section at the bottom (formula + 5 sub-formulas). Existing title options and buttons unchanged. Files: assets/short.json, pages/s2_00.py.",
+   "why": "Owner feedback: add the selected title 'The accidental discovery that let computers understand human meaning 👑 #shorts' to the S2-00 document, and document the curiosity-gap technique (strip the what, replace with tension) with the Curiosity Gap Formula and 5 sub-formulas at the bottom.",
+   "status": "🚀 deployed"
+  },
+  {
    "v": "v0.51",
    "date": "2026-11-14",
    "emoji": "🏷️",
