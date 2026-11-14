@@ -1,9 +1,24 @@
 [
  {
+  "v": "v0.43",
+  "date": "2026-11-14",
+  "emoji": "✨",
+  "codes": [
+   "all pages",
+   "S2-SP"
+  ],
+  "change": "Prompt corrector. Before the \"Prompt to send\" preview, the runner rewrites the owner's notes as a product manager (Goal, numbered changes, acceptance criteria) with DeepSeek deepseek-flash, key read from Azure Key Vault (deepseek-api-key) into memory only. The preview says \"Prompt enhanced with DeepSeek (deepseek-flash) as a product manager\", shows the original notes in a fold-out, keeps 🎯 references verbatim, has a checkbox to switch it off, and the RESULT block repeats the notice. Standard library only (urllib), nothing to install; config in short.json › sprite.enhancer. Finding: both vault DeepSeek keys (deepseek-api-key and its backup) are valid for listing models but return HTTP 402 Insufficient Balance for chat, so today the preview shows a warning and uses the original notes. The happy path is covered by an eval against a local mock server, not by the live API. Also merged the kilo run v0.42 (grouped menu) that landed in parallel.",
+  "why": "Owner: before showing the prompt, run it over a prompt corrector, write as a product manager, use DeepSeek flash with the key in Azure Key Vault, say so in the UI, add libraries and code, commit push deploy.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.42",
   "date": "2026-11-14",
   "emoji": "🧩",
-  "codes": ["S2-W", "all pages"],
+  "codes": [
+   "S2-W",
+   "all pages"
+  ],
   "change": "Split the header menu into the three pipeline phases — 🟣 Preprod (hub, workbench, brief, script, storyboard, Flow prompts, Flow vs Higgsfield, generate clips), 🟢 Prod (voice-over, assemble and loop check), 🔵 Postprod (captions, title, description, publish and analytics), each with its own section heading; 📖 Site keeps iterations, feedback, master spec and README. The 🙈 Hidden: n switch stays in the top bar of every page and the S2-W Workbench still brings approved pages back into the menu; [S2-W.setup] is ✅ approved.",
   "why": "📄 🧰 S2-W Workbench\n\n💬 [page:s2-w.html] 📄 🧰 S2-W Workbench\nadd functionality to show hidden pages.\n🎯 [s2-w.html › header] <header> \"▾ Menu 📱 S2 · From Numbers to Meaning: High-Dimensional Emb\"\n→ seperate into preprod prod and postprod\n\n💬 [S2-W.setup] 🧰 Setup: what was unclear? — ✅ approve",
   "status": "🚀 deployed"
