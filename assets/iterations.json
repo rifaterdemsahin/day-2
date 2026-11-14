@@ -1,5 +1,16 @@
 [
  {
+  "v": "v0.45",
+  "date": "2026-11-14",
+  "emoji": "🏷️",
+  "codes": [
+   "all pages"
+  ],
+  "change": "Notes panel: the \"🚀 Run: this page\" button is renamed \"🚀 Sprite Implement\" (same behaviour: prompt preview, then Send).",
+  "why": "Owner: rename the Run this page button to Sprite Implement.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.44",
   "date": "2026-11-14",
   "emoji": "🔁",

@@ -1,5 +1,5 @@
 {
- "when": "2026-11-14 18:52",
+ "when": "2026-11-14 18:54",
  "mode": "offline",
  "passed": 38,
  "total": 38,
@@ -121,7 +121,7 @@
    "name": "a patch is not applied if the repo changed (dirty or new commit) while the agent worked",
    "ok": true,
    "detail": "clean=True dirty=False moved=False",
-   "s": 0.1
+   "s": 0.2
   },
   {
    "group": "build",
