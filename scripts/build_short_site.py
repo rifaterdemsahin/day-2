@@ -36,8 +36,10 @@ def nav(active):
 
 FAVICONS = {
     "index.html": ("🏠", "hub"),
+    "s2-w.html": ("🧰", "s2-w"),
     "s2-r.html": ("🔬", "s2-r"),
     "development.html": ("💻", "development"),
+    "analytics.html": ("📊", "analytics"),
     "s2-00.html": ("🧭", "s2-00"),
     "s2-01.html": ("📝", "s2-01"),
     "s2-02.html": ("🗺️", "s2-02"),
@@ -274,6 +276,419 @@ def sR():
 <div class="card"><b>🎯 The takeaway for the viewer</b><p>Meaning in AI is geometry: close points mean similar things, and directions mean relationships. Once you see that, search, chatbots and recommendations stop being magic.</p></div>
 <h2>🔗 Sources</h2><ul>{src}</ul>{fb('S2-R', '🔬 Research overall: what to add, cut or fix?')}"""
     page("s2-r.html", "S2-R Research", body)
+
+
+# ---------- development page: runnable code, interactive vector calculator, and beat-by-beat script mapping
+def sDev():
+    st = step_by_code("S2-DEV")
+    py_path = ROOT / "scripts/development_embeddings_demo.py"
+    py_code = py_path.read_text(encoding="utf-8") if py_path.exists() else ""
+
+    beats = [
+        ("Clip c1 · 0–8.8 s",
+         "Tokens are just numbers. This one, nine-two-four-six, is a word. But to the AI, it means nothing yet.",
+         "🔢 Token ID & Lookup Table",
+         """# 1. The vocabulary dictionary maps discrete words to arbitrary integer IDs
+VOCABULARY = {
+    "king": 9246, "queen": 9247, "man": 512, "woman": 513,
+    "crown": 9248, "apple": 2048, "pear": 2049, "grape": 2050
+}
+token_id = VOCABULARY["king"]  # 9246""",
+         "A computer cannot perform math directly on letters. Text is split by a tokenizer into tokens, each assigned an integer index from a fixed vocabulary. The integer 9246 is just an index in a dictionary (like a page number). By itself, 9246 carries no meaning, no semantic relationship to other words, and no understanding."),
+
+        ("Clip c2 · 8.8–14.62 s",
+         "So it gets unfolded. One number becomes fifteen hundred and thirty-six coordinates.",
+         "🌌 Unfolding into High-Dimensional Vectors",
+         """# 2. Embedding matrix: table of size (Vocabulary Size x Embedding Dimension)
+# In production models (e.g. OpenAI text-embedding-3-small), D = 1,536 coordinates
+# In our toy model, we inspect 4 intuitive semantic dimensions:
+# [Royalty, Femininity, Fruit/Edible, Power/Status]
+EMBEDDINGS = {
+    "king":  [ 0.90, -0.75,  0.02,  0.95],
+    "queen": [ 0.92,  0.80,  0.01,  0.94],
+    "apple": [-0.85,  0.00,  0.95, -0.60]
+}
+vector_king = EMBEDDINGS["king"]  # 1 integer -> list of 4 (or 1,536) coordinates""",
+         "The model maintains a lookup table (embedding matrix) where every row corresponds to a token ID. Looking up row 9246 yields a list of floating-point numbers. That single integer 'unfolds' into a point in high-dimensional hyperspace. OpenAI's ada-002 and text-embedding-3-small use 1,536 dimensions; larger models use 3,072 or 4,096."),
+
+        ("Clip c3 · 14.62–23.92 s",
+         "And meaning becomes distance. Apples, pears, grapes gather here. Kings, queens, crowns, over there.",
+         "🧲 Meaning as Distance (Cosine Similarity)",
+         """# 3. Closeness in vector space is calculated using Cosine Similarity:
+# cosine_similarity(u, v) = (u · v) / (||u|| * ||v||)
+def cosine_similarity(v1, v2):
+    dot = sum(a * b for a, b in zip(v1, v2))
+    norm1 = math.sqrt(sum(a * a for a in v1))
+    norm2 = math.sqrt(sum(b * b for b in v2))
+    return dot / (norm1 * norm2)
+
+sim_fruit   = cosine_similarity(EMBEDDINGS["apple"], EMBEDDINGS["pear"])   # +1.0000 (Close cluster)
+sim_royalty = cosine_similarity(EMBEDDINGS["king"], EMBEDDINGS["queen"])   # +0.4828 (Close cluster)
+sim_mixed   = cosine_similarity(EMBEDDINGS["apple"], EMBEDDINGS["king"])   # -0.6192 (Far apart)""",
+         "During training, neural networks learn word vectors such that words appearing in similar sentence contexts end up physically close to each other. Closeness is computed using standard geometry (dot product divided by magnitudes). Fruit words cluster in one area; royal words cluster in another. That geometry is why semantic search and RAG work without keyword matching."),
+
+        ("Clip c4 · 23.92–29.08 s",
+         "Now watch. Take king. Subtract man. Add woman.",
+         "➕ Vector Arithmetic & Conceptual Directions",
+         """# 4. Semantic direction vectors:
+# (woman - man) isolates the grammatical/semantic gender direction:
+gender_offset = [w - m for w, m in zip(EMBEDDINGS["woman"], EMBEDDINGS["man"])]
+# gender_offset = [+0.01, +1.58, 0.00, 0.00] -> purely points in female direction!
+
+# king - man isolates royalty/monarch concept; + woman adds female aspect:
+target_vector = [k - m + w for k, m, w in zip(EMBEDDINGS["king"], EMBEDDINGS["man"], EMBEDDINGS["woman"])]
+# target_vector = [0.91, 0.83, 0.02, 0.95]""",
+         "Because directions in embedding space correspond to semantic concepts, vector arithmetic works directly on meaning! Vector subtraction isolates relational features (e.g., 'woman' minus 'man' creates a vector pointing along the feminine concept). Adding that offset vector to 'king' shifts the position while preserving royalty and power."),
+
+        ("Clip c5 · 29.08–34.98 s",
+         "And you land exactly on queen. No one told it. It's just geometry.",
+         "👑 Landing on Queen via Nearest Neighbor Search",
+         """# 5. Query the dictionary for the nearest coordinate to target_vector:
+# Exclude the query words ('man', 'woman'):
+# Nearest neighbors to [0.91, 0.83, 0.02, 0.95]:
+#   Rank 1: 'queen' (cosine similarity: 0.9998, Euclidean distance: 0.0346) -> 👑 LANDED ON QUEEN!
+#   Rank 2: 'crown' (cosine similarity: 0.8457, Euclidean distance: 0.8353)
+#   Rank 3: 'king'  (cosine similarity: 0.4685, Euclidean distance: 1.5800)
+#   Rank 4: 'grape' (cosine similarity: -0.5953, Euclidean distance: 2.5797)""",
+         "When we scan the vocabulary to see which known vector is closest to our target coordinate, the #1 result is 'queen' with 0.9998 similarity! Nobody programmed a rule stating 'queen is female monarch'. The relationship emerged entirely as a geometric property of training on language."),
+
+        ("Clip c6 · 34.98–37.66 s",
+         "But how do these vectors talk to each other?",
+         "🕸️ Preview of Attention (From Static to Contextual)",
+         """# 6. Static vs Dynamic Context (Day 3 Teaser)
+# An embedding table provides a static starting vector for each word.
+# But 'bank' in 'river bank' != 'bank' in 'bank account'.
+# Transformers solve this using Attention:
+#   Attention(Q, K, V) = softmax( (Q * K^T) / sqrt(d_k) ) * V
+# In Day 3, vectors dynamically exchange information across the sentence!""",
+         "Static embeddings give a word like 'bank' a single fixed point in space. But human words are polysemous: their meaning depends on the sentence. Attention is the mechanism that lets word vectors interact, pulling context from adjacent words and shifting dynamically. This question loops the video and sets up Day 3.")
+    ]
+
+    beat_cards = ""
+    for clip, say, title, code, expl in beats:
+        beat_cards += (f'<div class="card research"><div class="meta">🎬 {clip} · 🗣️ “{E(say)}”</div>'
+                       f'<h2 style="margin-top:6px">{title}</h2>'
+                       f'<pre><code>{E(code)}</code></pre>'
+                       f'<p>{E(expl)}</p>'
+                       f'{copybtn(code, "📋 Copy code snippet")}'
+                       f'{fb("S2-DEV." + clip[:2], "💻 " + clip[:2] + " code explanation")}</div>')
+
+    interactive_widget = """
+<div class="card hero">
+  <h2 style="margin-top:0">⚡ Interactive Embeddings Playground</h2>
+  <p class="intro">Test the exact mathematical principles from the short directly in your browser. Click words, calculate similarities, and run live vector arithmetic.</p>
+  
+  <div style="margin: 16px 0; padding: 12px; background: var(--bg); border-radius: 10px; border: 1px solid var(--line);">
+    <h3 style="margin-top:0">1. 🔢 Token Lookup & Dimension Unfolding (Clips c1 & c2)</h3>
+    <p>Click any token to inspect its integer ID and unfold it into its 4D coordinates <code>[Royalty, Femininity, Fruit, Power]</code>:</p>
+    <div id="token-buttons" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;"></div>
+    <div id="token-display" style="padding:10px; background:var(--panel); border:1px solid var(--line); border-radius:8px; font-family:ui-monospace,Menlo,monospace; font-size:14px;"></div>
+  </div>
+
+  <div style="margin: 16px 0; padding: 12px; background: var(--bg); border-radius: 10px; border: 1px solid var(--line);">
+    <h3 style="margin-top:0">2. 🧲 Distance & Semantic Clusters (Clip c3)</h3>
+    <p>Compare cosine similarity between any two words. Notice how fruits cluster together, royalty cluster together, and cross-cluster words are far apart:</p>
+    <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:12px;">
+      <select id="sim-w1" style="background:var(--panel); color:var(--fg); border:1px solid var(--line); border-radius:6px; padding:6px 10px; font-size:14px;"></select>
+      <span>↔️</span>
+      <select id="sim-w2" style="background:var(--panel); color:var(--fg); border:1px solid var(--line); border-radius:6px; padding:6px 10px; font-size:14px;"></select>
+      <button id="btn-compare" class="primary" style="margin:0;">Calculate Distance</button>
+      <button id="preset-fruit" style="margin:0;">🍎 apple ↔ 🍐 pear</button>
+      <button id="preset-royal" style="margin:0;">👑 king ↔ 👸 queen</button>
+      <button id="preset-mixed" style="margin:0;">🍎 apple ↔ 👑 king</button>
+    </div>
+    <div id="sim-display" style="padding:10px; background:var(--panel); border:1px solid var(--line); border-radius:8px; font-family:ui-monospace,Menlo,monospace; font-size:14px;"></div>
+  </div>
+
+  <div style="margin: 16px 0; padding: 12px; background: var(--bg); border-radius: 10px; border: 1px solid var(--line);">
+    <h3 style="margin-top:0">3. 👑 Live Vector Arithmetic: king − man + woman (Clips c4 & c5)</h3>
+    <p>Perform live linear algebra on word vectors: <code>v_target = v_king - v_man + v_woman</code>, then query the dictionary for the nearest neighbor:</p>
+    <button id="btn-arith" class="primary" style="font-size:15px; padding:8px 16px;">⚡ Compute king − man + woman</button>
+    <div id="arith-display" style="margin-top:12px; padding:10px; background:var(--panel); border:1px solid var(--line); border-radius:8px; font-family:ui-monospace,Menlo,monospace; font-size:14px; display:none;"></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const VOCAB = {
+    "king":  { id: 9246, vec: [ 0.90, -0.75,  0.02,  0.95], icon: "👑" },
+    "queen": { id: 9247, vec: [ 0.92,  0.80,  0.01,  0.94], icon: "👸" },
+    "man":   { id: 512,  vec: [ 0.05, -0.80,  0.00,  0.20], icon: "👨" },
+    "woman": { id: 513,  vec: [ 0.06,  0.78,  0.00,  0.20], icon: "👩" },
+    "crown": { id: 9248, vec: [ 0.85,  0.00,  0.00,  0.88], icon: "💎" },
+    "apple": { id: 2048, vec: [-0.85,  0.00,  0.95, -0.60], icon: "🍎" },
+    "pear":  { id: 2049, vec: [-0.82,  0.00,  0.93, -0.58], icon: "🍐" },
+    "grape": { id: 2050, vec: [-0.80,  0.00,  0.91, -0.55], icon: "🍇" }
+  };
+  const DIMS = ["Royalty", "Femininity", "Fruit", "Power"];
+
+  function dot(a, b) { return a.reduce((sum, val, i) => sum + val * b[i], 0); }
+  function norm(a) { return Math.sqrt(a.reduce((sum, val) => sum + val * val, 0)); }
+  function cosSim(a, b) { const na = norm(a), nb = norm(b); return (na === 0 || nb === 0) ? 0 : dot(a, b) / (na * nb); }
+  function euclid(a, b) { return Math.sqrt(a.reduce((sum, val, i) => sum + Math.pow(val - b[i], 2), 0)); }
+
+  // 1. Setup token lookup buttons
+  const btnWrap = document.getElementById("token-buttons");
+  const tokenDisp = document.getElementById("token-display");
+  const sel1 = document.getElementById("sim-w1");
+  const sel2 = document.getElementById("sim-w2");
+
+  Object.keys(VOCAB).forEach(word => {
+    const item = VOCAB[word];
+    const b = document.createElement("button");
+    b.innerHTML = `${item.icon} ${word} <small>(${item.id})</small>`;
+    b.onclick = () => renderToken(word);
+    btnWrap.appendChild(b);
+
+    const o1 = document.createElement("option"); o1.value = word; o1.text = `${item.icon} ${word}`; sel1.appendChild(o1);
+    const o2 = document.createElement("option"); o2.value = word; o2.text = `${item.icon} ${word}`; sel2.appendChild(o2);
+  });
+  sel1.value = "apple";
+  sel2.value = "pear";
+
+  function renderToken(word) {
+    const it = VOCAB[word];
+    let html = `<div style="margin-bottom:6px;"><b>Token:</b> '${word}' &nbsp;|&nbsp; <b>Token ID:</b> <span class="code">${it.id}</span> &nbsp;|&nbsp; <b>Coordinates:</b> [${it.vec.map(v => v.toFixed(2)).join(", ")}]</div>`;
+    html += '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:6px; margin-top:8px;">';
+    DIMS.forEach((d, i) => {
+      const v = it.vec[i];
+      const pct = Math.round(Math.abs(v) * 100);
+      const color = v > 0 ? "var(--acc)" : "var(--chg)";
+      html += `<div style="border:1px solid var(--line); border-radius:6px; padding:6px; background:var(--bg);">
+        <small style="color:var(--mut);">${d}</small><br><b>${v > 0 ? "+" : ""}${v.toFixed(2)}</b>
+        <div style="height:6px; background:var(--line); border-radius:3px; margin-top:4px; overflow:hidden;">
+          <div style="height:100%; width:${pct}%; background:${color};"></div>
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+    tokenDisp.innerHTML = html;
+  }
+  renderToken("king");
+
+  // 2. Similarity
+  function renderSim(w1, w2) {
+    sel1.value = w1; sel2.value = w2;
+    const v1 = VOCAB[w1].vec, v2 = VOCAB[w2].vec;
+    const sim = cosSim(v1, v2);
+    const dist = euclid(v1, v2);
+    let tag = sim > 0.8 ? "🟢 Very Close Cluster" : (sim > 0.3 ? "🟡 Moderate Semantic Link" : "🔴 Far Apart (Different Meanings)");
+    let color = sim > 0.8 ? "var(--ok)" : (sim > 0.3 ? "var(--gold)" : "var(--cut)");
+    document.getElementById("sim-display").innerHTML = `
+      <div><b>Comparing:</b> ${VOCAB[w1].icon} <b>${w1}</b> &nbsp;↔️&nbsp; ${VOCAB[w2].icon} <b>${w2}</b></div>
+      <div style="margin-top:6px; font-size:16px;"><b>Cosine Similarity:</b> <span style="color:${color}; font-weight:700;">${sim.toFixed(4)}</span> &nbsp;|&nbsp; <b>Euclidean Distance:</b> ${dist.toFixed(4)}</div>
+      <div style="margin-top:4px; color:${color}; font-weight:600;">${tag}</div>
+      <small style="color:var(--mut);">Formula: cos(θ) = (v1 · v2) / (||v1|| * ||v2||). Values near 1.0 indicate identical semantic direction.</small>
+    `;
+  }
+  document.getElementById("btn-compare").onclick = () => renderSim(sel1.value, sel2.value);
+  document.getElementById("preset-fruit").onclick = () => renderSim("apple", "pear");
+  document.getElementById("preset-royal").onclick = () => renderSim("king", "queen");
+  document.getElementById("preset-mixed").onclick = () => renderSim("apple", "king");
+  renderSim("apple", "pear");
+
+  // 3. Vector arithmetic
+  document.getElementById("btn-arith").onclick = function() {
+    const vk = VOCAB["king"].vec;
+    const vm = VOCAB["man"].vec;
+    const vw = VOCAB["woman"].vec;
+    const target = vk.map((k, i) => k - vm[i] + vw[i]);
+
+    // calculate all similarities
+    const scored = Object.keys(VOCAB).map(w => ({
+      word: w,
+      sim: cosSim(target, VOCAB[w].vec),
+      dist: euclid(target, VOCAB[w].vec)
+    }));
+    scored.sort((a, b) => b.sim - a.sim);
+
+    let html = `<div><b>Step 1: King vector</b> &nbsp; = [${vk.map(v => v.toFixed(2)).join(", ")}]</div>`;
+    html += `<div><b>Step 2: − Man vector</b>  = [${vm.map(v => (-v).toFixed(2)).join(", ")}]</div>`;
+    html += `<div><b>Step 3: + Woman vector</b>= [${vw.map(v => (v > 0 ? "+" : "") + v.toFixed(2)).join(", ")}]</div>`;
+    html += `<div style="border-top:1px dashed var(--line); margin:6px 0; padding-top:6px; color:var(--acc);"><b>= Target vector</b> &nbsp; &nbsp;= [${target.map(v => v.toFixed(2)).join(", ")}]</div>`;
+    html += '<h4 style="margin:12px 0 6px 0;">Ranked Nearest Neighbors in Vocabulary:</h4>';
+    html += '<table style="margin-top:6px;"><tr><th>Rank</th><th>Word</th><th>Cosine Sim</th><th>Distance</th><th>Outcome</th></tr>';
+    scored.forEach((it, idx) => {
+      const isQueen = it.word === "queen";
+      const highlight = isQueen ? "style='background:rgba(255,207,90,0.15); font-weight:700;'" : "";
+      html += `<tr ${highlight}><td>#${idx + 1}</td><td>${VOCAB[it.word].icon} ${it.word}</td><td>${it.word === "man" || it.word === "woman" ? it.sim.toFixed(4) + " <small>(input word)</small>" : it.sim.toFixed(4)}</td><td>${it.dist.toFixed(4)}</td><td>${isQueen ? "👑 <b>LANDED ON QUEEN!</b>" : (idx === 1 ? "💎 Close Royal Match" : "")}</td></tr>`;
+    });
+    html += '</table>';
+    html += '<div style="margin-top:10px; color:var(--gold); font-weight:600;">🎯 Result: The nearest non-input vector in the entire vocabulary is QUEEN! Vector math navigated the semantic space without any hardcoded rules.</div>';
+
+    const disp = document.getElementById("arith-display");
+    disp.innerHTML = html;
+    disp.style.display = "block";
+  };
+})();
+</script>
+"""
+
+    why_dev = [
+        ("🔢 Integers have no meaning", "Assigning 9246 to 'king' is like giving a book an ISBN number. The number tells you which item it is, but zero information about its contents. This is why language models cannot work directly on token IDs."),
+        ("📐 High dimensions create expressive space", "In 1D, words would collide on a single line. In 1,536 dimensions, there is ample geometric room for subtle nuances: royalty, tense, tone, gender, edible items, and scientific terms all have orthogonal axes."),
+        ("🧭 Relationships are directions", "Because neural networks learn from context windows, word pairs sharing grammatical or semantic roles develop parallel displacement vectors: (king → queen) is parallel to (man → woman) and (actor → actress)."),
+        ("⚡ Geometry replaces hardcoded rules", "You do not need to code thousands of dictionary rules for synonyms, antonyms, or analogies. Vector dot products naturally solve analogies and search queries through matrix multiplication.")
+    ]
+    why_html = "".join(f'<li><b>{title}</b><br>{desc}</li>' for title, desc in why_dev)
+
+    body = step_head(st) + f"""<div class="card hero">
+<b>🧭 The Code in One Paragraph</b>
+<p>A language model does arithmetic, not reading. To run the video script in software, we need only four core functions: (1) mapping text to token IDs (<code>king = 9246</code>), (2) looking up that ID in an embedding table to unfold it into coordinates, (3) computing cosine distance between coordinates so related meanings sit close together, and (4) performing vector addition and subtraction (<code>v_king - v_man + v_woman ≈ v_queen</code>). Anyone who understands this code understands the exact mechanics of the short.</p>
+{copybtn("A language model does arithmetic, not reading. Discrete words are mapped to token IDs, unfolded into high-dimensional coordinates, and compared with cosine distance. Vector arithmetic (king - man + woman = queen) works because directions in learned vector space encode semantic concepts.", "📋 Copy summary")}
+</div>
+
+{interactive_widget}
+
+<h2>🎬 The Script, Beat by Beat (Code Implementation)</h2>
+<p class="intro">Each card connects one spoken line from the video script to the exact lines of code that implement it, explaining why the short's script was written this way.</p>
+{beat_cards}
+
+<h2>🌍 Why Code & Geometry Matter for AI Developers</h2>
+<ol class="why">{why_html}</ol>
+
+<div class="card hero">
+<b>💻 Standalone Python Implementation</b>
+<p>A clean, zero-dependency Python script implementing the entire pipeline. Run it locally in your terminal:</p>
+<code>python3 scripts/development_embeddings_demo.py</code>
+<br><br>
+{copybtn(py_code, "📋 Copy Python script (scripts/development_embeddings_demo.py)")}
+{copybtn("python3 scripts/development_embeddings_demo.py", "📋 Copy command")}
+<pre><code>{E(py_code)}</code></pre>
+</div>
+
+{fb('S2-DEV', '💻 Development overall: what to add, clarify, or fix?')}"""
+
+    page("development.html", "S2-DEV Development", body)
+
+
+# ---------- analytics page: why Day 1 drives Day 2 (247.1% view rate anomaly)
+def sAnalytics():
+    st = step_by_code("S2-A")
+
+    table_rows = [
+        ("How LLMs Actually Read: Tokenization Explained (Day 1)", "0:47", "247.1%", "1:56", "134", "1.9 h", "2", True),
+        ("Elon Says Work Is Ending. The Data Says Otherwise.", "9:23", "23.6%", "2:13", "348", "5.1 h", "2", False),
+        ("The New Professional Standard: Navigating the AI...", "15:37", "12.4%", "1:56", "236", "7.6 h", "6", False),
+        ("Become a Delivery Pilot: Why AI Is Building AI", "25:49", "11.3%", "2:54", "115", "3.0 h", "1", False),
+        ("How to Build an AI to Automate LinkedIn Job Hunt", "15:28", "10.1%", "1:34", "264", "6.9 h", "4", False),
+        ("How to Actually Learn AI: The Visual Construction...", "16:59", "8.1%", "1:22", "111", "2.4 h", "1", False),
+        ("AI No-Code: Build Your Own AI Solutions", "24:54", "7.6%", "1:53", "447", "14.1 h", "5", False),
+        ("The Agentic Era: How to Build a Digital Workforce", "19:51", "7.4%", "1:28", "419", "10.2 h", "6", False),
+        ("RAISE Your AI SKILLS: Build a RAG Application", "20:56", "7.4%", "1:32", "357", "9.2 h", "2", False),
+    ]
+
+    t_html = ""
+    for title, dur, pct, vdur, views, wtime, subs, is_day1 in table_rows:
+        hl = ' style="background:rgba(255,207,90,0.15); font-weight:700; border-left:4px solid var(--gold);"' if is_day1 else ''
+        badge = ' <span style="background:var(--gold); color:#001; border-radius:4px; padding:1px 6px; font-size:11px; margin-left:6px;">⭐ TARGET (DAY 1)</span>' if is_day1 else ''
+        t_html += f"""<tr{hl}>
+            <td><b>{E(title)}</b>{badge}</td>
+            <td><code>{dur}</code></td>
+            <td style="color:{'var(--gold)' if is_day1 else 'inherit'}; font-size:{'16px' if is_day1 else '14px'};"><b>{pct}</b></td>
+            <td><code>{vdur}</code></td>
+            <td>{views}</td>
+            <td>{wtime}</td>
+            <td>+{subs}</td>
+        </tr>"""
+
+    reasons = [
+        ("🚀 1. The Algorithmic Loop Threshold (>100% Retention = Viral Distribution)",
+         "In short-form recommendation algorithms (YouTube Shorts, TikTok, Reels), retention above 100% is the ultimate gold standard. A view rate of <b>247.1%</b> signals to the algorithm that viewers are not swiping away — they are looping the content. The algorithm rewards content that keeps users on the platform 2.5 times longer than the video's actual duration."),
+
+        ("🔄 2. Real Viewers Watch 2.5 Times Back-to-Back (1:56 on a 47 s Clip)",
+         "On a 47-second short, an average duration of <b>1 minute 56 seconds</b> proves that viewers did not just watch once: they let it play through <b>2.47 times</b>. This proves the concept of <i>seamless loop design</i> and <i>high-density visual pacing</i> where every second delivers essential substance."),
+
+        ("🧱 3. The Natural Conceptual Bridge to Day 2",
+         "Day 1 was <i>How LLMs Actually Read: Tokenization Explained</i>. It taught viewers that words become integer numbers ('Tokens are just numbers. 9246 is a word'). This creates the immediate, burning question: <b>If words are just numbers, how does an AI know king − man + woman = queen?</b> Day 2 is the natural, irresistible sequel to Day 1's winning narrative."),
+
+        ("⚖️ 4. 47-Second Micro-Education Crushes 25-Minute Overload",
+         "The data clearly exposes viewer fatigue on long-form tutorials: 20–25 minute deep dives experience <b>7.4% to 7.6% average view duration</b> (~1.5 minutes viewed before abandoning). In contrast, a 47-second short captured <b>1.9 minutes of undivided attention</b>! The audience prefers dense, bite-sized, visual clarity over 25 minutes of talking head screen shares."),
+
+        ("🎯 5. The Exact Retention Blueprint for Day 2 (S2)",
+         "Day 2 is engineered directly around the Day 1 analytics: <ul><li>⏱️ <b>Hard 45 s runtime limit:</b> Never exceed 45 seconds.</li><li>🔄 <b>Audio & visual loop:</b> Last line leads into the first ('…how do these vectors talk to each other? Tokens are just numbers…').</li><li>🥚 <b>Rewatch bait:</b> Token 9246 hidden inside the Queen vector in Scene 4, rewarding viewers who loop.</li><li>🎞️ <b>Pacing:</b> A visual motion change every 2–3 seconds to reset attention.</li></ul>")
+    ]
+    r_html = "".join(f"<li><b>{t}</b><br>{d}</li>" for t, d in reasons)
+
+    summary_txt = "Why I focus on this video: Day 1 analytics show 247.1% average percentage viewed and 1:56 average view duration on a 47-second video. Micro-runtime educational shorts outperform 25-minute long tutorials by 24x on retention. Day 2 is the direct sequel to this winning formula."
+
+    body = step_head(st) + f"""<div class="card hero">
+<b>🎯 Why I Focus on This Video in One Paragraph</b>
+<p>YouTube's algorithm prioritizes one metric above all others: <b>Average Percentage Viewed</b>. While the channel's 15–25 minute tutorials average <b>7.4%–11.3%</b> retention, our 47-second Day 1 short (<i>How LLMs Actually Read: Tokenization Explained</i>) achieved an unprecedented <b>247.1% average percentage viewed</b> with an average view duration of <b>1:56</b> (2.47 loops per viewer). This proves that fast-paced, visually dense, seamlessly looping AI shorts are the channel's single highest-leverage format. Day 2 exists to capitalize on this exact audience appetite.</p>
+{copybtn(summary_txt, "📋 Copy analytics summary")}
+</div>
+
+<h2>📊 The Evidence: YouTube Studio Analytics</h2>
+<div class="card">
+  <div style="text-align:center;">
+    <img src="assets/day1-youtube-analytics.jpeg" alt="YouTube Analytics for Rifat Erdem Sahin channel showing 247.1% retention on Day 1 short" style="width:100%; max-width:820px; border-radius:12px; border:1px solid var(--line); display:block; margin:0 auto; box-shadow:0 8px 30px rgba(0,0,0,0.5);">
+    <p class="intro" style="margin-top:10px;">📸 <b>Figure 1:</b> Advanced Mode YouTube Analytics (Last 365 days). The bright green arrow points directly to Day 1: <b>247.1%</b> retention, <b>1:56</b> average view duration on a 47-second video.</p>
+  </div>
+</div>
+
+<h2>📈 Key Metrics at a Glance</h2>
+<div class="grid">
+  <div class="card" style="border-color:var(--gold); text-align:center;">
+    <small style="color:var(--mut);">Average Percentage Viewed</small>
+    <div style="font-size:36px; font-weight:800; color:var(--gold); margin:6px 0;">247.1%</div>
+    <small><b>24.5×</b> higher than the channel average (10.1%)</small>
+  </div>
+  <div class="card" style="border-color:var(--acc); text-align:center;">
+    <small style="color:var(--mut);">Average View Duration</small>
+    <div style="font-size:36px; font-weight:800; color:var(--acc); margin:6px 0;">1:56</div>
+    <small>On a <b>0:47</b> video = <b>2.47 full loops</b> per viewer</small>
+  </div>
+  <div class="card" style="text-align:center;">
+    <small style="color:var(--mut);">Video Runtime</small>
+    <div style="font-size:36px; font-weight:800; color:var(--fg); margin:6px 0;">0:47</div>
+    <small>Micro-runtime, maximum information density</small>
+  </div>
+  <div class="card" style="text-align:center;">
+    <small style="color:var(--mut);">Algorithmic Status</small>
+    <div style="font-size:36px; font-weight:800; color:var(--ok); margin:6px 0;">VIRAL FIT</div>
+    <small>>100% threshold achieved organically</small>
+  </div>
+</div>
+
+<h2>📋 Channel Content Comparison (From Studio Screenshot)</h2>
+<p class="intro">Comparing Day 1 against long-form and medium-form videos across the channel:</p>
+<div class="tablewrap">
+<table class="cmp">
+  <thead>
+    <tr>
+      <th>Video Title</th>
+      <th>Duration</th>
+      <th>Avg % Viewed</th>
+      <th>Avg View Duration</th>
+      <th>Views</th>
+      <th>Watch Time</th>
+      <th>Subs</th>
+    </tr>
+  </thead>
+  <tbody>
+    {t_html}
+  </tbody>
+</table>
+</div>
+<p class="intro">💡 <b>The Contrast:</b> A 25-minute video gets ~1.5 to 2.5 minutes of view time (7%–11% retention). A 47-second video gets <b>1.9 minutes</b> of view time (247% retention). Viewers give you roughly 2 minutes regardless of video length — make those 2 minutes loop twice!</p>
+
+<h2>🔍 Why I Focus On This Video: 5 Strategic Takeaways</h2>
+<ol class="why">{r_html}</ol>
+
+<div class="card hero">
+<b>📐 The Day 2 Blueprint (Derived from Day 1 Data)</b>
+<p>To replicate and beat Day 1's 247.1% view rate, Day 2 commits to four strict rules:</p>
+<ol>
+  <li>⚡ <b>Sub-45s duration:</b> Exactly 44.5 s so a 2x rewatch fits comfortably under 2 minutes.</li>
+  <li>🔄 <b>Audio handoff:</b> The final spoken question (<i>"But how do these vectors talk to each other?"</i>) flows grammatically into the first hook (<i>"Tokens are just numbers…"</i>).</li>
+  <li>🥚 <b>Visual easter egg:</b> The glowing token 9246 returns as a hidden dot inside Queen in Scene 4, rewarding the 2nd loop.</li>
+  <li>🚀 <b>Pacing:</b> Dynamic vector math animation every 2–3 seconds to prevent swipe-away.</li>
+</ol>
+</div>
+
+{fb('S2-A', '📊 Analytics overall: strategy & takeaways')}"""
+
+    page("analytics.html", "S2-A YouTube Analytics", body)
 
 
 # ---------- workbench: an MVP guided checklist (two Chrome windows, progress kept in localStorage)
@@ -561,7 +976,7 @@ def md_page(fname, title, src, emoji):
     page(fname, title, body)
 
 
-hub(); sW(); sR(); s00(); s01(); s02(); s03(); s03b(); s04(); s05(); s06(); s07(); s08(); iterations(); feedback()
+hub(); sW(); sR(); sDev(); sAnalytics(); s00(); s01(); s02(); s03(); s03b(); s04(); s05(); s06(); s07(); s08(); iterations(); feedback()
 md_page("spec.html", "Master spec", "MASTER_SPEC.md", "📖")
 md_page("readme.html", "Script draft (README)", "README.md", "📄")
 (ROOT / ".nojekyll").write_text("")

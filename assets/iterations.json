@@ -1,5 +1,29 @@
 [
  {
+  "v": "v0.16",
+  "date": "2026-11-14",
+  "emoji": "📊",
+  "codes": [
+   "S2-A",
+   "S2-00"
+  ],
+  "change": "Added S2-A YouTube Analytics page: deep analysis of Day 1 (How LLMs Actually Read: Tokenization Explained) reaching 247.1% average percentage viewed and 1:56 average view duration on a 0:47 video (2.47 loops/view). Embedded YouTube Studio screenshot (WhatsApp Image 2026-11-14 at 08.53.34) with comparative table against 8 long-form videos (7-12% retention), 5 strategic reasons why we focus on this video, and the retention blueprint governing Day 2.",
+  "why": "Owner asked to create a page on YouTube analytics and explain why they focus on this video from the last downloaded file of Day 1 analytics.",
+  "status": "🚀 deployed"
+ },
+ {
+  "v": "v0.15",
+  "date": "2026-11-14",
+  "emoji": "💻",
+  "codes": [
+   "S2-DEV",
+   "S2-R"
+  ],
+  "change": "Added S2-DEV Development page right after Research with interactive browser playground (token lookup, dimension unfolding, cosine distance calculator, live king − man + woman = queen linear algebra), standalone runnable Python script (scripts/development_embeddings_demo.py), and beat-by-beat code mapping directly to the script. Added page-specific SVG favicons and data URIs for all pages across the site.",
+  "why": "Owner requested a development page after research implementing simple code and explaining how it relates to the research so anyone with that development understands the script, plus a related favicon for every page.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.14",
   "date": "2026-11-14",
   "emoji": "🧰",

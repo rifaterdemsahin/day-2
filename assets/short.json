@@ -34,6 +34,13 @@
       "intro": "The code behind the short: token lookup, unfolding into coordinates, cosine distance, and live vector arithmetic (king − man + woman = queen) explained step-by-step."
     },
     {
+      "code": "S2-A",
+      "emoji": "📊",
+      "name": "YouTube Analytics",
+      "slug": "analytics",
+      "intro": "Why I focus on this video: Day 1 analytics reveal 247.1% average percentage viewed (1:56 on a 47 s short). The retention data that justifies the Day 2 sequel and drives our production blueprint."
+    },
+    {
       "code": "S2-00",
       "emoji": "🧭",
       "name": "Brief, hook and loop",
