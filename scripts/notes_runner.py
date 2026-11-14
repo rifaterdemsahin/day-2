@@ -19,6 +19,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "scripts"))  # -I drops the script folder from the path
+import terms_bulk  # noqa: E402
 DATA = json.loads((ROOT / "assets/short.json").read_text(encoding="utf-8"))
 DEP, SPR = DATA["deploy"], DATA["sprite"]
 VAULT = "dp-kv-deliverypilot"
@@ -261,6 +263,88 @@ def run_job(notes, agent, dry, say, st=None, model=None):
     raise RuntimeError("deployed but the site did not answer 200")
 
 
+def run_terms_job(instruction, agent, say, st=None, model=None):
+    """Dictionary bulk update: the Sprite agent reads the term data and writes a changes list; the runner (which holds the
+    edit token, the sprite never sees it) asks the API for a preview and keeps the set PENDING until the owner approves it."""
+    st = st if st is not None else {}
+    agent, model, why = route(instruction, agent, model)
+    st["agent"], st["model"], st["why"] = agent, model, why
+    secrets = []
+
+    def out(s):
+        for sec in secrets:
+            s = s.replace(sec, "<redacted>")
+        say(s)
+
+    st["stage"] = "1/4 read token and dictionary"
+    terms_bulk.edit_token(vault_secret)  # fail early with a clear message; the value is not kept here
+    export = terms_bulk.fetch_export()
+    out(f"✅ 1/4 edit token found on this laptop (never sent to the sprite) · {len(export)} term(s) read from {terms_bulk.api_base()}")
+    out(f"🧭 routing: {why}")
+
+    st["stage"] = "2/4 agent key"
+    env_name, secret_name = KEYS[agent]
+    prelude = ""
+    if secret_name:
+        val = vault_secret(secret_name)
+        secrets.append(val)
+        prelude = f"export {env_name}={shlex.quote(val)}\n"
+        out(f"🔑 2/4 {secret_name} read from Key Vault {VAULT} (memory only)")
+    else:
+        out("🔑 2/4 no key needed for this agent (it uses its own login on the sprite)")
+
+    st["stage"] = "3/4 agent on the sprite"
+    script = terms_bulk.build_terms_script(instruction, export, agent_cmd(agent, False, model), prelude)
+    out(f"🛰️ 3/4 running {agent} on sprite {SPR['name']}: it reads the terms and writes a changes list (nothing is applied) …")
+    p = subprocess.Popen(["sprite", "exec", "-s", SPR["name"], "--stdin", "--", "bash", "-l", "-s"], stdin=subprocess.PIPE,
+                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    p.stdin.write(script)
+    p.stdin.close()
+    blob, inside = [], False
+    for line in p.stdout:
+        line = line.rstrip("\n")
+        if "bind: warning" in line:
+            continue
+        if line.startswith('{"') and '"total_cost_usd"' in line:
+            try:
+                j = json.loads(line)
+                u = j.get("usage", {})
+                st["usage"] = {"in": u.get("input_tokens", 0), "out": u.get("output_tokens", 0), "cache_read": u.get("cache_read_input_tokens", 0),
+                               "cache_write": u.get("cache_creation_input_tokens", 0), "usd": j.get("total_cost_usd", 0.0), "turns": j.get("num_turns")}
+                for t in str(j.get("result", "")).splitlines():
+                    out("   " + t)
+                continue
+            except Exception:
+                pass
+        if line == "===CHANGES-BEGIN===":
+            inside = True
+            continue
+        if line == "===CHANGES-END===":
+            inside = False
+            continue
+        if inside:
+            blob.append(line)
+        else:
+            out("   " + line)
+    if p.wait() != 0:
+        raise RuntimeError(f"sprite run failed (exit {p.returncode})")
+
+    st["stage"] = "4/4 preview (nothing written)"
+    try:
+        changes = terms_bulk.parse_changes("".join(blob))
+    except ValueError as e:
+        raise RuntimeError(str(e))
+    pid, prev = terms_bulk.stage(changes, instruction, vault_secret)
+    for l in terms_bulk.diff_lines(prev):
+        out(l)
+    if not pid:
+        raise RuntimeError(f"the proposal has {prev['errors']} invalid row(s); nothing can be applied. Fix the request and run it again.")
+    st["pending"] = pid
+    out(f"👀 4/4 preview: {prev['count']} row(s), {prev['count'] - prev.get('unchanged', 0)} would change. NOTHING is written yet.")
+    out(f"PENDING-ID: {pid}")
+    return {"changed": False, "pending": pid}
+
+
 def report(st, err, say):
     say("\n━━━━━━━━ 📋 RESULT ━━━━━━━━")
     say(("❌ FAILED at " + st.get("stage", "?")) if err else "✅ SUCCEEDED")
@@ -276,6 +360,10 @@ def report(st, err, say):
         say(f"🔢 tokens: input {u['in']:,} · output {u['out']:,} · cache read {u['cache_read']:,} · cache write {u['cache_write']:,} · 💵 ${u['usd']:.4f}")
     elif st.get("agent"):
         say("🔢 tokens: not reported by " + st["agent"] + (" (free model, $0)" if st["agent"] == "kilo" else ""))
+    if st.get("pending"):
+        say(f"🗄️ dictionary proposal {st['pending']}: waiting for YOUR approval in the page (nothing applied, no git commit, no deploy)")
+        say("━━━━━━━━━━━━━━━━━━━━━━━━━━")
+        return
     say("🧾 git commit: " + (st.get("commit") or "none (no commit was made)"))
     if st.get("stat"):
         say(st["stat"])
@@ -305,6 +393,70 @@ class H(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Private-Network", "true")
         self.send_header("Vary", "Origin")
 
+    def _json(self, code, body, o):
+        self.send_response(code)
+        self.send_header("Content-Type", "application/json; charset=utf-8")
+        self.send_header("Cache-Control", "no-store")
+        self._cors(o)
+        self.end_headers()
+        self.wfile.write(json.dumps(body).encode())
+
+    def _terms_post(self, path, o):
+        """/terms/run (streams), /terms/approve, /terms/reject, /terms/undo"""
+        try:
+            body = json.loads(self.rfile.read(min(int(self.headers.get("Content-Length", 0)), 100000)))
+        except Exception:
+            return self._json(400, {"error": "bad JSON"}, o)
+        if path == "/terms/run":
+            try:
+                instruction, agent, model = str(body.get("instruction", "")).strip(), body.get("agent", "auto"), body.get("model") or None
+                assert instruction and len(instruction) <= 4000 and (agent in KEYS or agent == "auto") and (model is None or model in CLAUDE_MODELS)
+            except Exception:
+                return self._json(400, {"error": "instruction required (max 4000 chars)"}, o)
+            self.send_response(200)
+            self.send_header("Content-Type", "text/plain; charset=utf-8")
+            self.send_header("Cache-Control", "no-store")
+            self._cors(o)
+            self.end_headers()
+
+            def say(s):
+                try:
+                    self.wfile.write((s + "\n").encode())
+                    self.wfile.flush()
+                except Exception:
+                    pass
+
+            if not LOCK.acquire(blocking=False):
+                return say("⏳ another run is in progress; wait for it to finish")
+            st = {}
+            try:
+                run_terms_job(instruction, agent, say, st, model)
+                err = None
+            except Exception as e:
+                err = str(e)
+                say("❌ ERROR at step " + st.get("stage", "?") + ":\n" + err)
+            try:
+                report(st, err, say)
+                if err is None:
+                    say("🎉 DONE (waiting for your approval)")
+            finally:
+                LOCK.release()
+            return
+        try:
+            if path == "/terms/approve":
+                return self._json(200, terms_bulk.approve(str(body.get("id", "")), vault_secret), o)
+            if path == "/terms/reject":
+                return self._json(200, terms_bulk.reject(str(body.get("id", ""))), o)
+            if path == "/terms/undo":
+                return self._json(200, terms_bulk.undo(body.get("change_set"), vault_secret), o)
+        except LookupError as e:
+            return self._json(404, {"error": str(e)}, o)
+        except ValueError as e:
+            return self._json(409, {"error": str(e)}, o)
+        except Exception as e:
+            return self._json(502, {"error": str(e)[:300]}, o)
+        self._json(404, {"error": "unknown path"}, o)
+
     def do_OPTIONS(self):
         ok, o = self._origin_ok()
         self.send_response(204 if ok else 403)
@@ -318,15 +470,28 @@ class H(BaseHTTPRequestHandler):
             self.send_response(403)
             self.end_headers()
             return
+        path = urlparse(self.path).path
+        if path.startswith("/terms/pending/"):
+            if not ok:
+                self.send_response(403)
+                self.end_headers()
+                return
+            try:
+                code, body = 200, terms_bulk.get_pending(path.rsplit("/", 1)[1])
+            except LookupError as e:
+                code, body = 404, {"error": str(e)}
+            return self._json(code, body, o)
         self.send_response(200)
         self.send_header("Content-Type", "application/json")
         if ok:
             self._cors(o)
         self.end_headers()
-        self.wfile.write(json.dumps({"ok": True, "sprite": SPR["name"], "agents": list(KEYS), "busy": LOCK.locked()}).encode())
+        self.wfile.write(json.dumps({"ok": True, "sprite": SPR["name"], "agents": list(KEYS), "busy": LOCK.locked(), "terms_token": terms_bulk.token_available()}).encode())
 
     def do_POST(self):
         ok, o = self._origin_ok()
+        if ok and urlparse(self.path).path.startswith("/terms/") and "application/json" in self.headers.get("Content-Type", ""):
+            return self._terms_post(urlparse(self.path).path, o)
         if not ok or urlparse(self.path).path != "/run" or "application/json" not in self.headers.get("Content-Type", ""):
             self.send_response(403)
             self.end_headers()

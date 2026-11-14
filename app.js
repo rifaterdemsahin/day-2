@@ -552,7 +552,7 @@
             el("td", { text: (STE[x.status] || "") + " " + x.status }), el("td", { text: x.hook }), el("td", { text: x.views == null ? "" : String(x.views) }), el("td", { text: x.rewatch_pct == null ? "" : String(x.rewatch_pct) }), el("td", { text: x.publish_date || "" })]));
         });
         host.appendChild(rows.length ? el("div", { "class": "tablewrap" }, [tb]) : el("p", { "class": "intro", text: "No terms with this status." }));
-        newTerm(); bulk();
+        newTerm(); bulk(); sprite();
       }, function (e) { host.appendChild(el("p", { "class": "dmsg bad", text: "⚠️ " + e.message })); });
     }
     function newTerm() {
@@ -564,6 +564,53 @@
         try { writeNeedsToken(); } catch (e) { return say(e.message, false); }
         api("POST", "/api/terms", { slug: s.value.trim(), term: t.value.trim() }).then(function () { location.href = "term.html?slug=" + encodeURIComponent(s.value.trim()); }, function (e) { say("⚠️ " + e.message, false); });
       } }));
+      say = msgBox(c); host.appendChild(c);
+    }
+
+    // ---- ask the Sprite: it proposes changes, the runner previews them, YOU approve (the sprite never sees the token)
+    function sprite() {
+      var RUN = "http://127.0.0.1:" + ((window.SPRITE && window.SPRITE.runner_port) || 8947);
+      var c = el("div", { "class": "card hero", id: "d2sprite" }), say = null;
+      c.appendChild(el("h3", { text: "🤖 Ask the Sprite to update terms" }));
+      c.appendChild(el("p", { "class": "intro", text: "Describe the change (for example: write an analogy for every term that has none). The Sprite agent reads the terms and writes a change list. Your runner (which holds the token) previews it. Nothing is written until you press Apply. Needs the notes runner on this laptop." }));
+      var ins = el("textarea", { id: "d2sins", rows: "3", "class": "mono", placeholder: "e.g. Write a one-line analogy for every term whose analogy is empty." });
+      var ag = el("select", { id: "d2sag" }, ["auto", "kilo", "claude", "antigravity"].map(function (a) { return el("option", { value: a, text: a }); }));
+      var log = el("pre", { id: "d2slog", "class": "dlog", hidden: "hidden" }), box = el("div", {});
+      var go = el("button", { "class": "primary", text: "🚀 Ask the Sprite" });
+      function paint(pend) {
+        box.textContent = "";
+        box.appendChild(diffTable({ rows: pend.rows }));
+        var ap = el("button", { "class": "primary", text: "✅ Apply " + (pend.count - pend.unchanged) + " change(s)" }), rj = el("button", { text: "❌ Reject" });
+        var bar = el("div", { "class": "bar" }, [ap, rj]); box.appendChild(bar);
+        function post(path, body) { return fetch(RUN + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }).then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || r.status); return j; }); }); }
+        rj.onclick = function () { post("/terms/reject", { id: pend.id }).then(function () { box.textContent = ""; say("❌ Rejected. Nothing was written.", true); }, function (e) { say("⚠️ " + e.message, false); }); };
+        ap.onclick = function () {
+          ap.setAttribute("disabled", "disabled");
+          post("/terms/approve", { id: pend.id }).then(function (r) {
+            lastCs(r.change_set); say("✅ Applied " + r.applied + " change(s) as " + r.change_set + ".", true); bar.textContent = "";
+            bar.appendChild(el("button", { text: "↩️ Undo this change set", onclick: function () { post("/terms/undo", { change_set: r.change_set }).then(function () { say("↩️ Reverted " + r.change_set + ".", true); bar.textContent = ""; }, function (e) { say("⚠️ " + e.message, false); }); } }));
+          }, function (e) { ap.removeAttribute("disabled"); say("⚠️ " + e.message, false); });
+        };
+      }
+      go.onclick = function () {
+        var text = ins.value.trim(); if (!text) return say("⚠️ Write what the Sprite should change.", false);
+        box.textContent = ""; log.textContent = ""; log.removeAttribute("hidden"); go.setAttribute("disabled", "disabled"); say("⏳ Running on the Sprite … (can take a few minutes)", null);
+        fetch(RUN + "/terms/run", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ instruction: text, agent: ag.value }) }).then(function (r) {
+          if (!r.ok || !r.body) throw new Error("runner answered " + r.status);
+          var rd = r.body.getReader(), dec = new TextDecoder(), all = "";
+          return rd.read().then(function pump(x) {
+            if (x.done) return all;
+            all += dec.decode(x.value, { stream: true }); log.textContent = all; log.scrollTop = log.scrollHeight;
+            return rd.read().then(pump);
+          });
+        }).then(function (all) {
+          var m = /PENDING-ID: (pd-[0-9a-f]+)/.exec(all);
+          if (!m) return say("❌ No proposal. Read the log above.", false);
+          return fetch(RUN + "/terms/pending/" + m[1]).then(function (r) { return r.json(); }).then(function (pend) { paint(pend); say("👀 Review the diff below. Nothing is written yet.", true); });
+        }).catch(function (e) { say("⚠️ Could not reach the runner at " + RUN + " (" + e.message + "). Start: python3 -I scripts/notes_runner.py", false); }).then(function () { go.removeAttribute("disabled"); });
+      };
+      fetch(RUN + "/").then(function (r) { return r.json(); }).then(function (h) { if (!h.terms_token) say("ℹ️ The runner has no edit token yet: store it once in the Keychain (service d2-edit-token), see the setup card.", false); }, function () { say("ℹ️ Notes runner not running on this laptop.", false); });
+      [ins, el("div", { "class": "bar" }, [el("label", {}, ["Agent ", ag]), go]), log, box].forEach(function (x) { c.appendChild(x); });
       say = msgBox(c); host.appendChild(c);
     }
     function bulk() {

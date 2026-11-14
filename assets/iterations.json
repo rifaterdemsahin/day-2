@@ -1,5 +1,17 @@
 [
  {
+  "v": "v0.58",
+  "date": "2026-11-14",
+  "emoji": "🤖",
+  "codes": [
+   "S2-DB",
+   "S2-T"
+  ],
+  "change": "🤖 Dictionary step 6: Sprite bulk updates. New 🤖 'Ask the Sprite' card on terms.html and runner endpoints /terms/run, /terms/pending, /terms/approve, /terms/reject, /terms/undo (scripts/terms_bulk.py, scripts/notes_runner.py). The Sprite agent reads the term data and writes d2-changes.json; the runner, which holds the edit token (env D2_EDIT_TOKEN, Keychain d2-edit-token or Key Vault), calls /api/bulk/preview, shows the diff, and calls /api/bulk/apply only after you press Apply (re-previewed first: refused if the data changed since you saw the diff). The Sprite never receives the token (eval checks the script). Skill sprite-run has a new section. Tested for real: kilo on the Sprite proposed an analogy, preview wrote nothing, approve applied it, undo restored it. The token must be stored once in the Keychain (S2-T page, step 4).",
+  "why": "Owner: Step 6: the Sprite AI writes changes.json and calls /api/bulk/preview; I approve the diff, then it calls /api/bulk/apply; the Sprite never receives the token directly, the runner injects it.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.57",
   "date": "2026-11-14",
   "emoji": "🚀",
@@ -9,7 +21,7 @@
   ],
   "change": "🚀 Dictionary step 5 (Fly): one uvicorn process now serves the API and the generated site (nginx removed); SQLite on a Fly volume at /data (D2_DB), seeded from assets/terms on the first start with an empty volume (also the restore path: scripts/import_terms.py); fly.toml has the mount, /api/health check and one machine (--ha=false in every deploy path); nightly workflow backs the live dictionary up to git (public GET /api/export, no secrets); Litestream documented as an option. The S2-T page shows the one-time commands (volume, token to clipboard, deploy). Verified with a real docker build and run: seeded, served site + API, edit survived a restart. NOT deployed to Fly yet: the volume and EDIT_TOKEN must exist first.",
   "why": "Owner: Step 5: Dockerfile and fly.toml run the API, mount a volume at /data, one machine, health check; document the one-time commands (fly volumes create, fly secrets set EDIT_TOKEN) without running them or printing the token; nightly export to git and a documented Litestream option.",
-  "status": "⏳ ready, waiting for the one-time Fly commands"
+  "status": "🚀 deployed (volume + token set by the owner, live)"
  },
  {
   "v": "v0.56",

@@ -419,6 +419,107 @@ def offline():
         return ok, f"volume+health+port in fly.toml, uvicorn image, --ha=false everywhere, nightly backup workflow, seed {seeded}/{again}, seeded export identical {same}"
     check("terms", "Fly setup: volume at /data, health check, one machine, API image, nightly backup, seed on empty volume, no token in files", fly_dictionary)
 
+    def terms_bulk_core():
+        import base64, socket, tempfile
+        sys.path.insert(0, str(ROOT / "scripts")); sys.path.insert(0, str(ROOT))
+        import terms_bulk as tb
+        sentinel = "SENTINEL-TOKEN-0123456789abcdef"
+        os.environ["D2_EDIT_TOKEN"] = sentinel
+        try:
+            exp = {"tokenization-embeddings": {"slug": "tokenization-embeddings", "term": "X"}}
+            script = tb.build_terms_script("write analogies", exp, "echo agent")
+            no_leak = sentinel not in script and "d2terms.json" in script and "d2-changes.json" in script and "tokenization-embeddings" in base64.b64decode(re.search(r"<<'D2B64'\n(.*)\nD2B64", script, re.S).group(1)).decode()
+            b = lambda o: base64.b64encode(json.dumps(o).encode()).decode()
+            fence = base64.b64encode(("```json\n" + json.dumps([{"slug": "a", "field": "hook", "value": "x"}]) + "\n```").encode()).decode()
+            parse_ok = (len(tb.parse_changes(b([{"slug": "a", "field": "hook", "value": "x"}]))) == 1 and len(tb.parse_changes(b({"changes": [{"slug": "a"}]}))) == 1 and len(tb.parse_changes(fence)) == 1)
+            bad = 0
+            for x in ("", b([]), b("str"), base64.b64encode(b"{not json").decode(), base64.b64encode(b"x" * (tb.MAX_CHANGES_BYTES + 1)).decode()):
+                try:
+                    tb.parse_changes(x); bad += 1
+                except ValueError:
+                    pass
+            hosts = []
+            for u in ("https://evil.example.com", "http://day-2-short.fly.dev", "https://fly.dev.evil.com", "http://10.0.0.1:8960"):
+                os.environ["D2_API"] = u
+                try:
+                    tb.api_base(); hosts.append(u)
+                except RuntimeError:
+                    pass
+            os.environ["D2_API"] = "http://127.0.0.1:8960"
+            fine = tb.api_base() == "http://127.0.0.1:8960"
+            os.environ.pop("D2_API")
+            fine = fine and tb.api_base().endswith(".fly.dev")
+            base_ok = no_leak and parse_ok and bad == 0 and not hosts and fine
+            py = ROOT / ".venv/bin/python"
+            if not py.exists():
+                return base_ok, f"(HTTP part skipped: no .venv) no_leak {no_leak}, parse {parse_ok}, bad inputs accepted {bad}, hosts accepted {hosts}"
+            import migrate_short_json as mg
+            from api.db import connect
+            dbp = pathlib.Path(tempfile.mkdtemp()) / "t.db"
+            mg.migrate(connect(dbp), DATA)
+            sk = socket.socket(); sk.bind(("127.0.0.1", 0)); port = sk.getsockname()[1]; sk.close()
+            env = dict(os.environ, D2_DB=str(dbp), EDIT_TOKEN=sentinel, D2_SITE=str(pathlib.Path(tempfile.mkdtemp())))
+            srv = subprocess.Popen([str(py), "-m", "uvicorn", "api.main:app", "--port", str(port), "--log-level", "error"], cwd=ROOT, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            os.environ["D2_API"] = f"http://127.0.0.1:{port}"
+            try:
+                for _ in range(40):
+                    try:
+                        urllib.request.urlopen(os.environ["D2_API"] + "/api/health", timeout=1); break
+                    except Exception:
+                        time.sleep(0.25)
+                S = "tokenization-embeddings"
+                got = tb.fetch_export()
+                good = [{"slug": S, "field": "analogy", "value": "A map of meaning"}, {"slug": S, "field": "scenes.2.on_screen_text", "value": "1 → 1,536 DIMS"}]
+                pid, prev = tb.stage(good, "test")
+                lines = tb.diff_lines(prev)
+                untouched = connect(dbp).execute("SELECT analogy FROM terms").fetchone()[0] == ""
+                pend = tb.get_pending(pid)
+                badpid, badprev = tb.stage([{"slug": S, "field": "status", "value": "live"}])
+                r = tb.approve(pid)
+                changed = connect(dbp).execute("SELECT analogy FROM terms").fetchone()[0] == "A map of meaning"
+                twice = False
+                try:
+                    tb.approve(pid)
+                except ValueError:
+                    twice = True
+                u = tb.undo(r["change_set"])
+                back = connect(dbp).execute("SELECT analogy FROM terms").fetchone()[0] == ""
+                pid2, _ = tb.stage(good)
+                c2 = connect(dbp); c2.execute("UPDATE terms SET analogy='changed behind your back'"); c2.commit()
+                stale = False
+                try:
+                    tb.approve(pid2)
+                except ValueError:
+                    stale = True
+                nothing = connect(dbp).execute("SELECT analogy FROM terms").fetchone()[0] == "changed behind your back"
+                pid3, _ = tb.stage(good)
+                rj = tb.reject(pid3)["state"] == "rejected"
+                rej_block = False
+                try:
+                    tb.approve(pid3)
+                except ValueError:
+                    rej_block = True
+                ok = (base_ok and S in got and pid and len(lines) == 2 and untouched and pend["state"] == "pending" and badpid is None and not badprev["ok"]
+                      and changed and twice and r["applied"] == 2 and back and u["reverted"] == 2 and stale and nothing and rj and rej_block)
+                return ok, f"base {base_ok} got {S in got} pid {bool(pid)} lines {len(lines)} untouched {untouched} pend {pend['state']} bad {badpid is None and not badprev['ok']} applied {r['applied']} reverted {u['reverted']} | stage/apply/undo ok? changed {changed} twice-refused {twice} back {back} stale-refused {stale} nothing-written {nothing} reject {rj}/{rej_block}"
+            finally:
+                srv.terminate()
+                os.environ.pop("D2_API", None)
+        finally:
+            os.environ.pop("D2_EDIT_TOKEN", None)
+    check("terms", "sprite bulk updates: token never in the sprite script, proposal staged, owner approval required, stale/duplicate/rejected sets refused, undo works", terms_bulk_core)
+
+    def terms_runner_wiring():
+        src = (ROOT / "scripts/notes_runner.py").read_text(encoding="utf-8")
+        js = (ROOT / "app.js").read_text(encoding="utf-8")
+        sk = (ROOT / ".claude/skills/sprite-run/SKILL.md").read_text(encoding="utf-8")
+        tbsrc = (ROOT / "scripts/terms_bulk.py").read_text(encoding="utf-8")
+        ok = (all(x in src for x in ("/terms/run", "/terms/approve", "/terms/undo", "run_terms_job", "terms_token")) and all(x in js for x in ("/terms/run", "/terms/approve", "/terms/undo", "PENDING-ID"))
+              and "Bulk dictionary updates" in sk and "never" in sk.split("Bulk dictionary updates")[1].lower()
+              and "build_terms_script" in tbsrc and "Authorization" not in src and "Bearer" not in js[js.index("function sprite()"):js.index("function bulk()")])
+        return ok, "runner endpoints, page buttons and the skill section must exist; the page code for the sprite flow never handles a token"
+    check("terms", "sprite flow is wired: runner endpoints, Ask-the-Sprite card, skill section; no token handling in the sprite card", terms_runner_wiring)
+
     def docker_builds_site():
         d = (ROOT / "Dockerfile").read_text(encoding="utf-8")
         return "build_short_site.py" in d and "COPY --from=build" in d, "Dockerfile must compile site/ in a build stage"

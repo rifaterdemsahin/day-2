@@ -29,6 +29,7 @@ def build():
         ("1️⃣ Create the volume (one time, 1 GB is plenty)", "fly volumes create d2data --region lhr --size 1 -a day-2-short"),
         ("2️⃣ Make a token, copy it to the clipboard without printing it, store it as the Fly secret", 'TOKEN=$(openssl rand -hex 32); printf %s "$TOKEN" | pbcopy; printf "EDIT_TOKEN=%s\\n" "$TOKEN" | fly secrets import -a day-2-short; unset TOKEN'),
         ("3️⃣ Deploy (one machine only), then open the dictionary and paste the token into 🔌 Connection", "python3 scripts/deploy_and_wait.py terms.html"),
+        ("4️⃣ Sprite bulk updates: give the token to the runner on this laptop (it prompts: paste, Return). The Sprite never gets it", 'security add-generic-password -U -a "$USER" -s d2-edit-token -w'),
         ("🔎 Check it", "curl -s https://day-2-short.fly.dev/api/health"),
         ("🆘 If the deploy says the machine cannot take the volume: remove the old machine, deploy again", "fly machines list -a day-2-short   # then: fly machine destroy <id> --force -a day-2-short"),
     ]
