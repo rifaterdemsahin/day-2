@@ -41,8 +41,9 @@ NAV = [("index.html", "🏠 Hub")] + [(f"{st['slug']}.html", f"{st['emoji']} {st
 def nav(active):
     items = "".join(
         f'<a href="{h}"{" class=active" if h == active else ""}>{t}</a>' for h, t in NAV)
-    return (f'<header><button id="menu-btn" aria-expanded="true">▾ Menu</button>'
+    return (f'<header><div class="hbar"><button id="menu-btn" aria-expanded="true">▾ Menu</button>'
             f'<b class="brand">📱 {E(D["code"])} · {E(D["title"])}</b>'
+            f'<button id="hidden-btn" type="button" aria-pressed="false" title="Show the pages hidden from the menu (approved pages)">🙈 Hidden: 0</button></div>'
             f'<nav id="nav">{items}</nav></header>')
 
 

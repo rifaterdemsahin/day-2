@@ -1,5 +1,17 @@
 [
  {
+  "v": "v0.42",
+  "date": "2026-11-14",
+  "emoji": "👁️",
+  "codes": [
+   "S2-W",
+   "all pages"
+  ],
+  "change": "The hidden-pages switch now lives in the top bar of every page (🙈 Hidden: n / 👁️ Hidden: n), not only on the Workbench: one click brings the approved pages back into the menu (dashed, ✔️) and the same click hides them again; the count shows how many pages are hidden, the Workbench card checkbox stays in sync, and two open tabs stay in sync. So a page hidden from the menu is always reachable again.",
+  "why": "📄 🧰 S2-W Workbench — add functionality to show hidden pages.\n\n💬 [S2-W.setup] 🧰 Setup: what was unclear? — ✅ approve",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.39",
   "date": "2026-11-14",
   "emoji": "🔄",

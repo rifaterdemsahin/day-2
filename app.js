@@ -48,17 +48,35 @@
     if (window.PROD && PROD.checks && PROD.checks[c.dataset.check]) { c.checked = true; c.title = "📁 proven by the files on disk (short.json › production)"; var lb = c.closest("label"); if (lb && !lb.querySelector(".disk")) { var sp = document.createElement("small"); sp.className = "disk"; sp.textContent = " 📁 from disk"; lb.appendChild(sp); } }
   });
 
-  // ---- review check marks in the menu
+  // ---- review check marks in the menu (approved pages are hidden; the 👁️ button in the header brings them back)
+  var hiddenBtn = document.getElementById("hidden-btn");
+  function showHidden() { return localStorage.getItem("d2showHidden") === "1"; }
+  function hiddenCount() { return PAGES.filter(function (x) { return x[0] !== "feedback.html" && reviewed(x[0]); }).length; }
+  function paintHiddenBtn() {
+    if (!hiddenBtn) return;
+    var on = showHidden(), n = hiddenCount();
+    hiddenBtn.setAttribute("aria-pressed", on ? "true" : "false");
+    hiddenBtn.textContent = (on ? "👁️ " : "🙈 ") + "Hidden: " + n;
+    hiddenBtn.title = on ? "Approved pages are shown in the menu again (click to hide them)" : "Show the " + n + " approved page(s) that are hidden from the menu";
+    hiddenBtn.classList.toggle("on", on);
+  }
+  function setShowHidden(on) {
+    try { localStorage.setItem("d2showHidden", on ? "1" : ""); } catch (e) {}
+    var sh = document.getElementById("showHidden"); if (sh) sh.checked = on;
+    paintNav(); paintHiddenBtn();
+  }
   function paintNav() {
+    var force = showHidden();
     document.querySelectorAll("#nav a").forEach(function (a) {
       var h = a.getAttribute("href"), done = reviewed(h);
       a.classList.toggle("done", done);
       if (!a.dataset.t) a.dataset.t = a.textContent;
       a.textContent = (done ? "✔️ " : "") + a.dataset.t;
-      // owner feedback: approved pages are hidden from the top menu (shown again if un-reviewed)
-      var force = localStorage.getItem("d2showHidden") === "1";
+      // owner feedback: approved pages are hidden from the top menu (shown again if un-reviewed or when 🙈 Hidden is on)
       a.style.display = (done && !force) ? "none" : "";
+      a.classList.toggle("was-hidden", done && force);
     });
+    paintHiddenBtn();
   }
 
   // ---- progress (hub + feedback page)
@@ -293,8 +311,10 @@
   })();
 
   paintNav(); paintProgress(); paintHL();
+  if (hiddenBtn) hiddenBtn.onclick = function () { setShowHidden(!showHidden()); };
   var sh = document.getElementById("showHidden");
-  if (sh) { sh.checked = localStorage.getItem("d2showHidden") === "1"; sh.onchange = function () { localStorage.setItem("d2showHidden", sh.checked ? "1" : ""); paintNav(); }; }
+  if (sh) { sh.checked = showHidden(); sh.onchange = function () { setShowHidden(sh.checked); }; }
+  window.addEventListener("storage", function (e) { if (e.key === "d2showHidden") { var c = document.getElementById("showHidden"); if (c) c.checked = showHidden(); paintNav(); } });
 
   // ---- feedback page
   if (window.FB_IDS) {
