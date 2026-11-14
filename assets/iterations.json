@@ -1,5 +1,16 @@
 [
  {
+  "v": "v0.35",
+  "date": "2026-11-14",
+  "emoji": "📄",
+  "codes": [
+   "S2-V"
+  ],
+  "change": "S2-V Similar videos: one short line directly under the page title saying the numbers are a snapshot (first page of one YouTube search on 2026-11-14, views rounded). Nothing else on the page changed; feedback buttons stay at the bottom.",
+  "why": "Owner: please add one short line directly under the page title that says \"Data: first page of one YouTube search on 2026-11-14, views are rounded.\" A reader skimming the page should know straight away that these numbers are a snapshot and not a full survey of YouTube.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.34",
   "date": "2026-11-14",
   "emoji": "💡",

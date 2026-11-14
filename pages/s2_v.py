@@ -7,7 +7,8 @@ def build():
     v = json.loads((ROOT / "assets/similar_videos.json").read_text(encoding="utf-8"))
     rows = "".join(f'<tr><td>{x["rank"]}</td><td><a href="{x["search"]}" target="d2-yt" rel="noopener">▶️ {E(x["title"])}</a><br><small>{E(x["note"])}</small></td><td>{E(x["channel"])}</td><td><b>{E(x["views"])}</b></td><td>{E(x["age"])}</td><td>{E(x["length"])}</td></tr>' for x in v["videos"])
     txt = "Similar YouTube videos (" + v["when"] + ")\n" + "\n".join(f'{x["rank"]}. {x["title"]} | {x["channel"]} | {x["views"]} views | {x["age"]}' for x in v["videos"])
-    body = step_head(st) + f"""<div class="card hero"><b>📊 Top 10 similar videos</b> · 📅 {E(v["when"])}<p>{E(v["how"])}</p>{copybtn(txt, "📋 Copy list")}</div>
+    head = step_head(st).replace("</h1>", "</h1><p>🔍 Data: first page of one YouTube search on 2026-11-14, views are rounded.</p>", 1)
+    body = head + f"""<div class="card hero"><b>📊 Top 10 similar videos</b> · 📅 {E(v["when"])}<p>{E(v["how"])}</p>{copybtn(txt, "📋 Copy list")}</div>
 <div class="tablewrap"><table class="cmp"><tr><th>#</th><th>Video (opens a YouTube search for it)</th><th>Channel</th><th>👁️ Views</th><th>Age</th><th>Length</th></tr>{rows}</table></div>
 <h2>🔎 What the numbers say</h2><ul>
 <li>📉 The topic is crowded but small: 9 of 10 have 6k views or fewer; only one old tutorial is large (247k, 5 years old).</li>
