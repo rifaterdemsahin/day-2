@@ -1,16 +1,5 @@
 [
  {
-  "v": "v0.19",
-  "date": "2026-11-14",
-  "emoji": "💬",
-  "codes": [
-   "S2-07"
-  ],
-  "change": "Pinned comment (metadata › pinned, shown on the S2-07 page) now ends with the owner's sentence: \"Hint: EVALMARK-1794654275 is hidden in the Queen.\"",
-  "why": "Owner feedback: 💬 [S2-07] Pinned comment: end it with the sentence \"Hint: EVALMARK-1794654275 is hidden in the Queen.\"",
-  "status": "🚀 deployed"
- },
- {
   "v": "v0.18",
   "date": "2026-11-14",
   "emoji": "💬",
