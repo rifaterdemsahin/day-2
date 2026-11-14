@@ -55,6 +55,8 @@
       a.classList.toggle("done", done);
       if (!a.dataset.t) a.dataset.t = a.textContent;
       a.textContent = (done ? "✔️ " : "") + a.dataset.t;
+      // owner feedback: approved pages are hidden from the top menu (shown again if un-reviewed)
+      a.style.display = done ? "none" : "";
     });
   }
 
