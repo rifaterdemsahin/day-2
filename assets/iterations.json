@@ -1,5 +1,16 @@
 [
  {
+  "v": "v0.39",
+  "date": "2026-11-14",
+  "emoji": "🗂️",
+  "codes": [
+   "S2-RC"
+  ],
+  "change": "Separated S2-RC Recommendations into two clear tracks: ⚙️ Technical (ranked recs with copy button, scan, token savings, SQLite/React, housekeeping status) and 🎬 Video production (producer recs with copy button, video production status). Updated the summary to distinguish the two tracks.",
+  "why": "✅ Reviewed: 💡 S2-RC Recommendations\n\n💬 [page:s2-rc.html] 📄 💡 S2-RC Recommendations\nseperate recommentations into technical and video production ones",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.38",
   "date": "2026-11-14",
   "emoji": "⤢",
