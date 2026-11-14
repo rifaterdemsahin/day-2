@@ -1,5 +1,14 @@
 [
  {
+  "v": "v0.42",
+  "date": "2026-11-14",
+  "emoji": "🧩",
+  "codes": ["S2-W", "all pages"],
+  "change": "Split the header menu into the three pipeline phases — 🟣 Preprod (hub, workbench, brief, script, storyboard, Flow prompts, Flow vs Higgsfield, generate clips), 🟢 Prod (voice-over, assemble and loop check), 🔵 Postprod (captions, title, description, publish and analytics), each with its own section heading; 📖 Site keeps iterations, feedback, master spec and README. The 🙈 Hidden: n switch stays in the top bar of every page and the S2-W Workbench still brings approved pages back into the menu; [S2-W.setup] is ✅ approved.",
+  "why": "📄 🧰 S2-W Workbench\n\n💬 [page:s2-w.html] 📄 🧰 S2-W Workbench\nadd functionality to show hidden pages.\n🎯 [s2-w.html › header] <header> \"▾ Menu 📱 S2 · From Numbers to Meaning: High-Dimensional Emb\"\n→ seperate into preprod prod and postprod\n\n💬 [S2-W.setup] 🧰 Setup: what was unclear? — ✅ approve",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.41",
   "date": "2026-11-14",
   "emoji": "🎯",

@@ -36,11 +36,27 @@ FULL_VO = " ".join(s["vo"] for s in D["scenes"])
 
 NAV = [("index.html", "🏠 Hub")] + [(f"{st['slug']}.html", f"{st['emoji']} {st['code']} {st['name']}") for st in D["steps"]] + [
     ("iterations.html", "🔁 Iterations"), ("feedback.html", "💬 All feedback"), ("spec.html", "📖 Master spec"), ("readme.html", "📄 Script (README)")]
+PHASE = {"index.html": "preprod", "s2-w.html": "preprod",
+         "s2-00.html": "preprod", "s2-01.html": "preprod", "s2-02.html": "preprod",
+         "s2-03.html": "preprod", "s2-03b.html": "preprod", "s2-04.html": "preprod",
+         "s2-05.html": "prod", "s2-06.html": "prod",
+         "s2-07.html": "postprod", "s2-08.html": "postprod"}
+PHASE_LABEL = {"preprod": "🟣 Preprod", "prod": "🟢 Prod", "postprod": "🔵 Postprod"}
+PHASE_ORDER = ["preprod", "prod", "postprod"]
 
 
 def nav(active):
-    items = "".join(
-        f'<a href="{h}"{" class=active" if h == active else ""}>{t}</a>' for h, t in NAV)
+    groups = {}
+    for h, t in NAV:
+        groups.setdefault(PHASE.get(h, "site"), []).append((h, t))
+    items = ""
+    for sec in PHASE_ORDER:
+        items += f'<h3 class="navsec">{PHASE_LABEL[sec]}</h3>'
+        for h, t in groups.get(sec, []):
+            items += f'<a href="{h}"{" class=active" if h == active else ""}>{t}</a>'
+    items += '<h3 class="navsec">📖 Site</h3>'
+    for h, t in groups.get("site", []):
+        items += f'<a href="{h}"{" class=active" if h == active else ""}>{t}</a>'
     return (f'<header><div class="hbar"><button id="menu-btn" aria-expanded="true">▾ Menu</button>'
             f'<b class="brand">📱 {E(D["code"])} · {E(D["title"])}</b>'
             f'<button id="hidden-btn" type="button" aria-pressed="false" title="Show the pages hidden from the menu (approved pages)">🙈 Hidden: 0</button></div>'

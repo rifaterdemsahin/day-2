@@ -13,6 +13,7 @@ nav{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 nav.closed{display:none}
 nav a{color:var(--fg);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:13px}
 nav a.active{background:var(--acc);color:#001;border-color:var(--acc)}
+nav .navsec{flex-basis:100%;font:600 11px system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--mut);margin:7px 0 3px 2px;letter-spacing:.4px}
 nav a.was-hidden{opacity:.6;border-style:dashed}
 main{max-width:860px;margin:0 auto;padding:16px}
 h1{font-size:26px;margin:.4em 0}h2{margin-top:1.6em}
