@@ -13,11 +13,25 @@
   "style": "Dark space, deep blue and violet, neon cyan and gold accents, clean glowing lines, cinematic slow camera, vertical 9:16, no text baked into the video (captions are added later), no people, no logos.",
   "steps": [
     {
+      "code": "S2-W",
+      "emoji": "🧰",
+      "name": "Workbench",
+      "slug": "s2-w",
+      "intro": "Do the work here. A guided checklist for making the clips with two Chrome windows: what to open, when, and what to paste. Your ticks are saved on this device and shared with the S2-04 and S2-06 pages."
+    },
+    {
       "code": "S2-R",
       "emoji": "🔬",
       "name": "Research",
       "slug": "s2-r",
       "intro": "Start here. The script explained beat by beat with diagrams, what is true and what is simplified, and why this topic matters to anyone who uses AI."
+    },
+    {
+      "code": "S2-DEV",
+      "emoji": "💻",
+      "name": "Development",
+      "slug": "development",
+      "intro": "The code behind the short: token lookup, unfolding into coordinates, cosine distance, and live vector arithmetic (king − man + woman = queen) explained step-by-step."
     },
     {
       "code": "S2-00",

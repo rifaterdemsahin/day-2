@@ -1,5 +1,18 @@
 [
  {
+  "v": "v0.14",
+  "date": "2026-11-14",
+  "emoji": "🧰",
+  "codes": [
+   "S2-W",
+   "S2-04",
+   "S2-06"
+  ],
+  "change": "New first page S2-W Workbench (MVP): two-window Chrome guide with a diagram (A = site, B = Flow/Higgsfield/Studio), a one-time setup checklist, per-clip copy → Flow → download → tick, a command to move clips into Remotion and sync, loop check, render and publish. A Next up banner and progress bar; ticks are kept in the browser and shared with S2-04 and S2-06. Open buttons reuse the same tab. Clip times rounded to 0.1 s.",
+  "why": "Owner was going back and forth between many tabs and wanted a workbench that keeps progress and guides what to open and when.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.13",
   "date": "2026-11-14",
   "emoji": "🔬",

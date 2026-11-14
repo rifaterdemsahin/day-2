@@ -8,6 +8,7 @@
 
 | Code | Step | Page |
 |---|---|---|
+| `S2-W` | 🧰 Workbench (do the work: two Chrome windows, per-clip checklist) | [open](https://rifaterdemsahin.github.io/day-2/s2-w.html) |
 | `S2-R` | 🔬 Research (script explained with diagrams, why it matters) | [open](https://rifaterdemsahin.github.io/day-2/s2-r.html) |
 | `S2-00` | 🧭 Brief, hook, loop | [open](https://rifaterdemsahin.github.io/day-2/s2-00.html) |
 | `S2-01` | 📝 Script | [open](https://rifaterdemsahin.github.io/day-2/s2-01.html) |
