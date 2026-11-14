@@ -1,5 +1,16 @@
 [
  {
+  "v": "v0.32",
+  "date": "2026-11-14",
+  "emoji": "📚",
+  "codes": [
+   "S2-SP"
+  ],
+  "change": "S2-SP documents the work: \"What was done, and why\" (10 items: Fly hosting, Sprite, Key Vault on stdin, local runner, patch-only return, clean-repo guard, RESULT block, evals and agent check, claude login fix, preview/local/trunk-based) and \"Why this matters in video production\" (faster review loops, creative seat, commit per change, safe by design, next short starts smarter, honest limits). Data in short.json › sprite_doc.",
+  "why": "Owner: document what you did and why on the S2-SP page, and explain why it is important in video production.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.31",
   "date": "2026-11-14",
   "emoji": "🐛",

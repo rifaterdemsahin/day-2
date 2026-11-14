@@ -532,5 +532,91 @@
   "region": "lhr",
   "url": "https://day-2-short.fly.dev/",
   "old_pages": "https://rifaterdemsahin.github.io/day-2/"
+ },
+ "sprite_doc": {
+  "did": [
+   [
+    "🌐",
+    "Hosted the site on Fly.io (app day-2-short) and turned GitHub Pages into a redirect",
+    "One stable address for the review site. Browser-saved notes live per address, so the address must not change between rounds."
+   ],
+   [
+    "🛰️",
+    "Created the Sprite day-2: a cloud computer that holds the repo and the agent CLIs",
+    "The AI agent gets a sandbox to edit and build in, so it never touches your laptop or your files."
+   ],
+   [
+    "🔑",
+    "Read agent keys from Azure Key Vault straight into memory and sent them to the Sprite on stdin only",
+    "The repo is public and some keys are short-lived. A key in a command line, file, page or chat can leak."
+   ],
+   [
+    "🚀",
+    "Wrote a local runner (scripts/notes_runner.py) that the 🚀 button calls; it listens on 127.0.0.1 only and accepts only this site's origins",
+    "A web page cannot run the sprite command by itself. The runner is the one small bridge, and nobody else on the network can reach it."
+   ],
+   [
+    "📦",
+    "The Sprite returns a patch of source files only; the runner applies, builds, commits, pushes and deploys",
+    "No GitHub token ever goes to the Sprite. If the agent misbehaves, the worst case is a bad patch that fails the build and is reverted."
+   ],
+   [
+    "🧹",
+    "The runner refuses to start unless the repo is clean and equal to origin/main",
+    "So the patch always applies and a run never mixes with unsaved work."
+   ],
+   [
+    "📋",
+    "Every run ends with a RESULT block: commit, push check, Fly deploy check, or the exact failing step",
+    "You can see at a glance whether it worked, and why not if it did not."
+   ],
+   [
+    "🧪",
+    "Added evals (offline, live, end to end) and an agent install check",
+    "Bugs hide where parts meet. Evals and the check found: kilo swallowing the piped script, two ports already used, a vault key returning 401, and the wrong command name for antigravity."
+   ],
+   [
+    "🐛",
+    "Fixed claude auth: it now uses your /login on the Sprite, not the vault key",
+    "The vault key was invalid and overrode your login, so the first claude run failed with Invalid API key. After the fix a real note went through."
+   ],
+   [
+    "👀",
+    "Added a preview service on the Sprite, a local server, and trunk-based development (main only, push and deploy every time)",
+    "You can look at what the Sprite serves, run the same pages locally, and every change is a small, reversible commit."
+   ]
+  ],
+  "why_video": [
+   [
+    "⚡",
+    "Faster review loops",
+    "A short lives or dies on small details: the hook, the first 2 seconds, a caption. Here a note typed while watching becomes a deployed fix in minutes, so you can review many more rounds in the time one used to take."
+   ],
+   [
+    "🎯",
+    "You stay in the creative seat",
+    "The repetitive work (rewriting prompts, timing tables, captions, checklists, copy) is done by the agent. Your time goes to what only you can judge: does it feel right, will people rewatch it."
+   ],
+   [
+    "🧾",
+    "Every change is a commit with a reason",
+    "Each fix is a commit plus an Iterations entry. You can see what changed and why, and undo any round with a revert. Scripts, prompts and specs are the video's source code."
+   ],
+   [
+    "🛡️",
+    "Safe by design",
+    "The agent edits text and data, never media. Keys stay out of the repo and the page. The agent has no GitHub token. A failed build is reverted before anything is pushed."
+   ],
+   [
+    "🔁",
+    "The next short starts smarter",
+    "Day 3 reuses the same spec, runner and checks. What broke on Day 2 is written into the spec so it does not break again."
+   ],
+   [
+    "⚖️",
+    "Honest limits",
+    "Flow clips, the voice and the final render are still manual or slow steps. The agent only speeds up the editing of the plan around them. Kilo runs on a free model, so keep notes small and specific and read the RESULT block each time."
+   ]
+  ]
  }
 }
