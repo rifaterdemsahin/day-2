@@ -9,6 +9,7 @@
    "views": "247k",
    "age": "5 yr ago",
    "length": "long",
+   "watched": true,
    "note": "Intuition for how word2vec works; 4 chapters",
    "search": "https://www.youtube.com/results?search_query=What+is+Word2Vec%3F+A+Simple+Explanation+%7C+Deep+Learning+Tutorial+41+codebasics"
   },
@@ -19,6 +20,7 @@
    "views": "6k",
    "age": "4 mo ago",
    "length": "long",
+   "watched": true,
    "note": "Words as vectors, dot product, ends on King − Man + Woman",
    "search": "https://www.youtube.com/results?search_query=Word2Vec+%E2%80%94+How+Words+Became+Vectors+DataMListic"
   },

@@ -1,5 +1,16 @@
 [
  {
+  "v": "v0.43",
+  "date": "2026-11-14",
+  "emoji": "👀",
+  "codes": [
+   "S2-V"
+  ],
+  "change": "S2-V Similar videos: mark the top 2 videos (rank 1 codebasics and rank 2 DataMListic) as watched with a 👀 watched marker in the table, from a watched flag in assets/similar_videos.json. Feedback buttons stay on the page.",
+  "why": "📄 📊 S2-V Similar videos\n\n💬 [page:s2-v.html] 📄 📊 S2-V Similar videos\nmark the top 2 videos as watched",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.42",
   "date": "2026-11-14",
   "emoji": "👁️",
