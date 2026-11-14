@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>S2-06 Assemble</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✂️</text></svg>">
+<link rel="alternate icon" href="assets/favicons/s2-06.svg">
+<link rel="stylesheet" href="style.css">
+</head><body>
+<header><button id="menu-btn" aria-expanded="true">▾ Menu</button><b class="brand">📱 S2 · From Numbers to Meaning: High-Dimensional Embeddings</b><nav id="nav"><a href="index.html">🏠 Hub</a><a href="s2-w.html">🧰 S2-W Workbench</a><a href="s2-r.html">🔬 S2-R Research</a><a href="s2-sp.html">🛰️ S2-SP Sprite setup</a><a href="development.html">💻 S2-DEV Development</a><a href="analytics.html">📊 S2-A YouTube Analytics</a><a href="s2-00.html">🧭 S2-00 Brief, hook and loop</a><a href="s2-01.html">📝 S2-01 Script</a><a href="s2-02.html">🗺️ S2-02 Storyboard</a><a href="s2-03.html">🪄 S2-03 Flow prompts</a><a href="s2-03b.html">🆚 S2-03b Flow vs Higgsfield</a><a href="s2-04.html">🎞️ S2-04 Generate in Flow</a><a href="s2-05.html">🎙️ S2-05 Voice-over</a><a href="s2-06.html" class=active>✂️ S2-06 Assemble and loop check</a><a href="s2-07.html">💬 S2-07 Captions, title, description</a><a href="s2-08.html">📈 S2-08 Publish and analytics</a><a href="iterations.html">🔁 Iterations</a><a href="feedback.html">💬 All feedback</a><a href="spec.html">📖 Master spec</a><a href="readme.html">📄 Script (README)</a></nav></header>
+<main><h1>✂️ <span class="code">S2-06</span> Assemble and loop check</h1><p class="intro">Cut the clips to the timings, add the voice and captions, and check the loop and the rewatch bait.</p><table><tr><th>🎬 Clip</th><th>⏱️ Time</th><th>🔤 Caption</th></tr><tr><td>c1</td><td>0.0–8.8 s 🎙️</td><td>TOKEN 9246</td></tr><tr><td>c2</td><td>8.8–14.62 s 🎙️</td><td>1 → 1,536</td></tr><tr><td>c3</td><td>14.62–23.92 s 🎙️</td><td>FRUIT · ROYALTY</td></tr><tr><td>c4</td><td>23.92–29.08 s 🎙️</td><td>KING − MAN + WOMAN</td></tr><tr><td>c5</td><td>29.08–34.98 s 🎙️</td><td>= QUEEN</td></tr><tr><td>c6</td><td>34.98–37.66 s 🎙️</td><td>HOW DO THEY TALK?</td></tr></table>
+<h2>🔄 Loop and bait checklist</h2>
+<label class="card check"><input type="checkbox" data-check="S2-06.a"> 🎞️ Last frame matches first frame</label>
+<label class="card check"><input type="checkbox" data-check="S2-06.b"> 🗣️ Last word flows into first word</label>
+<label class="card check"><input type="checkbox" data-check="S2-06.c"> 🥚 Tiny 9246 visible in the Queen on the 2nd watch</label>
+<label class="card check"><input type="checkbox" data-check="S2-06.d"> 💬 Captions in safe area, large</label>
+<label class="card check"><input type="checkbox" data-check="S2-06.e"> ⏱️ 45 s or less, 9:16</label>
+<div class="card hero"><b>🎛️ Remotion Studio (assembly in code)</b>
+<p>Opens a 9:16, 45 s timeline from <code>assets/short.json</code>: clips that exist are used, missing ones show a placeholder card, captions sit in the safe area, voice is added when <code>S2-05-vo.wav</code> exists.</p>
+<p>▶️ <a href="http://localhost:3001" target="_blank">http://localhost:3001</a> (only works while Studio runs on your Mac)</p>
+<button class="copy" data-copy="cd ~/projects/day-2/remotion &amp;&amp; npm run studio">📋 Copy: start Studio</button><button class="copy" data-copy="cd ~/projects/day-2/remotion &amp;&amp; npm run render">📋 Copy: render S2-06-final.mp4</button>
+<p>📁 Put clips in <code>remotion/public/clips/S2-04-cN.mp4</code> and the voice in <code>remotion/public/S2-05-vo.wav</code> (never committed).</p></div>
+<p>💬 <b>Animated captions:</b> each word pops in, the spoken word glows gold. Style comes from <code>assets/short.json › captions</code>; timing is estimated until <code>assets/words.json</code> (Whisper words) exists.</p>
+<p>🛠️ Or assemble in CapCut or ffmpeg: hard cuts, no transitions, captions from the table, voice from S2-05. Export <code>S2-06-final.mp4</code>.</p>
+<div class="fb" data-fb="S2-06" data-label="✂️ Edit notes (pace, cuts, loop feel)"></div></main>
+<footer>🔁 Update → deploy → feedback. Copy your feedback with 📋 and paste it back to Claude.</footer>
+<script>window.PAGES=[["index.html", "🏠 Hub"], ["s2-w.html", "🧰 S2-W Workbench"], ["s2-r.html", "🔬 S2-R Research"], ["s2-sp.html", "🛰️ S2-SP Sprite setup"], ["development.html", "💻 S2-DEV Development"], ["analytics.html", "📊 S2-A YouTube Analytics"], ["s2-00.html", "🧭 S2-00 Brief, hook and loop"], ["s2-01.html", "📝 S2-01 Script"], ["s2-02.html", "🗺️ S2-02 Storyboard"], ["s2-03.html", "🪄 S2-03 Flow prompts"], ["s2-03b.html", "🆚 S2-03b Flow vs Higgsfield"], ["s2-04.html", "🎞️ S2-04 Generate in Flow"], ["s2-05.html", "🎙️ S2-05 Voice-over"], ["s2-06.html", "✂️ S2-06 Assemble and loop check"], ["s2-07.html", "💬 S2-07 Captions, title, description"], ["s2-08.html", "📈 S2-08 Publish and analytics"], ["iterations.html", "🔁 Iterations"], ["feedback.html", "💬 All feedback"], ["spec.html", "📖 Master spec"], ["readme.html", "📄 Script (README)"]];window.SPRITE={"name": "day-2", "dir": "~/day-2", "repo": "https://github.com/rifaterdemsahin/day-2.git", "pages": "https://day-2-short.fly.dev/"};</script>
+<script src="app.js"></script>
+</body></html>

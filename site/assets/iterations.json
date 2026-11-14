@@ -1,0 +1,250 @@
+[
+ {
+  "v": "v0.17",
+  "date": "2026-11-14",
+  "emoji": "🛫",
+  "codes": [
+   "S2-SP",
+   "S2-W"
+  ],
+  "change": "Site now deployed to Fly.io (app day-2-short, London, 1 machine, nginx) at https://day-2-short.fly.dev/. Real pages are built into site/; the old GitHub Pages address only redirects to Fly. deploy_and_wait.py now builds, runs fly deploy, verifies 200 and opens Chrome.",
+  "why": "Owner asked to redirect GitHub Pages to Fly.io and deploy the site there.",
+  "status": "🚀 deployed"
+ },
+ {
+  "v": "v0.16",
+  "date": "2026-11-14",
+  "emoji": "🚀",
+  "codes": [
+   "S2-SP",
+   "S2-W"
+  ],
+  "change": "Notes panel gets 🚀 Run on sprite (this page / all notes): copies one `sprite exec` command that sends the notes to Claude on a Fly.io Sprite, which edits the repo, rebuilds, updates spec + iterations, pushes main and checks Pages. New S2-SP page with setup sub-steps S2-SP.1-10 (login, create, Claude, clone, 7-day repo-scoped token, dry run, revoke). Sprite name/folder in short.json › sprite.",
+  "why": "Owner wanted a button in the notes section that executes on a Fly.io Sprite with Claude and sends the updates to fix the site and redeploy. Chosen: copy a ready command (no secret on the public site); owner runs the setup.",
+  "status": "🚀 deployed"
+ },
+ {
+  "v": "v0.15",
+  "date": "2026-11-14",
+  "emoji": "🧰",
+  "codes": [
+   "S2-W"
+  ],
+  "change": "Workbench now has feedback buttons (✅ 🔧 ❌ + 📋 Copy feedback) on every clip and on the setup and bring-in sections, with a hint in the Next up card. Standing rule 3 now says to open the workbench after every deploy.",
+  "why": "Owner: always open the workbench and have feedback buttons so they can feed back to Claude and we iterate on it.",
+  "status": "🚀 deployed"
+ },
+ {
+  "v": "v0.16",
+  "date": "2026-11-14",
+  "emoji": "📊",
+  "codes": [
+   "S2-A",
+   "S2-00"
+  ],
+  "change": "Added S2-A YouTube Analytics page: deep analysis of Day 1 (How LLMs Actually Read: Tokenization Explained) reaching 247.1% average percentage viewed and 1:56 average view duration on a 0:47 video (2.47 loops/view). Embedded YouTube Studio screenshot (WhatsApp Image 2026-11-14 at 08.53.34) with comparative table against 8 long-form videos (7-12% retention), 5 strategic reasons why we focus on this video, and the retention blueprint governing Day 2.",
+  "why": "Owner asked to create a page on YouTube analytics and explain why they focus on this video from the last downloaded file of Day 1 analytics.",
+  "status": "🚀 deployed"
+ },
+ {
+  "v": "v0.15",
+  "date": "2026-11-14",
+  "emoji": "💻",
+  "codes": [
+   "S2-DEV",
+   "S2-R"
+  ],
+  "change": "Added S2-DEV Development page right after Research with interactive browser playground (token lookup, dimension unfolding, cosine distance calculator, live king − man + woman = queen linear algebra), standalone runnable Python script (scripts/development_embeddings_demo.py), and beat-by-beat code mapping directly to the script. Added page-specific SVG favicons and data URIs for all pages across the site.",
+  "why": "Owner requested a development page after research implementing simple code and explaining how it relates to the research so anyone with that development understands the script, plus a related favicon for every page.",
+  "status": "🚀 deployed"
+ },
+ {
+  "v": "v0.14",
+  "date": "2026-11-14",
+  "emoji": "🧰",
+  "codes": [
+   "S2-W",
+   "S2-04",
+   "S2-06"
+  ],
+  "change": "New first page S2-W Workbench (MVP): two-window Chrome guide with a diagram (A = site, B = Flow/Higgsfield/Studio), a one-time setup checklist, per-clip copy → Flow → download → tick, a command to move clips into Remotion and sync, loop check, render and publish. A Next up banner and progress bar; ticks are kept in the browser and shared with S2-04 and S2-06. Open buttons reuse the same tab. Clip times rounded to 0.1 s.",
+  "why": "Owner was going back and forth between many tabs and wanted a workbench that keeps progress and guides what to open and when.",
+  "status": "🚀 deployed"
+ },
+ {
+  "v": "v0.13",
+  "date": "2026-11-14",
+  "emoji": "🔬",
+  "codes": [
+   "S2-R",
+   "S2-00"
+  ],
+  "change": "New first page S2-R Research: the script beat by beat with 7 inline diagrams (token → ID → embedding row, 1,536 coordinates, clusters, king − man + woman, how it is learned, attention teaser, pipeline), an honest note per beat on what the short simplifies, why the topic matters (6 reasons), and sources. Clip labels on all pages now show the voice-driven times.",
+  "why": "Owner asked for a research page at the start that explains the script in detail with diagrams and visuals and why the topic matters.",
+  "status": "🚀 deployed"
+ },
+ {
+  "v": "v0.12",
+  "date": "2026-11-14",
+  "emoji": "🆚",
+  "codes": [
+   "S2-03",
+   "S2-03b",
+   "S2-06"
+  ],
+  "change": "New page S2-03b: Google Flow vs Higgsfield side by side (features, camera, length, API, cost, fit), what Higgsfield can do for this short, and six Higgsfield prompts with a camera preset per scene (hf_camera in short.json). S2-03 gets a Copy ALL prompts button. Remotion Studio (voice + animated captions + placeholders) opened on 3001 for a watch-through.",
+  "why": "Owner wanted to see and feel the current video, get the Flow prompts, and compare Higgsfield with Flow.",
+  "status": "🚀 deployed"
+ },
+ {
+  "v": "v0.11",
+  "date": "2026-11-12",
+  "emoji": "🔑",
+  "codes": [
+   "S2-05",
+   "S2-06"
+  ],
+  "change": "Voice generated (37.5 s, ElevenLabs on fal.ai). Word timings aligned to the script's own words and scene cuts now follow the voice (assets/scene_timing.json → Remotion, 38 s timeline; scenes c1 8.8 s and c3 9.3 s are longer than one Flow clip). 7-day key process documented as numbered sub-steps S2-05.1 to S2-05.9 on the S2-05 page and in the spec (B2c). Whisper fallback made robust.",
+  "why": "Owner ran the voice step with a 7-day key and asked to document the process in the pipeline and get the steps to follow.",
+  "status": "🚀 deployed"
+ },
+ {
+  "v": "v0.10",
+  "date": "2026-11-12",
+  "emoji": "🎙️",
+  "codes": [
+   "S2-05",
+   "S2-06"
+  ],
+  "change": "Voice step automated: scripts/make_voice.py calls ElevenLabs eleven-v3 on fal.ai (voice Aria by default, from data), saves S2-05-vo.wav and word timings (assets/words.json) for the animated captions. Key from env or Keychain only; dry run available. Spec: B2c, retrain row 12.",
+  "why": "Owner: get the audio from fal.ai with ElevenLabs.",
+  "status": "🛠️ tool deployed · ✅ voice generated (see v0.11)"
+ },
+ {
+  "v": "v0.9",
+  "date": "2026-11-12",
+  "emoji": "💬",
+  "codes": [
+   "S2-06",
+   "S2-05"
+  ],
+  "change": "Animated captions in the Remotion project: words pop in one by one, the spoken word is highlighted, pages of ~4 words, safe-area placement, styled from data and timed from Whisper words (assets/words.json) when they exist, otherwise estimated. Spec: B2b, B3 rule 6, retrain row 11.",
+  "why": "Owner asked for animated captions.",
+  "status": "🚀 deployed"
+ },
+ {
+  "v": "v0.8",
+  "date": "2026-11-12",
+  "emoji": "🎛️",
+  "codes": [
+   "S2-06"
+  ],
+  "change": "Added a Remotion project for the short (9:16, 45 s, six clip slots, safe-area captions, placeholders for clips not made yet) with Studio on port 3001, linked from S2-06. Spec: B2b and retrain row 9.",
+  "why": "Owner: 'open remotion'. day-2 had no Remotion project and port 3000 was another project's Studio.",
+  "status": "🚀 deployed"
+ },
+ {
+  "v": "v0.7",
+  "date": "2026-11-12",
+  "emoji": "🖍️",
+  "codes": [
+   "S2-00",
+   "S2-01",
+   "S2-02",
+   "S2-03",
+   "S2-04",
+   "S2-05",
+   "S2-06",
+   "S2-07",
+   "S2-08"
+  ],
+  "change": "Highlight to comment: select any text on any page, tap 💬 Note on this, optionally ✅/🔧/❌, save. The passage stays highlighted, is listed in the 📝 panel (🔎 jump, ✖️ delete) and is included in Copy this page / Copy all with the quoted text and section. Spec: rule 5(e), retrain row 8.",
+  "why": "Owner: wants to highlight and give feedback on sections of the page.",
+  "status": "🚀 deployed"
+ },
+ {
+  "v": "v0.6",
+  "date": "2026-11-12",
+  "emoji": "🖼️",
+  "codes": [
+   "S2-00",
+   "S2-03",
+   "S2-07"
+  ],
+  "change": "Title and thumbnail now sit at the very start (top of the hub and S2-00): a drawn thumbnail draft, three title options with ⭐ on the lead one, copy buttons and feedback boxes. S2-03 gets a thumbnail still prompt; S2-07 reuses the lead title.",
+  "why": "Owner: wants to see the title and thumbnail at the start of the process, easier to judge.",
+  "status": "🚀 deployed"
+ },
+ {
+  "v": "v0.5",
+  "date": "2026-11-12",
+  "emoji": "🧭",
+  "codes": [
+   "S2-00"
+  ],
+  "change": "S2-00 now starts with a producer-only 'Why' section: six first principles (attention and rewatch, one idea per short, series compounding, out-iterate not out-spend, your time and Flow, define done). Spec: the Why section is required on every project's brief page.",
+  "why": "Owner: wanted a why section with first principles on top of the brief page, for the producer only.",
+  "status": "🚀 deployed"
+ },
+ {
+  "v": "v0.4",
+  "date": "2026-11-12",
+  "emoji": "✔️",
+  "codes": [
+   "S2-00",
+   "S2-01",
+   "S2-02",
+   "S2-03",
+   "S2-04",
+   "S2-05",
+   "S2-06",
+   "S2-07",
+   "S2-08"
+  ],
+  "change": "Floating 📝 notes panel on every page (key N), ✔️ 'I have reviewed this page' check marks in the menu, review progress on the hub and the feedback page, copy this page / copy all. Spec: standing rules 5 and 6, Retrain log B6.",
+  "why": "Owner: wants check marks when a document review is complete, and floating, easier note taking. The spec is copied to new projects and we retrain ourselves.",
+  "status": "🚀 deployed"
+ },
+ {
+  "v": "v0.3",
+  "date": "2026-11-12",
+  "emoji": "🔁",
+  "codes": [
+   "S2-00",
+   "S2-08"
+  ],
+  "change": "Added this Iterations page, made README a navigation hub, and wrote the iteration rule into the master spec.",
+  "why": "Owner: we always iterate, so every round must be documented in one place.",
+  "status": "🚀 deployed"
+ },
+ {
+  "v": "v0.2",
+  "date": "2026-11-12",
+  "emoji": "💬",
+  "codes": [
+   "S2-00"
+  ],
+  "change": "Master spec: feedback is collected after the owner reviews the deployed site opened in Chrome, using the 📋 copy buttons.",
+  "why": "Owner asked the spec to remember the review and copy-paste loop.",
+  "status": "🚀 deployed"
+ },
+ {
+  "v": "v0.1",
+  "date": "2026-11-12",
+  "emoji": "🎬",
+  "codes": [
+   "S2-00",
+   "S2-01",
+   "S2-02",
+   "S2-03",
+   "S2-04",
+   "S2-05",
+   "S2-06",
+   "S2-07",
+   "S2-08"
+  ],
+  "change": "First draft: master spec v4.0 (Part B, Google Flow), the S2 pipeline site with 13 pages, drafted voice-over, storyboard and 6 Flow prompts, loop plan and rewatch bait.",
+  "why": "Owner's README script and the goal of a 200%+ watch-time short like the example.",
+  "status": "🚀 deployed"
+ }
+]

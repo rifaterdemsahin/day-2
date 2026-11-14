@@ -504,6 +504,13 @@
     "name": "day-2",
     "dir": "~/day-2",
     "repo": "https://github.com/rifaterdemsahin/day-2.git",
-    "pages": "https://rifaterdemsahin.github.io/day-2/"
+    "pages": "https://day-2-short.fly.dev/"
+  },
+  "deploy": {
+    "host": "fly.io",
+    "fly_app": "day-2-short",
+    "region": "lhr",
+    "url": "https://day-2-short.fly.dev/",
+    "old_pages": "https://rifaterdemsahin.github.io/day-2/"
   }
 }

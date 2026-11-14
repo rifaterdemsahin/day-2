@@ -1,4 +1,4 @@
-> 🌐 **Live site:** https://rifaterdemsahin.github.io/day-2/ · [📖 Master spec](https://rifaterdemsahin.github.io/day-2/spec.html) · [🔁 Iterations](https://rifaterdemsahin.github.io/day-2/iterations.html) · [💬 Feedback](https://rifaterdemsahin.github.io/day-2/feedback.html)
+> 🛫 **Hosted on Fly.io** (the old GitHub Pages address redirects here). 🌐 **Live site:** https://day-2-short.fly.dev/ · [📖 Master spec](https://day-2-short.fly.dev/spec.html) · [🔁 Iterations](https://day-2-short.fly.dev/iterations.html) · [💬 Feedback](https://day-2-short.fly.dev/feedback.html)
 
 # 📱 day-2: From Numbers to Meaning
 
@@ -8,27 +8,27 @@
 
 | Code | Step | Page |
 |---|---|---|
-| `S2-SP` | 🛰️ Sprite setup (Claude on a Fly.io Sprite, fix + redeploy from notes) | [open](https://rifaterdemsahin.github.io/day-2/s2-sp.html) |
-| `S2-W` | 🧰 Workbench (do the work: two Chrome windows, per-clip checklist) | [open](https://rifaterdemsahin.github.io/day-2/s2-w.html) |
-| `S2-R` | 🔬 Research (script explained with diagrams, why it matters) | [open](https://rifaterdemsahin.github.io/day-2/s2-r.html) |
-| `S2-00` | 🧭 Brief, hook, loop | [open](https://rifaterdemsahin.github.io/day-2/s2-00.html) |
-| `S2-01` | 📝 Script | [open](https://rifaterdemsahin.github.io/day-2/s2-01.html) |
-| `S2-02` | 🗺️ Storyboard | [open](https://rifaterdemsahin.github.io/day-2/s2-02.html) |
-| `S2-03` | 🪄 Flow prompts | [open](https://rifaterdemsahin.github.io/day-2/s2-03.html) |
-| `S2-03b` | 🆚 Flow vs Higgsfield | [open](https://rifaterdemsahin.github.io/day-2/s2-03b.html) |
-| `S2-04` | 🎞️ Generate in Flow | [open](https://rifaterdemsahin.github.io/day-2/s2-04.html) |
-| `S2-05` | 🎙️ Voice-over | [open](https://rifaterdemsahin.github.io/day-2/s2-05.html) |
-| `S2-06` | ✂️ Assemble and loop check | [open](https://rifaterdemsahin.github.io/day-2/s2-06.html) |
-| `S2-07` | 💬 Captions, title, description | [open](https://rifaterdemsahin.github.io/day-2/s2-07.html) |
-| `S2-08` | 📈 Publish and analytics | [open](https://rifaterdemsahin.github.io/day-2/s2-08.html) |
+| `S2-SP` | 🛰️ Sprite setup (Claude on a Fly.io Sprite, fix + redeploy from notes) | [open](https://day-2-short.fly.dev/s2-sp.html) |
+| `S2-W` | 🧰 Workbench (do the work: two Chrome windows, per-clip checklist) | [open](https://day-2-short.fly.dev/s2-w.html) |
+| `S2-R` | 🔬 Research (script explained with diagrams, why it matters) | [open](https://day-2-short.fly.dev/s2-r.html) |
+| `S2-00` | 🧭 Brief, hook, loop | [open](https://day-2-short.fly.dev/s2-00.html) |
+| `S2-01` | 📝 Script | [open](https://day-2-short.fly.dev/s2-01.html) |
+| `S2-02` | 🗺️ Storyboard | [open](https://day-2-short.fly.dev/s2-02.html) |
+| `S2-03` | 🪄 Flow prompts | [open](https://day-2-short.fly.dev/s2-03.html) |
+| `S2-03b` | 🆚 Flow vs Higgsfield | [open](https://day-2-short.fly.dev/s2-03b.html) |
+| `S2-04` | 🎞️ Generate in Flow | [open](https://day-2-short.fly.dev/s2-04.html) |
+| `S2-05` | 🎙️ Voice-over | [open](https://day-2-short.fly.dev/s2-05.html) |
+| `S2-06` | ✂️ Assemble and loop check | [open](https://day-2-short.fly.dev/s2-06.html) |
+| `S2-07` | 💬 Captions, title, description | [open](https://day-2-short.fly.dev/s2-07.html) |
+| `S2-08` | 📈 Publish and analytics | [open](https://day-2-short.fly.dev/s2-08.html) |
 
 ## 🔁 How we work
 
-Deploy → open the site in Chrome → owner reviews and copies feedback with the 📋 buttons → pastes it to Claude → Claude updates the spec, the site and the [🔁 Iterations](https://rifaterdemsahin.github.io/day-2/iterations.html) log → redeploy. Rules live in [MASTER_SPEC.md](MASTER_SPEC.md) (Part B is short form).
+Deploy → open the site in Chrome → owner reviews and copies feedback with the 📋 buttons → pastes it to Claude → Claude updates the spec, the site and the [🔁 Iterations](https://day-2-short.fly.dev/iterations.html) log → redeploy. Rules live in [MASTER_SPEC.md](MASTER_SPEC.md) (Part B is short form).
 
 ## 🛠️ Build
 
-`python3 -I scripts/build_short_site.py` regenerates every page from `assets/short.json` and `assets/iterations.json`. Never commit media.
+`python3 -I scripts/build_short_site.py` regenerates every page into `site/` (served by Fly.io; root `*.html` are redirect stubs). Deploy: `python3 scripts/deploy_and_wait.py`. It regenerates every page from `assets/short.json` and `assets/iterations.json`. Never commit media.
 
 🎙️ **Voice (S2-05):** `FAL_KEY=… python3 -I scripts/make_voice.py` (ElevenLabs on fal.ai; `--dry-run` first, see Master spec B2c).
 

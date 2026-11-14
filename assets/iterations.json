@@ -1,5 +1,17 @@
 [
  {
+  "v": "v0.17",
+  "date": "2026-11-14",
+  "emoji": "🛫",
+  "codes": [
+   "S2-SP",
+   "S2-W"
+  ],
+  "change": "Site now deployed to Fly.io (app day-2-short, London, 1 machine, nginx) at https://day-2-short.fly.dev/. Real pages are built into site/; the old GitHub Pages address only redirects to Fly. deploy_and_wait.py now builds, runs fly deploy, verifies 200 and opens Chrome.",
+  "why": "Owner asked to redirect GitHub Pages to Fly.io and deploy the site there.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.16",
   "date": "2026-11-14",
   "emoji": "🚀",

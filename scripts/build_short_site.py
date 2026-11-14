@@ -2,10 +2,14 @@
 """Build the short-form site from assets/short.json (facts live in data, not code).
 Run: python3 -I scripts/build_short_site.py
 """
-import html, json, pathlib
+import html, json, pathlib, shutil
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 D = json.loads((ROOT / "assets/short.json").read_text(encoding="utf-8"))
+SITE = ROOT / "site"  # the real site (deployed to Fly.io); root *.html are only redirect stubs for GitHub Pages
+SITE.mkdir(exist_ok=True)
+WRITTEN = []
+FLY = D["deploy"]["url"]
 E = html.escape
 
 
@@ -79,7 +83,8 @@ def page(fname, title, body, extra_head=""):
 <script>window.PAGES={pages};window.SPRITE={json.dumps(D.get("sprite", {}))};</script>
 <script src="app.js"></script>
 </body></html>"""
-    (ROOT / fname).write_text(out, encoding="utf-8")
+    (SITE / fname).write_text(out, encoding="utf-8")
+    WRITTEN.append(fname)
 
 
 def copybtn(text, label="📋 Copy"):
@@ -692,7 +697,7 @@ def sAnalytics():
 
 
 # ---------- workbench: an MVP guided checklist (two Chrome windows, progress kept in localStorage)
-URLS = {"site": "https://rifaterdemsahin.github.io/day-2/s2-w.html", "flow": "https://labs.google/fx/tools/flow",
+URLS = {"site": D["deploy"]["url"] + "s2-w.html", "flow": "https://labs.google/fx/tools/flow",
         "higgs": "https://higgsfield.ai", "studio": "http://localhost:3001"}
 
 
@@ -996,4 +1001,23 @@ hub(); sW(); sSP(); sR(); sDev(); sAnalytics(); s00(); s01(); s02(); s03(); s03b
 md_page("spec.html", "Master spec", "MASTER_SPEC.md", "📖")
 md_page("readme.html", "Script draft (README)", "README.md", "📄")
 (ROOT / ".nojekyll").write_text("")
+
+# ---- assets next to the real pages, then redirect stubs at the repo root for the old GitHub Pages address
+for f in ("style.css", "app.js"):
+    shutil.copy2(ROOT / f, SITE / f)
+shutil.copytree(ROOT / "assets", SITE / "assets", dirs_exist_ok=True)
+
+
+def stub(name, target):
+    return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Moved to Fly.io</title>'
+            f'<meta name="viewport" content="width=device-width,initial-scale=1"><link rel="canonical" href="{target}">'
+            f'<meta http-equiv="refresh" content="0; url={target}">'
+            f'<script>location.replace("{target}"+location.hash)</script></head><body style="font:16px system-ui;background:#0b1020;color:#e8ecff;padding:2rem">'
+            f'<p>🛫 This site moved to Fly.io. <a style="color:#4dd8ff" href="{target}">Continue to {target}</a></p></body></html>')
+
+
+for fname in WRITTEN:
+    (ROOT / fname).write_text(stub(fname, FLY + fname), encoding="utf-8")
+(ROOT / "404.html").write_text(stub("404.html", FLY), encoding="utf-8")
+print("built", len(WRITTEN), "real pages in site/ and", len(WRITTEN) + 1, "redirect stubs at the root;")
 print("built", 5 + len(D["steps"]), "pages;", len(FB_IDS), "feedback boxes")

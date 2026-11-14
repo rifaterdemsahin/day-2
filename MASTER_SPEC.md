@@ -625,6 +625,8 @@ Everything committed becomes public (repo must be public for free Pages). Keep e
 
 ## 7a. Publish: GitHub Pages (do this for every project, do not forget)
 
+> 🛫 **Short-form projects (Part B) are hosted on Fly.io instead:** `scripts/build_short_site.py` writes the real site to `site/`, `Dockerfile` (nginx) + `fly.toml` deploy it (`python3 scripts/deploy_and_wait.py` = build, `fly deploy --remote-only`, verify 200, open Chrome), and the repo-root `*.html` are redirect stubs so the old GitHub Pages address forwards to Fly. One machine, `auto_stop`, region near the owner. Browser-saved ticks and notes are per address, so they restart on the new address.
+
 1. `scripts/build_all.sh` (builds every page and checks them; section 7c), check no private data or media is staged: `git add -n . | grep -Ei "\.(mp4|wav|zip)$|ocr_|REPORT.md"` must print nothing.
 2. **Trunk-based development & merge to `main`:** Follow trunk-based development. Work converges immediately into `main`. If working on a short-lived branch (`<slug>-v1`), commit after each change: `git add -A && git commit -m "…" && git push -u origin <branch>`, then immediately **merge to `main`** ("remember to merge always"): `git checkout main && git pull && git merge --no-ff <branch> && git push origin main`. Keep both `main` and the branch in parity, with `main` being the definitive source of truth for deployment.
 3. **Enable GitHub Pages** (once per repo; the repo must be public or on a paid plan; everything committed becomes public):
@@ -897,5 +899,7 @@ Every page on the site carries its code in the menu and the heading. Feedback is
 | 17 | 2026-11-14 | The workbench is where the owner spends their time, so it is where feedback is most needed | Standing rule 3: open the workbench after every deploy; every workbench card/section has feedback buttons; iterate on it each round |
 
 | 18 | 2026-11-14 | Fixing the site from notes should not need a chat session, but a public page cannot hold a secret | Notes panel 🚀 button builds one `sprite exec` command (notes + fix/redeploy instructions) the owner pastes in Terminal; runs Claude on the Sprite configured in `short.json › sprite`; repo-scoped 7-day push token, revoked after; no tokens on the site |
+
+| 19 | 2026-11-14 | GitHub Pages is a second system to wait for and keep; the owner already runs on Fly.io | Part B hosts on Fly.io (`site/` + Dockerfile + fly.toml), GitHub Pages only redirects; deploy script builds, deploys, verifies 200, opens Chrome; localStorage ticks reset when the address changes |
 
 **How to retrain:** at the end of each project add rows here, then copy the whole file to the next project. Keep rows short: lesson, then the rule.

@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>S2-DEV Development</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💻</text></svg>">
+<link rel="alternate icon" href="assets/favicons/development.svg">
+<link rel="stylesheet" href="style.css">
+</head><body>
+<header><button id="menu-btn" aria-expanded="true">▾ Menu</button><b class="brand">📱 S2 · From Numbers to Meaning: High-Dimensional Embeddings</b><nav id="nav"><a href="index.html">🏠 Hub</a><a href="s2-w.html">🧰 S2-W Workbench</a><a href="s2-r.html">🔬 S2-R Research</a><a href="s2-sp.html">🛰️ S2-SP Sprite setup</a><a href="development.html" class=active>💻 S2-DEV Development</a><a href="analytics.html">📊 S2-A YouTube Analytics</a><a href="s2-00.html">🧭 S2-00 Brief, hook and loop</a><a href="s2-01.html">📝 S2-01 Script</a><a href="s2-02.html">🗺️ S2-02 Storyboard</a><a href="s2-03.html">🪄 S2-03 Flow prompts</a><a href="s2-03b.html">🆚 S2-03b Flow vs Higgsfield</a><a href="s2-04.html">🎞️ S2-04 Generate in Flow</a><a href="s2-05.html">🎙️ S2-05 Voice-over</a><a href="s2-06.html">✂️ S2-06 Assemble and loop check</a><a href="s2-07.html">💬 S2-07 Captions, title, description</a><a href="s2-08.html">📈 S2-08 Publish and analytics</a><a href="iterations.html">🔁 Iterations</a><a href="feedback.html">💬 All feedback</a><a href="spec.html">📖 Master spec</a><a href="readme.html">📄 Script (README)</a></nav></header>
+<main><h1>💻 <span class="code">S2-DEV</span> Development</h1><p class="intro">The code behind the short: token lookup, unfolding into coordinates, cosine distance, and live vector arithmetic (king − man + woman = queen) explained step-by-step.</p><div class="card hero">
+<b>🧭 The Code in One Paragraph</b>
+<p>A language model does arithmetic, not reading. To run the video script in software, we need only four core functions: (1) mapping text to token IDs (<code>king = 9246</code>), (2) looking up that ID in an embedding table to unfold it into coordinates, (3) computing cosine distance between coordinates so related meanings sit close together, and (4) performing vector addition and subtraction (<code>v_king - v_man + v_woman ≈ v_queen</code>). Anyone who understands this code understands the exact mechanics of the short.</p>
+<button class="copy" data-copy="A language model does arithmetic, not reading. Discrete words are mapped to token IDs, unfolded into high-dimensional coordinates, and compared with cosine distance. Vector arithmetic (king - man + woman = queen) works because directions in learned vector space encode semantic concepts.">📋 Copy summary</button>
+</div>
+
+
+<div class="card hero">
+  <h2 style="margin-top:0">⚡ Interactive Embeddings Playground</h2>
+  <p class="intro">Test the exact mathematical principles from the short directly in your browser. Click words, calculate similarities, and run live vector arithmetic.</p>
+  
+  <div style="margin: 16px 0; padding: 12px; background: var(--bg); border-radius: 10px; border: 1px solid var(--line);">
+    <h3 style="margin-top:0">1. 🔢 Token Lookup & Dimension Unfolding (Clips c1 & c2)</h3>
+    <p>Click any token to inspect its integer ID and unfold it into its 4D coordinates <code>[Royalty, Femininity, Fruit, Power]</code>:</p>
+    <div id="token-buttons" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;"></div>
+    <div id="token-display" style="padding:10px; background:var(--panel); border:1px solid var(--line); border-radius:8px; font-family:ui-monospace,Menlo,monospace; font-size:14px;"></div>
+  </div>
+
+  <div style="margin: 16px 0; padding: 12px; background: var(--bg); border-radius: 10px; border: 1px solid var(--line);">
+    <h3 style="margin-top:0">2. 🧲 Distance & Semantic Clusters (Clip c3)</h3>
+    <p>Compare cosine similarity between any two words. Notice how fruits cluster together, royalty cluster together, and cross-cluster words are far apart:</p>
+    <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:12px;">
+      <select id="sim-w1" style="background:var(--panel); color:var(--fg); border:1px solid var(--line); border-radius:6px; padding:6px 10px; font-size:14px;"></select>
+      <span>↔️</span>
+      <select id="sim-w2" style="background:var(--panel); color:var(--fg); border:1px solid var(--line); border-radius:6px; padding:6px 10px; font-size:14px;"></select>
+      <button id="btn-compare" class="primary" style="margin:0;">Calculate Distance</button>
+      <button id="preset-fruit" style="margin:0;">🍎 apple ↔ 🍐 pear</button>
+      <button id="preset-royal" style="margin:0;">👑 king ↔ 👸 queen</button>
+      <button id="preset-mixed" style="margin:0;">🍎 apple ↔ 👑 king</button>
+    </div>
+    <div id="sim-display" style="padding:10px; background:var(--panel); border:1px solid var(--line); border-radius:8px; font-family:ui-monospace,Menlo,monospace; font-size:14px;"></div>
+  </div>
+
+  <div style="margin: 16px 0; padding: 12px; background: var(--bg); border-radius: 10px; border: 1px solid var(--line);">
+    <h3 style="margin-top:0">3. 👑 Live Vector Arithmetic: king − man + woman (Clips c4 & c5)</h3>
+    <p>Perform live linear algebra on word vectors: <code>v_target = v_king - v_man + v_woman</code>, then query the dictionary for the nearest neighbor:</p>
+    <button id="btn-arith" class="primary" style="font-size:15px; padding:8px 16px;">⚡ Compute king − man + woman</button>
+    <div id="arith-display" style="margin-top:12px; padding:10px; background:var(--panel); border:1px solid var(--line); border-radius:8px; font-family:ui-monospace,Menlo,monospace; font-size:14px; display:none;"></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const VOCAB = {
+    "king":  { id: 9246, vec: [ 0.90, -0.75,  0.02,  0.95], icon: "👑" },
+    "queen": { id: 9247, vec: [ 0.92,  0.80,  0.01,  0.94], icon: "👸" },
+    "man":   { id: 512,  vec: [ 0.05, -0.80,  0.00,  0.20], icon: "👨" },
+    "woman": { id: 513,  vec: [ 0.06,  0.78,  0.00,  0.20], icon: "👩" },
+    "crown": { id: 9248, vec: [ 0.85,  0.00,  0.00,  0.88], icon: "💎" },
+    "apple": { id: 2048, vec: [-0.85,  0.00,  0.95, -0.60], icon: "🍎" },
+    "pear":  { id: 2049, vec: [-0.82,  0.00,  0.93, -0.58], icon: "🍐" },
+    "grape": { id: 2050, vec: [-0.80,  0.00,  0.91, -0.55], icon: "🍇" }
+  };
+  const DIMS = ["Royalty", "Femininity", "Fruit", "Power"];
+
+  function dot(a, b) { return a.reduce((sum, val, i) => sum + val * b[i], 0); }
+  function norm(a) { return Math.sqrt(a.reduce((sum, val) => sum + val * val, 0)); }
+  function cosSim(a, b) { const na = norm(a), nb = norm(b); return (na === 0 || nb === 0) ? 0 : dot(a, b) / (na * nb); }
+  function euclid(a, b) { return Math.sqrt(a.reduce((sum, val, i) => sum + Math.pow(val - b[i], 2), 0)); }
+
+  // 1. Setup token lookup buttons
+  const btnWrap = document.getElementById("token-buttons");
+  const tokenDisp = document.getElementById("token-display");
+  const sel1 = document.getElementById("sim-w1");
+  const sel2 = document.getElementById("sim-w2");
+
+  Object.keys(VOCAB).forEach(word => {
+    const item = VOCAB[word];
+    const b = document.createElement("button");
+    b.innerHTML = `${item.icon} ${word} <small>(${item.id})</small>`;
+    b.onclick = () => renderToken(word);
+    btnWrap.appendChild(b);
+
+    const o1 = document.createElement("option"); o1.value = word; o1.text = `${item.icon} ${word}`; sel1.appendChild(o1);
+    const o2 = document.createElement("option"); o2.value = word; o2.text = `${item.icon} ${word}`; sel2.appendChild(o2);
+  });
+  sel1.value = "apple";
+  sel2.value = "pear";
+
+  function renderToken(word) {
+    const it = VOCAB[word];
+    let html = `<div style="margin-bottom:6px;"><b>Token:</b> '${word}' &nbsp;|&nbsp; <b>Token ID:</b> <span class="code">${it.id}</span> &nbsp;|&nbsp; <b>Coordinates:</b> [${it.vec.map(v => v.toFixed(2)).join(", ")}]</div>`;
+    html += '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:6px; margin-top:8px;">';
+    DIMS.forEach((d, i) => {
+      const v = it.vec[i];
+      const pct = Math.round(Math.abs(v) * 100);
+      const color = v > 0 ? "var(--acc)" : "var(--chg)";
+      html += `<div style="border:1px solid var(--line); border-radius:6px; padding:6px; background:var(--bg);">
+        <small style="color:var(--mut);">${d}</small><br><b>${v > 0 ? "+" : ""}${v.toFixed(2)}</b>
+        <div style="height:6px; background:var(--line); border-radius:3px; margin-top:4px; overflow:hidden;">
+          <div style="height:100%; width:${pct}%; background:${color};"></div>
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+    tokenDisp.innerHTML = html;
+  }
+  renderToken("king");
+
+  // 2. Similarity
+  function renderSim(w1, w2) {
+    sel1.value = w1; sel2.value = w2;
+    const v1 = VOCAB[w1].vec, v2 = VOCAB[w2].vec;
+    const sim = cosSim(v1, v2);
+    const dist = euclid(v1, v2);
+    let tag = sim > 0.8 ? "🟢 Very Close Cluster" : (sim > 0.3 ? "🟡 Moderate Semantic Link" : "🔴 Far Apart (Different Meanings)");
+    let color = sim > 0.8 ? "var(--ok)" : (sim > 0.3 ? "var(--gold)" : "var(--cut)");
+    document.getElementById("sim-display").innerHTML = `
+      <div><b>Comparing:</b> ${VOCAB[w1].icon} <b>${w1}</b> &nbsp;↔️&nbsp; ${VOCAB[w2].icon} <b>${w2}</b></div>
+      <div style="margin-top:6px; font-size:16px;"><b>Cosine Similarity:</b> <span style="color:${color}; font-weight:700;">${sim.toFixed(4)}</span> &nbsp;|&nbsp; <b>Euclidean Distance:</b> ${dist.toFixed(4)}</div>
+      <div style="margin-top:4px; color:${color}; font-weight:600;">${tag}</div>
+      <small style="color:var(--mut);">Formula: cos(θ) = (v1 · v2) / (||v1|| * ||v2||). Values near 1.0 indicate identical semantic direction.</small>
+    `;
+  }
+  document.getElementById("btn-compare").onclick = () => renderSim(sel1.value, sel2.value);
+  document.getElementById("preset-fruit").onclick = () => renderSim("apple", "pear");
+  document.getElementById("preset-royal").onclick = () => renderSim("king", "queen");
+  document.getElementById("preset-mixed").onclick = () => renderSim("apple", "king");
+  renderSim("apple", "pear");
+
+  // 3. Vector arithmetic
+  document.getElementById("btn-arith").onclick = function() {
+    const vk = VOCAB["king"].vec;
+    const vm = VOCAB["man"].vec;
+    const vw = VOCAB["woman"].vec;
+    const target = vk.map((k, i) => k - vm[i] + vw[i]);
+
+    // calculate all similarities
+    const scored = Object.keys(VOCAB).map(w => ({
+      word: w,
+      sim: cosSim(target, VOCAB[w].vec),
+      dist: euclid(target, VOCAB[w].vec)
+    }));
+    scored.sort((a, b) => b.sim - a.sim);
+
+    let html = `<div><b>Step 1: King vector</b> &nbsp; = [${vk.map(v => v.toFixed(2)).join(", ")}]</div>`;
+    html += `<div><b>Step 2: − Man vector</b>  = [${vm.map(v => (-v).toFixed(2)).join(", ")}]</div>`;
+    html += `<div><b>Step 3: + Woman vector</b>= [${vw.map(v => (v > 0 ? "+" : "") + v.toFixed(2)).join(", ")}]</div>`;
+    html += `<div style="border-top:1px dashed var(--line); margin:6px 0; padding-top:6px; color:var(--acc);"><b>= Target vector</b> &nbsp; &nbsp;= [${target.map(v => v.toFixed(2)).join(", ")}]</div>`;
+    html += '<h4 style="margin:12px 0 6px 0;">Ranked Nearest Neighbors in Vocabulary:</h4>';
+    html += '<table style="margin-top:6px;"><tr><th>Rank</th><th>Word</th><th>Cosine Sim</th><th>Distance</th><th>Outcome</th></tr>';
+    scored.forEach((it, idx) => {
+      const isQueen = it.word === "queen";
+      const highlight = isQueen ? "style='background:rgba(255,207,90,0.15); font-weight:700;'" : "";
+      html += `<tr ${highlight}><td>#${idx + 1}</td><td>${VOCAB[it.word].icon} ${it.word}</td><td>${it.word === "man" || it.word === "woman" ? it.sim.toFixed(4) + " <small>(input word)</small>" : it.sim.toFixed(4)}</td><td>${it.dist.toFixed(4)}</td><td>${isQueen ? "👑 <b>LANDED ON QUEEN!</b>" : (idx === 1 ? "💎 Close Royal Match" : "")}</td></tr>`;
+    });
+    html += '</table>';
+    html += '<div style="margin-top:10px; color:var(--gold); font-weight:600;">🎯 Result: The nearest non-input vector in the entire vocabulary is QUEEN! Vector math navigated the semantic space without any hardcoded rules.</div>';
+
+    const disp = document.getElementById("arith-display");
+    disp.innerHTML = html;
+    disp.style.display = "block";
+  };
+})();
+</script>
+
+
+<h2>🎬 The Script, Beat by Beat (Code Implementation)</h2>
+<p class="intro">Each card connects one spoken line from the video script to the exact lines of code that implement it, explaining why the short's script was written this way.</p>
+<div class="card research"><div class="meta">🎬 Clip c1 · 0–8.8 s · 🗣️ “Tokens are just numbers. This one, nine-two-four-six, is a word. But to the AI, it means nothing yet.”</div><h2 style="margin-top:6px">🔢 Token ID & Lookup Table</h2><pre><code># 1. The vocabulary dictionary maps discrete words to arbitrary integer IDs
+VOCABULARY = {
+    &quot;king&quot;: 9246, &quot;queen&quot;: 9247, &quot;man&quot;: 512, &quot;woman&quot;: 513,
+    &quot;crown&quot;: 9248, &quot;apple&quot;: 2048, &quot;pear&quot;: 2049, &quot;grape&quot;: 2050
+}
+token_id = VOCABULARY[&quot;king&quot;]  # 9246</code></pre><p>A computer cannot perform math directly on letters. Text is split by a tokenizer into tokens, each assigned an integer index from a fixed vocabulary. The integer 9246 is just an index in a dictionary (like a page number). By itself, 9246 carries no meaning, no semantic relationship to other words, and no understanding.</p><button class="copy" data-copy="# 1. The vocabulary dictionary maps discrete words to arbitrary integer IDs
+VOCABULARY = {
+    &quot;king&quot;: 9246, &quot;queen&quot;: 9247, &quot;man&quot;: 512, &quot;woman&quot;: 513,
+    &quot;crown&quot;: 9248, &quot;apple&quot;: 2048, &quot;pear&quot;: 2049, &quot;grape&quot;: 2050
+}
+token_id = VOCABULARY[&quot;king&quot;]  # 9246">📋 Copy code snippet</button><div class="fb" data-fb="S2-DEV.Cl" data-label="💻 Cl code explanation"></div></div><div class="card research"><div class="meta">🎬 Clip c2 · 8.8–14.62 s · 🗣️ “So it gets unfolded. One number becomes fifteen hundred and thirty-six coordinates.”</div><h2 style="margin-top:6px">🌌 Unfolding into High-Dimensional Vectors</h2><pre><code># 2. Embedding matrix: table of size (Vocabulary Size x Embedding Dimension)
+# In production models (e.g. OpenAI text-embedding-3-small), D = 1,536 coordinates
+# In our toy model, we inspect 4 intuitive semantic dimensions:
+# [Royalty, Femininity, Fruit/Edible, Power/Status]
+EMBEDDINGS = {
+    &quot;king&quot;:  [ 0.90, -0.75,  0.02,  0.95],
+    &quot;queen&quot;: [ 0.92,  0.80,  0.01,  0.94],
+    &quot;apple&quot;: [-0.85,  0.00,  0.95, -0.60]
+}
+vector_king = EMBEDDINGS[&quot;king&quot;]  # 1 integer -&gt; list of 4 (or 1,536) coordinates</code></pre><p>The model maintains a lookup table (embedding matrix) where every row corresponds to a token ID. Looking up row 9246 yields a list of floating-point numbers. That single integer &#x27;unfolds&#x27; into a point in high-dimensional hyperspace. OpenAI&#x27;s ada-002 and text-embedding-3-small use 1,536 dimensions; larger models use 3,072 or 4,096.</p><button class="copy" data-copy="# 2. Embedding matrix: table of size (Vocabulary Size x Embedding Dimension)
+# In production models (e.g. OpenAI text-embedding-3-small), D = 1,536 coordinates
+# In our toy model, we inspect 4 intuitive semantic dimensions:
+# [Royalty, Femininity, Fruit/Edible, Power/Status]
+EMBEDDINGS = {
+    &quot;king&quot;:  [ 0.90, -0.75,  0.02,  0.95],
+    &quot;queen&quot;: [ 0.92,  0.80,  0.01,  0.94],
+    &quot;apple&quot;: [-0.85,  0.00,  0.95, -0.60]
+}
+vector_king = EMBEDDINGS[&quot;king&quot;]  # 1 integer -&gt; list of 4 (or 1,536) coordinates">📋 Copy code snippet</button><div class="fb" data-fb="S2-DEV.Cl" data-label="💻 Cl code explanation"></div></div><div class="card research"><div class="meta">🎬 Clip c3 · 14.62–23.92 s · 🗣️ “And meaning becomes distance. Apples, pears, grapes gather here. Kings, queens, crowns, over there.”</div><h2 style="margin-top:6px">🧲 Meaning as Distance (Cosine Similarity)</h2><pre><code># 3. Closeness in vector space is calculated using Cosine Similarity:
+# cosine_similarity(u, v) = (u · v) / (||u|| * ||v||)
+def cosine_similarity(v1, v2):
+    dot = sum(a * b for a, b in zip(v1, v2))
+    norm1 = math.sqrt(sum(a * a for a in v1))
+    norm2 = math.sqrt(sum(b * b for b in v2))
+    return dot / (norm1 * norm2)
+
+sim_fruit   = cosine_similarity(EMBEDDINGS[&quot;apple&quot;], EMBEDDINGS[&quot;pear&quot;])   # +1.0000 (Close cluster)
+sim_royalty = cosine_similarity(EMBEDDINGS[&quot;king&quot;], EMBEDDINGS[&quot;queen&quot;])   # +0.4828 (Close cluster)
+sim_mixed   = cosine_similarity(EMBEDDINGS[&quot;apple&quot;], EMBEDDINGS[&quot;king&quot;])   # -0.6192 (Far apart)</code></pre><p>During training, neural networks learn word vectors such that words appearing in similar sentence contexts end up physically close to each other. Closeness is computed using standard geometry (dot product divided by magnitudes). Fruit words cluster in one area; royal words cluster in another. That geometry is why semantic search and RAG work without keyword matching.</p><button class="copy" data-copy="# 3. Closeness in vector space is calculated using Cosine Similarity:
+# cosine_similarity(u, v) = (u · v) / (||u|| * ||v||)
+def cosine_similarity(v1, v2):
+    dot = sum(a * b for a, b in zip(v1, v2))
+    norm1 = math.sqrt(sum(a * a for a in v1))
+    norm2 = math.sqrt(sum(b * b for b in v2))
+    return dot / (norm1 * norm2)
+
+sim_fruit   = cosine_similarity(EMBEDDINGS[&quot;apple&quot;], EMBEDDINGS[&quot;pear&quot;])   # +1.0000 (Close cluster)
+sim_royalty = cosine_similarity(EMBEDDINGS[&quot;king&quot;], EMBEDDINGS[&quot;queen&quot;])   # +0.4828 (Close cluster)
+sim_mixed   = cosine_similarity(EMBEDDINGS[&quot;apple&quot;], EMBEDDINGS[&quot;king&quot;])   # -0.6192 (Far apart)">📋 Copy code snippet</button><div class="fb" data-fb="S2-DEV.Cl" data-label="💻 Cl code explanation"></div></div><div class="card research"><div class="meta">🎬 Clip c4 · 23.92–29.08 s · 🗣️ “Now watch. Take king. Subtract man. Add woman.”</div><h2 style="margin-top:6px">➕ Vector Arithmetic & Conceptual Directions</h2><pre><code># 4. Semantic direction vectors:
+# (woman - man) isolates the grammatical/semantic gender direction:
+gender_offset = [w - m for w, m in zip(EMBEDDINGS[&quot;woman&quot;], EMBEDDINGS[&quot;man&quot;])]
+# gender_offset = [+0.01, +1.58, 0.00, 0.00] -&gt; purely points in female direction!
+
+# king - man isolates royalty/monarch concept; + woman adds female aspect:
+target_vector = [k - m + w for k, m, w in zip(EMBEDDINGS[&quot;king&quot;], EMBEDDINGS[&quot;man&quot;], EMBEDDINGS[&quot;woman&quot;])]
+# target_vector = [0.91, 0.83, 0.02, 0.95]</code></pre><p>Because directions in embedding space correspond to semantic concepts, vector arithmetic works directly on meaning! Vector subtraction isolates relational features (e.g., &#x27;woman&#x27; minus &#x27;man&#x27; creates a vector pointing along the feminine concept). Adding that offset vector to &#x27;king&#x27; shifts the position while preserving royalty and power.</p><button class="copy" data-copy="# 4. Semantic direction vectors:
+# (woman - man) isolates the grammatical/semantic gender direction:
+gender_offset = [w - m for w, m in zip(EMBEDDINGS[&quot;woman&quot;], EMBEDDINGS[&quot;man&quot;])]
+# gender_offset = [+0.01, +1.58, 0.00, 0.00] -&gt; purely points in female direction!
+
+# king - man isolates royalty/monarch concept; + woman adds female aspect:
+target_vector = [k - m + w for k, m, w in zip(EMBEDDINGS[&quot;king&quot;], EMBEDDINGS[&quot;man&quot;], EMBEDDINGS[&quot;woman&quot;])]
+# target_vector = [0.91, 0.83, 0.02, 0.95]">📋 Copy code snippet</button><div class="fb" data-fb="S2-DEV.Cl" data-label="💻 Cl code explanation"></div></div><div class="card research"><div class="meta">🎬 Clip c5 · 29.08–34.98 s · 🗣️ “And you land exactly on queen. No one told it. It&#x27;s just geometry.”</div><h2 style="margin-top:6px">👑 Landing on Queen via Nearest Neighbor Search</h2><pre><code># 5. Query the dictionary for the nearest coordinate to target_vector:
+# Exclude the query words (&#x27;man&#x27;, &#x27;woman&#x27;):
+# Nearest neighbors to [0.91, 0.83, 0.02, 0.95]:
+#   Rank 1: &#x27;queen&#x27; (cosine similarity: 0.9998, Euclidean distance: 0.0346) -&gt; 👑 LANDED ON QUEEN!
+#   Rank 2: &#x27;crown&#x27; (cosine similarity: 0.8457, Euclidean distance: 0.8353)
+#   Rank 3: &#x27;king&#x27;  (cosine similarity: 0.4685, Euclidean distance: 1.5800)
+#   Rank 4: &#x27;grape&#x27; (cosine similarity: -0.5953, Euclidean distance: 2.5797)</code></pre><p>When we scan the vocabulary to see which known vector is closest to our target coordinate, the #1 result is &#x27;queen&#x27; with 0.9998 similarity! Nobody programmed a rule stating &#x27;queen is female monarch&#x27;. The relationship emerged entirely as a geometric property of training on language.</p><button class="copy" data-copy="# 5. Query the dictionary for the nearest coordinate to target_vector:
+# Exclude the query words (&#x27;man&#x27;, &#x27;woman&#x27;):
+# Nearest neighbors to [0.91, 0.83, 0.02, 0.95]:
+#   Rank 1: &#x27;queen&#x27; (cosine similarity: 0.9998, Euclidean distance: 0.0346) -&gt; 👑 LANDED ON QUEEN!
+#   Rank 2: &#x27;crown&#x27; (cosine similarity: 0.8457, Euclidean distance: 0.8353)
+#   Rank 3: &#x27;king&#x27;  (cosine similarity: 0.4685, Euclidean distance: 1.5800)
+#   Rank 4: &#x27;grape&#x27; (cosine similarity: -0.5953, Euclidean distance: 2.5797)">📋 Copy code snippet</button><div class="fb" data-fb="S2-DEV.Cl" data-label="💻 Cl code explanation"></div></div><div class="card research"><div class="meta">🎬 Clip c6 · 34.98–37.66 s · 🗣️ “But how do these vectors talk to each other?”</div><h2 style="margin-top:6px">🕸️ Preview of Attention (From Static to Contextual)</h2><pre><code># 6. Static vs Dynamic Context (Day 3 Teaser)
+# An embedding table provides a static starting vector for each word.
+# But &#x27;bank&#x27; in &#x27;river bank&#x27; != &#x27;bank&#x27; in &#x27;bank account&#x27;.
+# Transformers solve this using Attention:
+#   Attention(Q, K, V) = softmax( (Q * K^T) / sqrt(d_k) ) * V
+# In Day 3, vectors dynamically exchange information across the sentence!</code></pre><p>Static embeddings give a word like &#x27;bank&#x27; a single fixed point in space. But human words are polysemous: their meaning depends on the sentence. Attention is the mechanism that lets word vectors interact, pulling context from adjacent words and shifting dynamically. This question loops the video and sets up Day 3.</p><button class="copy" data-copy="# 6. Static vs Dynamic Context (Day 3 Teaser)
+# An embedding table provides a static starting vector for each word.
+# But &#x27;bank&#x27; in &#x27;river bank&#x27; != &#x27;bank&#x27; in &#x27;bank account&#x27;.
+# Transformers solve this using Attention:
+#   Attention(Q, K, V) = softmax( (Q * K^T) / sqrt(d_k) ) * V
+# In Day 3, vectors dynamically exchange information across the sentence!">📋 Copy code snippet</button><div class="fb" data-fb="S2-DEV.Cl" data-label="💻 Cl code explanation"></div></div>
+
+<h2>🌍 Why Code & Geometry Matter for AI Developers</h2>
+<ol class="why"><li><b>🔢 Integers have no meaning</b><br>Assigning 9246 to 'king' is like giving a book an ISBN number. The number tells you which item it is, but zero information about its contents. This is why language models cannot work directly on token IDs.</li><li><b>📐 High dimensions create expressive space</b><br>In 1D, words would collide on a single line. In 1,536 dimensions, there is ample geometric room for subtle nuances: royalty, tense, tone, gender, edible items, and scientific terms all have orthogonal axes.</li><li><b>🧭 Relationships are directions</b><br>Because neural networks learn from context windows, word pairs sharing grammatical or semantic roles develop parallel displacement vectors: (king → queen) is parallel to (man → woman) and (actor → actress).</li><li><b>⚡ Geometry replaces hardcoded rules</b><br>You do not need to code thousands of dictionary rules for synonyms, antonyms, or analogies. Vector dot products naturally solve analogies and search queries through matrix multiplication.</li></ol>
+
+<div class="card hero">
+<b>💻 Standalone Python Implementation</b>
+<p>A clean, zero-dependency Python script implementing the entire pipeline. Run it locally in your terminal:</p>
+<code>python3 scripts/development_embeddings_demo.py</code>
+<br><br>
+<button class="copy" data-copy="#!/usr/bin/env python3
+&quot;&quot;&quot;
+S2-DEV: Embeddings &amp; Vector Arithmetic Demonstration
+Part of Day 2 Short: &quot;From Numbers to Meaning: High-Dimensional Embeddings&quot;
+
+This script demonstrates the exact code mechanics behind the video script:
+1. Clip c1: Token IDs as integers (king = 9246)
+2. Clip c2: Unfolding integers into vector coordinates (D-dimensional space)
+3. Clip c3: Distance reflecting semantic meaning (Fruit cluster vs Royalty cluster)
+4. Clip c4 &amp; c5: Vector arithmetic (king - man + woman = queen)
+5. Clip c6: Preview of Attention (how vectors talk to each other)
+&quot;&quot;&quot;
+
+import math
+
+# -----------------------------------------------------------------------------
+# 1. Clip c1: &quot;Tokens are just numbers... 9246 is a word&quot;
+# -----------------------------------------------------------------------------
+VOCABULARY = {
+    &quot;king&quot;: 9246,
+    &quot;queen&quot;: 9247,
+    &quot;man&quot;: 512,
+    &quot;woman&quot;: 513,
+    &quot;crown&quot;: 9248,
+    &quot;apple&quot;: 2048,
+    &quot;pear&quot;: 2049,
+    &quot;grape&quot;: 2050,
+}
+
+ID_TO_WORD = {idx: word for word, idx in VOCABULARY.items()}
+
+
+# -----------------------------------------------------------------------------
+# 2. Clip c2: &quot;So it gets unfolded. One number becomes coordinates.&quot;
+# In real models (e.g. OpenAI text-embedding-3-small), D = 1,536.
+# Here we use an intuitive 4-dimensional semantic subspace:
+# [Royalty, Femininity, Fruit/Edible, Power/Status]
+# -----------------------------------------------------------------------------
+DIMENSIONS = [&quot;Royalty&quot;, &quot;Femininity&quot;, &quot;Fruit&quot;, &quot;Power&quot;]
+
+EMBEDDINGS = {
+    &quot;king&quot;:  [ 0.90, -0.75,  0.02,  0.95],
+    &quot;queen&quot;: [ 0.92,  0.80,  0.01,  0.94],
+    &quot;man&quot;:   [ 0.05, -0.80,  0.00,  0.20],
+    &quot;woman&quot;: [ 0.06,  0.78,  0.00,  0.20],
+    &quot;crown&quot;: [ 0.85,  0.00,  0.00,  0.88],
+    &quot;apple&quot;: [-0.85,  0.00,  0.95, -0.60],
+    &quot;pear&quot;:  [-0.82,  0.00,  0.93, -0.58],
+    &quot;grape&quot;: [-0.80,  0.00,  0.91, -0.55],
+}
+
+
+def lookup_embedding(token_id: int):
+    &quot;&quot;&quot;Retrieve vector coordinates for a given token ID.&quot;&quot;&quot;
+    word = ID_TO_WORD.get(token_id)
+    if not word or word not in EMBEDDINGS:
+        raise ValueError(f&quot;Unknown token ID: {token_id}&quot;)
+    return word, EMBEDDINGS[word]
+
+
+# -----------------------------------------------------------------------------
+# 3. Clip c3: &quot;And meaning becomes distance. Apples, pears gather here...&quot;
+# Closeness is measured using Cosine Similarity: dot(u, v) / (|u| * |v|)
+# -----------------------------------------------------------------------------
+def dot_product(v1, v2):
+    return sum(a * b for a, b in zip(v1, v2))
+
+
+def vector_norm(v):
+    return math.sqrt(sum(a * a for a in v))
+
+
+def cosine_similarity(v1, v2):
+    norm1 = vector_norm(v1)
+    norm2 = vector_norm(v2)
+    if norm1 == 0 or norm2 == 0:
+        return 0.0
+    return dot_product(v1, v2) / (norm1 * norm2)
+
+
+def euclidean_distance(v1, v2):
+    return math.sqrt(sum((a - b) ** 2 for a, b in zip(v1, v2)))
+
+
+# -----------------------------------------------------------------------------
+# 4. Clip c4 &amp; c5: &quot;Take king. Subtract man. Add woman. And you land on queen.&quot;
+# -----------------------------------------------------------------------------
+def vector_add(v1, v2):
+    return [a + b for a, b in zip(v1, v2)]
+
+
+def vector_subtract(v1, v2):
+    return [a - b for a, b in zip(v1, v2)]
+
+
+def find_nearest_words(target_vector, top_k=5, exclude_words=None):
+    &quot;&quot;&quot;Find words with highest cosine similarity to target_vector.&quot;&quot;&quot;
+    exclude = set(exclude_words or [])
+    scored = []
+    for word, vec in EMBEDDINGS.items():
+        if word in exclude:
+            continue
+        sim = cosine_similarity(target_vector, vec)
+        dist = euclidean_distance(target_vector, vec)
+        scored.append((word, sim, dist))
+    scored.sort(key=lambda x: x[1], reverse=True)
+    return scored[:top_k]
+
+
+def main():
+    print(&quot;=&quot; * 68)
+    print(&quot;🎬 DAY 2 SHORT: FROM NUMBERS TO MEANING (CODE DEMONSTRATION)&quot;)
+    print(&quot;=&quot; * 68)
+
+    # 1. Token lookup
+    token_id = VOCABULARY[&quot;king&quot;]
+    word, king_vector = lookup_embedding(token_id)
+    print(f&quot;\n[Clip c1] Token ID Lookup:&quot;)
+    print(f&quot;  Word: &#x27;{word}&#x27; -&gt; Token ID: {token_id}&quot;)
+    print(f&quot;  Note: To the AI, integer {token_id} is just a table row index.&quot;)
+
+    # 2. Unfold into vector
+    print(f&quot;\n[Clip c2] Unfolding into coordinates (Dimensions: {DIMENSIONS}):&quot;)
+    print(f&quot;  Vector({word}) = {king_vector}&quot;)
+    print(f&quot;  In production models (e.g. OpenAI ada-002 / text-embedding-3),&quot;)
+    print(f&quot;  this unfolds into 1,536 coordinates.&quot;)
+
+    # 3. Distance &amp; Clusters
+    print(f&quot;\n[Clip c3] Meaning becomes distance (Cosine Similarity):&quot;)
+    sim_fruit = cosine_similarity(EMBEDDINGS[&quot;apple&quot;], EMBEDDINGS[&quot;pear&quot;])
+    sim_royalty = cosine_similarity(EMBEDDINGS[&quot;king&quot;], EMBEDDINGS[&quot;queen&quot;])
+    sim_mixed = cosine_similarity(EMBEDDINGS[&quot;apple&quot;], EMBEDDINGS[&quot;king&quot;])
+    print(f&quot;  🍎 apple  &lt;-&gt;  🍐 pear   similarity: {sim_fruit:.4f} (Very close!)&quot;)
+    print(f&quot;  👑 king   &lt;-&gt;  👸 queen  similarity: {sim_royalty:.4f} (Very close!)&quot;)
+    print(f&quot;  🍎 apple  &lt;-&gt;  👑 king   similarity: {sim_mixed:.4f} (Far apart!)&quot;)
+
+    # 4. Vector arithmetic
+    print(f&quot;\n[Clip c4 &amp; c5] Vector Arithmetic: king - man + woman&quot;)
+    v_king = EMBEDDINGS[&quot;king&quot;]
+    v_man = EMBEDDINGS[&quot;man&quot;]
+    v_woman = EMBEDDINGS[&quot;woman&quot;]
+
+    # king - man
+    v_royalty = vector_subtract(v_king, v_man)
+    # + woman
+    v_result = vector_add(v_royalty, v_woman)
+
+    print(f&quot;  1. king           : {v_king}&quot;)
+    print(f&quot;  2. - man          : {[-x for x in v_man]}&quot;)
+    print(f&quot;  3. + woman        : {v_woman}&quot;)
+    print(f&quot;  -------------------------------------------------------------&quot;)
+    print(f&quot;  = target vector   : {[round(x, 4) for x in v_result]}&quot;)
+
+    print(f&quot;\nSearching nearest neighbors to target vector:&quot;)
+    # We search nearest neighbors (excluding the input words as standard in word2vec evaluation)
+    nearest_all = find_nearest_words(v_result, top_k=4, exclude_words=[&quot;man&quot;, &quot;woman&quot;])
+    for rank, (nbr_word, sim, dist) in enumerate(nearest_all, start=1):
+        crown_indicator = &quot;👑 LANDED HERE!&quot; if nbr_word == &quot;queen&quot; else &quot;&quot;
+        print(f&quot;  {rank}. {nbr_word:&lt;8} (cosine similarity: {sim:.4f}, distance: {dist:.4f}) {crown_indicator}&quot;)
+
+    print(f&quot;\n[Clip c6] Teaser: &#x27;How do these vectors talk to each other?&#x27;&quot;)
+    print(f&quot;  Static embeddings give &#x27;bank&#x27; one fixed position.&quot;)
+    print(f&quot;  Attention (Transformers) lets &#x27;river bank&#x27; pull context from &#x27;river&#x27;,&quot;)
+    print(f&quot;  while &#x27;bank account&#x27; pulls context from &#x27;account&#x27;!&quot;)
+    print(&quot;=&quot; * 68)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+">📋 Copy Python script (scripts/development_embeddings_demo.py)</button>
+<button class="copy" data-copy="python3 scripts/development_embeddings_demo.py">📋 Copy command</button>
+<pre><code>#!/usr/bin/env python3
+&quot;&quot;&quot;
+S2-DEV: Embeddings &amp; Vector Arithmetic Demonstration
+Part of Day 2 Short: &quot;From Numbers to Meaning: High-Dimensional Embeddings&quot;
+
+This script demonstrates the exact code mechanics behind the video script:
+1. Clip c1: Token IDs as integers (king = 9246)
+2. Clip c2: Unfolding integers into vector coordinates (D-dimensional space)
+3. Clip c3: Distance reflecting semantic meaning (Fruit cluster vs Royalty cluster)
+4. Clip c4 &amp; c5: Vector arithmetic (king - man + woman = queen)
+5. Clip c6: Preview of Attention (how vectors talk to each other)
+&quot;&quot;&quot;
+
+import math
+
+# -----------------------------------------------------------------------------
+# 1. Clip c1: &quot;Tokens are just numbers... 9246 is a word&quot;
+# -----------------------------------------------------------------------------
+VOCABULARY = {
+    &quot;king&quot;: 9246,
+    &quot;queen&quot;: 9247,
+    &quot;man&quot;: 512,
+    &quot;woman&quot;: 513,
+    &quot;crown&quot;: 9248,
+    &quot;apple&quot;: 2048,
+    &quot;pear&quot;: 2049,
+    &quot;grape&quot;: 2050,
+}
+
+ID_TO_WORD = {idx: word for word, idx in VOCABULARY.items()}
+
+
+# -----------------------------------------------------------------------------
+# 2. Clip c2: &quot;So it gets unfolded. One number becomes coordinates.&quot;
+# In real models (e.g. OpenAI text-embedding-3-small), D = 1,536.
+# Here we use an intuitive 4-dimensional semantic subspace:
+# [Royalty, Femininity, Fruit/Edible, Power/Status]
+# -----------------------------------------------------------------------------
+DIMENSIONS = [&quot;Royalty&quot;, &quot;Femininity&quot;, &quot;Fruit&quot;, &quot;Power&quot;]
+
+EMBEDDINGS = {
+    &quot;king&quot;:  [ 0.90, -0.75,  0.02,  0.95],
+    &quot;queen&quot;: [ 0.92,  0.80,  0.01,  0.94],
+    &quot;man&quot;:   [ 0.05, -0.80,  0.00,  0.20],
+    &quot;woman&quot;: [ 0.06,  0.78,  0.00,  0.20],
+    &quot;crown&quot;: [ 0.85,  0.00,  0.00,  0.88],
+    &quot;apple&quot;: [-0.85,  0.00,  0.95, -0.60],
+    &quot;pear&quot;:  [-0.82,  0.00,  0.93, -0.58],
+    &quot;grape&quot;: [-0.80,  0.00,  0.91, -0.55],
+}
+
+
+def lookup_embedding(token_id: int):
+    &quot;&quot;&quot;Retrieve vector coordinates for a given token ID.&quot;&quot;&quot;
+    word = ID_TO_WORD.get(token_id)
+    if not word or word not in EMBEDDINGS:
+        raise ValueError(f&quot;Unknown token ID: {token_id}&quot;)
+    return word, EMBEDDINGS[word]
+
+
+# -----------------------------------------------------------------------------
+# 3. Clip c3: &quot;And meaning becomes distance. Apples, pears gather here...&quot;
+# Closeness is measured using Cosine Similarity: dot(u, v) / (|u| * |v|)
+# -----------------------------------------------------------------------------
+def dot_product(v1, v2):
+    return sum(a * b for a, b in zip(v1, v2))
+
+
+def vector_norm(v):
+    return math.sqrt(sum(a * a for a in v))
+
+
+def cosine_similarity(v1, v2):
+    norm1 = vector_norm(v1)
+    norm2 = vector_norm(v2)
+    if norm1 == 0 or norm2 == 0:
+        return 0.0
+    return dot_product(v1, v2) / (norm1 * norm2)
+
+
+def euclidean_distance(v1, v2):
+    return math.sqrt(sum((a - b) ** 2 for a, b in zip(v1, v2)))
+
+
+# -----------------------------------------------------------------------------
+# 4. Clip c4 &amp; c5: &quot;Take king. Subtract man. Add woman. And you land on queen.&quot;
+# -----------------------------------------------------------------------------
+def vector_add(v1, v2):
+    return [a + b for a, b in zip(v1, v2)]
+
+
+def vector_subtract(v1, v2):
+    return [a - b for a, b in zip(v1, v2)]
+
+
+def find_nearest_words(target_vector, top_k=5, exclude_words=None):
+    &quot;&quot;&quot;Find words with highest cosine similarity to target_vector.&quot;&quot;&quot;
+    exclude = set(exclude_words or [])
+    scored = []
+    for word, vec in EMBEDDINGS.items():
+        if word in exclude:
+            continue
+        sim = cosine_similarity(target_vector, vec)
+        dist = euclidean_distance(target_vector, vec)
+        scored.append((word, sim, dist))
+    scored.sort(key=lambda x: x[1], reverse=True)
+    return scored[:top_k]
+
+
+def main():
+    print(&quot;=&quot; * 68)
+    print(&quot;🎬 DAY 2 SHORT: FROM NUMBERS TO MEANING (CODE DEMONSTRATION)&quot;)
+    print(&quot;=&quot; * 68)
+
+    # 1. Token lookup
+    token_id = VOCABULARY[&quot;king&quot;]
+    word, king_vector = lookup_embedding(token_id)
+    print(f&quot;\n[Clip c1] Token ID Lookup:&quot;)
+    print(f&quot;  Word: &#x27;{word}&#x27; -&gt; Token ID: {token_id}&quot;)
+    print(f&quot;  Note: To the AI, integer {token_id} is just a table row index.&quot;)
+
+    # 2. Unfold into vector
+    print(f&quot;\n[Clip c2] Unfolding into coordinates (Dimensions: {DIMENSIONS}):&quot;)
+    print(f&quot;  Vector({word}) = {king_vector}&quot;)
+    print(f&quot;  In production models (e.g. OpenAI ada-002 / text-embedding-3),&quot;)
+    print(f&quot;  this unfolds into 1,536 coordinates.&quot;)
+
+    # 3. Distance &amp; Clusters
+    print(f&quot;\n[Clip c3] Meaning becomes distance (Cosine Similarity):&quot;)
+    sim_fruit = cosine_similarity(EMBEDDINGS[&quot;apple&quot;], EMBEDDINGS[&quot;pear&quot;])
+    sim_royalty = cosine_similarity(EMBEDDINGS[&quot;king&quot;], EMBEDDINGS[&quot;queen&quot;])
+    sim_mixed = cosine_similarity(EMBEDDINGS[&quot;apple&quot;], EMBEDDINGS[&quot;king&quot;])
+    print(f&quot;  🍎 apple  &lt;-&gt;  🍐 pear   similarity: {sim_fruit:.4f} (Very close!)&quot;)
+    print(f&quot;  👑 king   &lt;-&gt;  👸 queen  similarity: {sim_royalty:.4f} (Very close!)&quot;)
+    print(f&quot;  🍎 apple  &lt;-&gt;  👑 king   similarity: {sim_mixed:.4f} (Far apart!)&quot;)
+
+    # 4. Vector arithmetic
+    print(f&quot;\n[Clip c4 &amp; c5] Vector Arithmetic: king - man + woman&quot;)
+    v_king = EMBEDDINGS[&quot;king&quot;]
+    v_man = EMBEDDINGS[&quot;man&quot;]
+    v_woman = EMBEDDINGS[&quot;woman&quot;]
+
+    # king - man
+    v_royalty = vector_subtract(v_king, v_man)
+    # + woman
+    v_result = vector_add(v_royalty, v_woman)
+
+    print(f&quot;  1. king           : {v_king}&quot;)
+    print(f&quot;  2. - man          : {[-x for x in v_man]}&quot;)
+    print(f&quot;  3. + woman        : {v_woman}&quot;)
+    print(f&quot;  -------------------------------------------------------------&quot;)
+    print(f&quot;  = target vector   : {[round(x, 4) for x in v_result]}&quot;)
+
+    print(f&quot;\nSearching nearest neighbors to target vector:&quot;)
+    # We search nearest neighbors (excluding the input words as standard in word2vec evaluation)
+    nearest_all = find_nearest_words(v_result, top_k=4, exclude_words=[&quot;man&quot;, &quot;woman&quot;])
+    for rank, (nbr_word, sim, dist) in enumerate(nearest_all, start=1):
+        crown_indicator = &quot;👑 LANDED HERE!&quot; if nbr_word == &quot;queen&quot; else &quot;&quot;
+        print(f&quot;  {rank}. {nbr_word:&lt;8} (cosine similarity: {sim:.4f}, distance: {dist:.4f}) {crown_indicator}&quot;)
+
+    print(f&quot;\n[Clip c6] Teaser: &#x27;How do these vectors talk to each other?&#x27;&quot;)
+    print(f&quot;  Static embeddings give &#x27;bank&#x27; one fixed position.&quot;)
+    print(f&quot;  Attention (Transformers) lets &#x27;river bank&#x27; pull context from &#x27;river&#x27;,&quot;)
+    print(f&quot;  while &#x27;bank account&#x27; pulls context from &#x27;account&#x27;!&quot;)
+    print(&quot;=&quot; * 68)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+</div>
+
+<div class="fb" data-fb="S2-DEV" data-label="💻 Development overall: what to add, clarify, or fix?"></div></main>
+<footer>🔁 Update → deploy → feedback. Copy your feedback with 📋 and paste it back to Claude.</footer>
+<script>window.PAGES=[["index.html", "🏠 Hub"], ["s2-w.html", "🧰 S2-W Workbench"], ["s2-r.html", "🔬 S2-R Research"], ["s2-sp.html", "🛰️ S2-SP Sprite setup"], ["development.html", "💻 S2-DEV Development"], ["analytics.html", "📊 S2-A YouTube Analytics"], ["s2-00.html", "🧭 S2-00 Brief, hook and loop"], ["s2-01.html", "📝 S2-01 Script"], ["s2-02.html", "🗺️ S2-02 Storyboard"], ["s2-03.html", "🪄 S2-03 Flow prompts"], ["s2-03b.html", "🆚 S2-03b Flow vs Higgsfield"], ["s2-04.html", "🎞️ S2-04 Generate in Flow"], ["s2-05.html", "🎙️ S2-05 Voice-over"], ["s2-06.html", "✂️ S2-06 Assemble and loop check"], ["s2-07.html", "💬 S2-07 Captions, title, description"], ["s2-08.html", "📈 S2-08 Publish and analytics"], ["iterations.html", "🔁 Iterations"], ["feedback.html", "💬 All feedback"], ["spec.html", "📖 Master spec"], ["readme.html", "📄 Script (README)"]];window.SPRITE={"name": "day-2", "dir": "~/day-2", "repo": "https://github.com/rifaterdemsahin/day-2.git", "pages": "https://day-2-short.fly.dev/"};</script>
+<script src="app.js"></script>
+</body></html>
