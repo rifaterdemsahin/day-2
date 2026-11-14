@@ -322,6 +322,41 @@ def offline():
         return c == 0, "data/terms.db must be git-ignored"
     check("terms", "the database file is git-ignored", db_not_in_git)
 
+    def bulk_core():
+        import tempfile
+        sys.path.insert(0, str(ROOT))
+        from api.db import connect
+        from api import changes as ch
+        import migrate_short_json as mg
+        con = connect(pathlib.Path(tempfile.mkdtemp()) / "t.db")
+        mg.migrate(con, DATA)
+        S = "tokenization-embeddings"
+        good = [{"slug": S, "field": "status", "value": "clips"}, {"slug": S, "field": "scenes.1.vo", "value": "Hi"}, {"slug": S, "field": "title_options", "value": ["a", "b"]}]
+        p = ch.preview(con, good)
+        wrote = con.execute("SELECT COUNT(*) FROM history").fetchone()[0]
+        bad = ch.preview(con, good + [{"slug": S, "field": "status", "value": "live"}])
+        refused = []
+        for pid in (None, "0" * 20, bad["preview_id"]):
+            try:
+                ch.apply(con, good + [{"slug": S, "field": "status", "value": "live"}], pid); refused.append(False)
+            except ValueError:
+                refused.append(True)
+        a = ch.apply(con, good, p["preview_id"], "eval")
+        after = ch.current(con, S, "title_options"), ch.current(con, S, "status")
+        ch.undo(con, a["change_set"])
+        back = ch.current(con, S, "status"), ch.current(con, S, "scenes.1.vo") != "Hi", len(ch.current(con, S, "title_options")) == 5
+        ok = (p["ok"] and not bad["ok"] and wrote == 8 and all(refused) and a["applied"] == 3 and after == (["a", "b"], "clips") and back == ("script", True, True))
+        return ok, f"preview {p['ok']}, bad set refused {refused}, applied {a}, after {after}, undo {back}"
+    check("terms", "bulk change set: preview writes nothing, apply needs the preview, one transaction, undo restores", bulk_core)
+
+    def api_http():
+        py = ROOT / ".venv/bin/python"
+        if not py.exists():
+            return True, "skipped: no .venv (python3 -m venv .venv && .venv/bin/pip install fastapi uvicorn httpx)"
+        r = subprocess.run([str(py), str(ROOT / "evals/test_api.py")], capture_output=True, text=True, timeout=120)
+        return r.returncode == 0, (r.stdout + r.stderr)[-500:]
+    check("terms", "API over HTTP: public reads, token on every write, preview/apply/undo, conflicts, fail closed", api_http)
+
     def docker_builds_site():
         d = (ROOT / "Dockerfile").read_text(encoding="utf-8")
         return "build_short_site.py" in d and "COPY --from=build" in d, "Dockerfile must compile site/ in a build stage"

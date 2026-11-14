@@ -1,5 +1,16 @@
 [
  {
+  "v": "v0.54",
+  "date": "2026-11-14",
+  "emoji": "🔌",
+  "codes": [
+   "S2-DB"
+  ],
+  "change": "🔌 Dictionary step 2: FastAPI backend in api/ (GET/PUT/POST terms; POST /api/bulk/preview, /apply, /undo/{id}). Logic is stdlib in api/changes.py: allowed fields, status enum, length limits, per-row diff, apply only with the preview_id recomputed from the current data (one transaction, every row to history), undo from history with conflict check. Bearer token from EDIT_TOKEN on every write and on preview; no token set = writes disabled (503). Tests: evals/test_api.py (31 HTTP checks) + 2 offline evals. Not deployed to Fly yet (step 5).",
+  "why": "Owner: Step 2 of the dictionary: API with preview, apply and undo; read endpoints public, every write needs the token; never apply a bulk change unseen.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.53",
   "date": "2026-11-14",
   "emoji": "🗄️",

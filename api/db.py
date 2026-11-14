@@ -46,7 +46,8 @@ CREATE TABLE IF NOT EXISTS history (
   old       TEXT,
   new       TEXT,
   source    TEXT NOT NULL,
-  at        TEXT NOT NULL
+  at        TEXT NOT NULL,
+  change_set TEXT
 );
 CREATE INDEX IF NOT EXISTS history_slug ON history(term_slug, id);
 CREATE INDEX IF NOT EXISTS terms_status ON terms(status);
@@ -61,8 +62,11 @@ def connect(path=None):
     p = pathlib.Path(path) if path else db_path()
     if str(p) != ":memory:":
         p.parent.mkdir(parents=True, exist_ok=True)
-    con = sqlite3.connect(p)
+    con = sqlite3.connect(p, check_same_thread=False)  # one connection per request
     con.row_factory = sqlite3.Row
     con.execute("PRAGMA foreign_keys = ON")
     con.executescript(SCHEMA)
+    if "change_set" not in {r[1] for r in con.execute("PRAGMA table_info(history)")}:
+        con.execute("ALTER TABLE history ADD COLUMN change_set TEXT")  # databases made in step 1
+    con.execute("CREATE INDEX IF NOT EXISTS history_cs ON history(change_set)")
     return con
