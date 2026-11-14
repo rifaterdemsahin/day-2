@@ -94,7 +94,8 @@ def build_script(notes, agent, dry, prelude=""):
             "echo '===PATCH-BEGIN==='; cat /tmp/d2patch.b64; echo; echo '===PATCH-END==='\n")
 
 
-def run_job(notes, agent, dry, say):
+def run_job(notes, agent, dry, say, st=None):
+    st = st if st is not None else {}
     secrets = []
 
     def out(s):
@@ -103,6 +104,7 @@ def run_job(notes, agent, dry, say):
         say(s)
 
     # 1. local state
+    st["stage"] = "1/6 check local repo"
     code, o = sh(["git", "status", "--porcelain"])
     if o:
         raise RuntimeError("working tree has local changes; commit or stash first:\n" + o[:400])
@@ -123,6 +125,7 @@ def run_job(notes, agent, dry, say):
         out("🔑 2/6 no key needed for this agent (it uses its own login on the sprite)")
 
     # 3. agent on the sprite
+    st["stage"] = "3/6 agent on the sprite"
     script = build_script(notes, agent, dry, prelude)
     out(f"🛰️ 3/6 running {agent} on sprite {SPR['name']} …")
     p = subprocess.Popen(["sprite", "exec", "-s", SPR["name"], "--stdin", "--", "bash", "-l", "-s"], stdin=subprocess.PIPE,
@@ -157,6 +160,7 @@ def run_job(notes, agent, dry, say):
     out(f"📦 4/6 patch received ({len(patch)} bytes)")
 
     # 5. apply, build, commit, push
+    st["stage"] = "5/6 apply patch, build, commit, push"
     pf = ROOT / ".notes.patch"
     pf.write_bytes(patch)
     try:
@@ -177,9 +181,14 @@ def run_job(notes, agent, dry, say):
     code, o = sh(["git", "push", "origin", "main"])
     if code:
         raise RuntimeError("push failed:\n" + o[-400:])
+    st["commit"] = sh(["git", "log", "-1", "--format=%h %s"])[1]
+    st["stat"] = sh(["git", "show", "--stat", "--format=", "HEAD"])[1]
+    sh(["git", "fetch", "-q", "origin", "main"])
+    st["pushed"] = sh(["git", "rev-parse", "HEAD"])[1] == sh(["git", "rev-parse", "origin/main"])[1]
     out(f"✅ 5/6 committed and pushed {sh(['git', 'rev-parse', '--short', 'HEAD'])[1]}")
 
     # 6. deploy + verify
+    st["stage"] = "6/6 fly deploy + verify"
     code, o = sh(["fly", "deploy", "--remote-only", "-a", DEP["fly_app"]], timeout=900)
     if code:
         raise RuntimeError("fly deploy failed:\n" + o[-600:])
@@ -187,11 +196,26 @@ def run_job(notes, agent, dry, say):
         try:
             with urllib.request.urlopen(DEP["url"] + "index.html", timeout=15) as r:
                 if r.status == 200:
+                    st["deployed"] = True
                     out(f"✅ 6/6 deployed to Fly.io and answering 200: {DEP['url']}")
                     return {"changed": True}
         except Exception:
             time.sleep(3)
     raise RuntimeError("deployed but the site did not answer 200")
+
+
+def report(st, err, say):
+    say("\n━━━━━━━━ 📋 RESULT ━━━━━━━━")
+    say(("❌ FAILED at " + st.get("stage", "?")) if err else "✅ SUCCEEDED")
+    say("🧾 git commit: " + (st.get("commit") or "none (no commit was made)"))
+    if st.get("stat"):
+        say(st["stat"])
+    nochg = not err and not st.get("commit")
+    say("⬆️ git push:   " + ("✅ completed, origin/main == HEAD" if st.get("pushed") else ("➖ nothing to push (no change)" if nochg else "❌ not pushed")))
+    say("🌐 fly deploy: " + ("✅ live, answering 200" if st.get("deployed") else ("➖ nothing to deploy (no change)" if nochg else "❌ not deployed / not verified")))
+    if err:
+        say("🔎 error: " + err[:600])
+    say("━━━━━━━━━━━━━━━━━━━━━━━━━━")
 
 
 class H(BaseHTTPRequestHandler):
@@ -263,11 +287,17 @@ class H(BaseHTTPRequestHandler):
         if not LOCK.acquire(blocking=False):
             say("⏳ another run is in progress; wait for it to finish")
             return
+        st = {}
         try:
-            res = run_job(notes, agent, dry, say)
-            say("🎉 DONE" + (" (changed)" if res.get("changed") else ""))
+            res = run_job(notes, agent, dry, say, st)
+            err = None
         except Exception as e:
-            say("❌ " + str(e))
+            res, err = {}, str(e)
+            say("❌ ERROR at step " + st.get("stage", "?") + ":\n" + err)
+        try:
+            report(st, err, say)
+            if err is None:
+                say("🎉 DONE" + (" (changed)" if res.get("changed") else ""))
         finally:
             LOCK.release()
 

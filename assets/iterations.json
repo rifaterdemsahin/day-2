@@ -1,5 +1,17 @@
 [
  {
+  "v": "v0.23",
+  "date": "2026-11-14",
+  "emoji": "📋",
+  "codes": [
+   "feedback",
+   "S2-SP"
+  ],
+  "change": "Every runner execution now ends with a RESULT block: success or the failing step, git commit hash + subject + file stat, push check (origin/main == HEAD), Fly deploy check, and the error text if any. Errors show at the step where they happened.",
+  "why": "Owner: see whether terminal execution worked, with output, commit and completed push at the end, and any error.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.22",
   "date": "2026-11-14",
   "emoji": "🖥️",
