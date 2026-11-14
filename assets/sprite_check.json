@@ -1,5 +1,5 @@
 {
- "when": "2026-11-14 13:32 GMT",
+ "when": "2026-11-14 16:22 GMT",
  "sprite": "day-2",
  "agents": [
   {
@@ -7,8 +7,8 @@
    "cli": "claude",
    "installed": true,
    "version": "2.1.319 (Claude Code)",
-   "ready": false,
-   "note": "installed but not signed in"
+   "ready": true,
+   "note": "ready"
   },
   {
    "agent": "kilo",
@@ -23,8 +23,8 @@
    "cli": "agy",
    "installed": true,
    "version": "1.5.9",
-   "ready": false,
-   "note": "installed but not signed in"
+   "ready": true,
+   "note": "ready"
   }
  ]
 }
