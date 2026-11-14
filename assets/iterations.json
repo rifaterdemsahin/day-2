@@ -1,5 +1,17 @@
 [
  {
+  "v": "v0.46",
+  "date": "2026-11-14",
+  "emoji": "🧱",
+  "codes": [
+   "all pages",
+   "S2-SP"
+  ],
+  "change": "The DeepSeek prompt corrector now writes the Role / Context / Rule / Constraint framework with Role = product manager: **Role** (senior product manager turning feedback into minimal testable changes), **Context** (page and why, from the notes only), **Rules** (numbered changes plus acceptance bullets), **Constraints** (scope limits, no invention, keep emojis and feedback buttons). 🎯 references stay verbatim. The preview notice now reads \"…as a product manager (Role · Context · Rules · Constraints)\". Verified live on a note: all four sections produced. Eval added; spec row 27 and S2-SP text updated.",
+  "why": "Owner: the DeepSeek enhancement must use the Role, Context, Rule, Constraint framework and Role is product manager; update, commit, push.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.45",
   "date": "2026-11-14",
   "emoji": "🏷️",

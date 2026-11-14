@@ -259,6 +259,13 @@ def offline():
         return good and not bad["ok"] and "402" in bad["error"] and not rej["ok"] and "401" in rej["error"], f"ok={ok1['ok']} ref kept={ref in ok1['text']} 402={bad['error']} 401={rej['error']}"
     check("runner", "prompt corrector (DeepSeek): rewrites, keeps 🎯 references, and falls back cleanly on 401/402", corrector)
 
+    def framework():
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import prompt_corrector as pc
+        s = pc.SYSTEM
+        return all(x in s for x in ("**Role**", "**Context**", "**Rules**", "**Constraints**", "product manager", "🎯 [")), "the corrector must ask for Role, Context, Rules, Constraints with Role = product manager and keep 🎯 references"
+    check("runner", "prompt corrector uses the Role / Context / Rule / Constraint framework with Role = product manager", framework)
+
     def enhancer_wiring():
         src = (ROOT / "scripts/notes_runner.py").read_text(encoding="utf-8")
         js = (ROOT / "app.js").read_text(encoding="utf-8")

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prompt corrector: rewrite the owner's raw notes as a product manager would (goal, changes, acceptance criteria)
+"""Prompt corrector: rewrite the owner's raw notes with the Role / Context / Rule / Constraint framework (Role = product manager)
 with DeepSeek (any OpenAI-compatible host: DeepInfra today), before the prompt is shown for approval.
 
 Only the standard library is used (urllib + json), so there is nothing to install. The API key comes from Azure Key
@@ -14,17 +14,13 @@ import json
 import urllib.error
 import urllib.request
 
-SYSTEM = """You are a senior product manager. Rewrite the owner's raw feedback notes about a video-production review website into a clear, actionable work request for an engineer or AI coding agent.
-Rules:
-- Keep the owner's intent and every concrete detail. Do NOT invent requirements, pages or features.
-- Keep every line that starts with "🎯 [" exactly as written (these are element references from the page).
-- Keep emojis. Write in English. Be concise (under 250 words).
-Format (markdown):
-**Goal**: one sentence.
-**Changes requested**: a numbered list; each item says what to change, where (use the page or the 🎯 reference if given) and the expected result.
-**Acceptance criteria**: 2 to 5 checkable bullets.
-**Out of scope**: only if the notes imply limits, otherwise leave this out.
-Return only the rewritten request, no preface."""
+SYSTEM = """You improve prompts. Rewrite the owner's raw feedback notes about a video-production review website into a prompt for an AI coding agent, using the Role, Context, Rule, Constraint framework. The Role is product manager.
+Output exactly these four markdown sections, in this order:
+**Role**: You are a senior product manager. State in one or two sentences that you turn this feedback into precise, minimal, testable changes to the review website and have them implemented.
+**Context**: What the owner wants and why, on which page (use the page name or the 🎯 reference), in 2 to 5 sentences. Use only what the notes say.
+**Rules**: A numbered list of the concrete changes to make. Each item says what to change, where (page or 🎯 reference) and the expected result. Finish with 2 to 4 checkable acceptance bullets.
+**Constraints**: Bullets with the limits: change only what the notes ask, nothing else on the page or elsewhere; no invented features, pages or copy; keep emojis; keep the feedback buttons. Add any limit the notes imply.
+Always: keep every line that starts with "🎯 [" exactly as written somewhere in Context or Rules; do not invent requirements; write in English; stay under 300 words; return only the four sections, no preface."""
 
 
 def enhance(notes, key, cfg, timeout=60):

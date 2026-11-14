@@ -603,7 +603,7 @@
    ],
    [
     "✨",
-    "Added a prompt corrector: before the prompt preview, the runner rewrites your notes as a product manager would (goal, numbered changes, acceptance criteria) with DeepSeek V4.1 Flash (1017) served by DeepInfra, using the key from Azure Key Vault (secret day-2-deepinfra-api-key)",
+    "Added a prompt corrector: before the prompt preview, the runner rewrites your notes with the Role / Context / Rule / Constraint framework (Role = product manager) with DeepSeek V4.1 Flash (1017) served by DeepInfra, using the key from Azure Key Vault (secret day-2-deepinfra-api-key)",
     "A raw note is often short or vague. A clear work request gets a better edit from a cheap agent. The preview says 'Prompt enhanced with DeepSeek', keeps your 🎯 references word for word, shows your original notes, can be switched off, and falls back to your own notes if the call fails (the first provider, DeepSeek's own API, returned 402 no balance, so the same model is used through DeepInfra). No library to install: it uses the Python standard library. Your notes are sent to DeepInfra (running DeepSeek) for this step, so check the text before sending."
    ]
   ],

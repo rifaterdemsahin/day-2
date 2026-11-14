@@ -242,7 +242,7 @@
           prompt = j.prompt; pp.textContent = j.prompt; sendNotes = j.improved || notes; enhBy = j.enhanced_by || null;
           sendAgent = j.agent + (j.agent === "claude" && j.model && j.model !== "default" ? ":" + j.model : "");
           pm.textContent = "🧭 " + j.agent + (j.model_id ? " (" + j.model_id + ")" : "") + " · " + j.why + " · " + j.chars.toLocaleString() + " characters";
-          en.innerHTML = j.enhanced_by ? "✨ <b>Prompt enhanced with " + (j.enhancer || "DeepSeek") + " (" + j.enhanced_by + ")</b> as a product manager. Your notes were sent to " + (j.enhancer || "DeepSeek") + " to do this; check the text below before sending."
+          en.innerHTML = j.enhanced_by ? "✨ <b>Prompt enhanced with " + (j.enhancer || "DeepSeek") + " (" + j.enhanced_by + ")</b> as a product manager (Role · Context · Rules · Constraints). Your notes were sent to " + (j.enhancer || "DeepSeek") + " to do this; check the text below before sending."
             : (j.enhance_error ? "⚠️ Not enhanced (" + j.enhance_error.replace(/</g, "&lt;") + "): your original notes are used." : "➖ Enhancement is off: your original notes are used.");
           send.disabled = false;
         })

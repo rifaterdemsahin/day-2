@@ -1,8 +1,8 @@
 {
- "when": "2026-11-14 18:54",
+ "when": "2026-11-14 18:55",
  "mode": "offline",
- "passed": 38,
- "total": 38,
+ "passed": 39,
+ "total": 39,
  "results": [
   {
    "group": "build",
@@ -107,7 +107,7 @@
    "name": "per-clip clip/voice/render status lives in short.json, syncs from disk and shows on the Workbench",
    "ok": true,
    "detail": "shape ok: True; sync exit 0; page shows status: True",
-   "s": 0.1
+   "s": 0.0
   },
   {
    "group": "production",
@@ -121,7 +121,7 @@
    "name": "a patch is not applied if the repo changed (dirty or new commit) while the agent worked",
    "ok": true,
    "detail": "clean=True dirty=False moved=False",
-   "s": 0.2
+   "s": 0.1
   },
   {
    "group": "build",
@@ -150,6 +150,13 @@
    "ok": true,
    "detail": "ok=True ref kept=True 402=HTTP 402 from the model API: no balance on the provider account (top it up) 401=HTTP 401 from the model API: key rejected",
    "s": 0.5
+  },
+  {
+   "group": "runner",
+   "name": "prompt corrector uses the Role / Context / Rule / Constraint framework with Role = product manager",
+   "ok": true,
+   "detail": "the corrector must ask for Role, Context, Rules, Constraints with Role = product manager and keep 🎯 references",
+   "s": 0.0
   },
   {
    "group": "runner",
