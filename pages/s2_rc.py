@@ -21,13 +21,16 @@ def build():
         groups[g].append((e, t, x))
     prod = "".join(f'<h3>{E(g)}</h3><ol class="why">' + "".join(f"<li><b>{e} {E(t)}</b><br>{E(x)}</li>" for e, t, x in groups[g]) + "</ol>" for g in order)
     ptxt = "Producer recommendations\n" + "\n".join(f"- [{g}] {t}: {x}" for e, g, t, x in r["producer"])
-    body = step_head(st) + f"""<div class="card hero"><b>🧭 Where we are</b><p>✅ <b>{done} of {len(r["recs"])}</b> recommendations are implemented; the two 🟡 ones are written and wait for a step only you can do (a secret in GitHub). The new <a href="#producer">🎬 producer recommendations</a> are at the bottom.</p><small>📅 {E(r["when"])} · status checked against the repo, the Docker build, the evals and one real runner run.</small></div>
+    body = step_head(st) + f"""<div class="card hero"><b>🧭 Where we are</b><p>✅ <b>{done} of {len(r["recs"])}</b> technical recommendations implemented; the two 🟡 ones wait for a GitHub secret. Video production recommendations are below.</p><small>📅 {E(r["when"])} · status checked against the repo, the Docker build, the evals and one real runner run.</small></div>
 <h2>🔍 What the scan found (before)</h2><div class="tablewrap"><table class="cmp"><tr><th>Item</th><th>Size</th><th>Why it matters</th></tr>{scan}</table></div>
 <h2>💾 Token savings setup (after)</h2><div class="card hero">{savings}</div>
-<h2>✅ Recommendations: status</h2><div class="card hero">{recs}</div>
-<h2>🗄️ SQLite and React</h2><div class="card hero">{tech}</div>
-<h2>🎬 For video production: status</h2>{li("video_status")}
-<h2>🧹 Housekeeping: status</h2>{li("house_status")}
-<h2 id="producer">🎬 New: recommendations for a high quality, high retention, high value video</h2>
+
+<h2>⚙️ Technical recommendations</h2>
+<div class="card hero">{recs}</div>
+<h3>🗄️ SQLite and React</h3><div class="card hero">{tech}</div>
+<h3>🎬 Video production: status</h3>{li("video_status")}
+<h3>🧹 Housekeeping: status</h3>{li("house_status")}
+
+<h2>🎬 Video production recommendations</h2>
 <div class="card hero"><p>{E(r["producer_intro"])}</p>{copybtn(ptxt, "📋 Copy the producer list")}{prod}</div>""" + fb("S2-RC", "💡 Recommendations: which do you want next?")
     page("s2-rc.html", "S2-RC Recommendations", body)
