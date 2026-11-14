@@ -1,5 +1,16 @@
 [
  {
+  "v": "v0.59",
+  "date": "2026-11-14",
+  "emoji": "🌱",
+  "codes": [
+   "S2-T"
+  ],
+  "change": "🌱 Added 10 terms to the live dictionary (status idea): attention, transformer, context-window, temperature, hallucination, fine-tuning, rag, rlhf, in-context-learning, quantization. Each has a hook, definition, analogy and 3 title ideas (written by Claude as a first draft: correct them in the editor). Created through the API, content applied as one previewed change set (40 rows, 0 errors, change set cs-017bee67a742, undoable). Exported to assets/terms/.",
+  "why": "Owner: add 10 more terms to the dictionary.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.58",
   "date": "2026-11-14",
   "emoji": "🤖",
