@@ -786,6 +786,7 @@ The first draft of each short's script lives in the repo `README.md` (title, vis
 - Flow clips are about 8 s each: plan **one clip per beat of at most 8 s** (a longer scene gets two clips).
 - If Flow gets an official API later, replace only step `S2-04` with a script; keep every other step.
 - Never commit media. Clips live in `~/Downloads/<slug>/` and in a private cloud folder.
+- 🆚 **Alternative tool (page `S2-03b`):** Higgsfield is a multi-model platform (Kling, Seedance, Wan, Sora 2, Veo 3.1) with named camera presets and a public API (launched Sept 2026, pay per generation). Flow stays the default (free daily credits, 8 s clips); Higgsfield is the second opinion and the only route to automating `S2-04`. Each scene in `short.json` carries `hf_camera` (a preset idea) used for the Higgsfield prompts. Prices and plan names change often: re-check live pages before paying, and refresh the comparison each project.
 
 ## B2. 🔢 The numbered pipeline (`S2` = short number 2; the next short uses `S3-xx`)
 
@@ -795,6 +796,7 @@ The first draft of each short's script lives in the repo `README.md` (title, vis
 | `S2-01` | 📝 Script (voice-over lines per scene) | VO text with timings | Claude, owner reviews |
 | `S2-02` | 🗺️ Storyboard (scenes, camera, on-screen text) | scene cards | Claude, owner reviews |
 | `S2-03` | 🪄 Flow prompts (one per clip) | copy-paste prompts | Claude |
+| `S2-03b` | 🆚 Flow vs Higgsfield (tool choice + Higgsfield prompts with camera presets) | comparison, prompts | Claude |
 | `S2-04` | 🎞️ Generate in Flow (manual) | clips `S2-04-cN.mp4` | owner |
 | `S2-05` | 🎙️ Voice-over | `S2-05-vo.wav` | owner or TTS |
 | `S2-06` | ✂️ Assemble and loop check | `S2-06-final.mp4` | owner, Claude advises |
@@ -878,5 +880,7 @@ Every page on the site carries its code in the menu and the heading. Feedback is
 | 12 | 2026-11-12 | Voice should be generated, not recorded by hand, and the key must not leak | B2c: ElevenLabs on fal.ai via `make_voice.py`, key from env or Keychain only, dry run first, word timings feed the captions |
 
 | 13 | 2026-11-12 | An API key should not outlive its job; Whisper mishears numbers and words, which would put typos in captions; the real voice was shorter than the planned timeline | B2c: 7-day keys revoked after use; align timings onto the script's words; scene cuts follow the voice (`scene_timing.json`) |
+
+| 14 | 2026-11-14 | One video tool is a single point of failure and a manual chore | B1/`S2-03b`: keep a Flow vs Higgsfield comparison page per short, re-researched each project; per-scene `hf_camera` in data |
 
 **How to retrain:** at the end of each project add rows here, then copy the whole file to the next project. Keep rows short: lesson, then the rule.

@@ -55,3 +55,4 @@ li.ttl{margin:12px 0}
 .hlpop[hidden]{display:none}.hlpop textarea{width:100%;min-height:70px;margin:6px 0;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:8px;font:inherit}
 .hlq{font-size:13px;color:var(--mut);margin:2px 4px 6px;font-style:italic}.hlpop .st button.on{background:var(--acc);color:#001}
 .hltitle{margin-top:6px;font-weight:600}.hli{display:flex;gap:4px;align-items:flex-start;border-top:1px dashed var(--line);padding:4px 0}.hli .hlt{flex:1;font-size:13px}.hli button{padding:2px 6px;margin:0}
+.tablewrap{overflow-x:auto}table.cmp{min-width:680px}table.cmp td,table.cmp th{vertical-align:top}table.cmp tr>th:first-child{white-space:nowrap}

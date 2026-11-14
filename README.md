@@ -12,6 +12,7 @@
 | `S2-01` | 📝 Script | [open](https://rifaterdemsahin.github.io/day-2/s2-01.html) |
 | `S2-02` | 🗺️ Storyboard | [open](https://rifaterdemsahin.github.io/day-2/s2-02.html) |
 | `S2-03` | 🪄 Flow prompts | [open](https://rifaterdemsahin.github.io/day-2/s2-03.html) |
+| `S2-03b` | 🆚 Flow vs Higgsfield | [open](https://rifaterdemsahin.github.io/day-2/s2-03b.html) |
 | `S2-04` | 🎞️ Generate in Flow | [open](https://rifaterdemsahin.github.io/day-2/s2-04.html) |
 | `S2-05` | 🎙️ Voice-over | [open](https://rifaterdemsahin.github.io/day-2/s2-05.html) |
 | `S2-06` | ✂️ Assemble and loop check | [open](https://rifaterdemsahin.github.io/day-2/s2-06.html) |

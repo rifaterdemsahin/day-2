@@ -1,5 +1,18 @@
 [
   {
+    "v": "v0.12",
+    "date": "2026-11-14",
+    "emoji": "🆚",
+    "codes": [
+      "S2-03",
+      "S2-03b",
+      "S2-06"
+    ],
+    "change": "New page S2-03b: Google Flow vs Higgsfield side by side (features, camera, length, API, cost, fit), what Higgsfield can do for this short, and six Higgsfield prompts with a camera preset per scene (hf_camera in short.json). S2-03 gets a Copy ALL prompts button. Remotion Studio (voice + animated captions + placeholders) opened on 3001 for a watch-through.",
+    "why": "Owner wanted to see and feel the current video, get the Flow prompts, and compare Higgsfield with Flow.",
+    "status": "🚀 deployed"
+  },
+  {
     "v": "v0.11",
     "date": "2026-11-12",
     "emoji": "🔑",
