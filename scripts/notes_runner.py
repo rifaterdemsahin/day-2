@@ -43,6 +43,9 @@ SMALL_MAX, MEDIUM_MAX = 500, 2000  # characters of notes
 HEAVY = re.compile(r"refactor|restructur|migrat|architecture|module|generator|python|workflow|dockerfile|runner|\bcss\b|javascript|\.py\b|\.js\b", re.I)
 
 
+ENH = SPR.get("enhancer", {})
+
+
 def route(notes, agent="auto", model=None):
     """Pick the agent by size: small text edit -> kilo (free); medium -> claude haiku (cheap); larger or structural -> claude.
     A manual agent (and optional model) always wins. Returns (agent, model_key, reason)."""
@@ -224,7 +227,7 @@ def run_job(notes, agent, dry, say, st=None, model=None):
     if code:
         sh(["git", "reset", "-q", "--hard", "HEAD"])
         raise RuntimeError("build failed after the patch, reverted:\n" + o[-600:])
-    first = next((l for l in notes.splitlines() if l.strip()), "notes")[:70]
+    first = next((l.replace("*", "").strip() for l in notes.splitlines() if l.strip()), "notes")[:70]
     sh(["git", "add", "-A"])
     code, o = sh(["git", "commit", "-q", "-m", f"🛰️ Notes via sprite ({agent}): {first}\n\nCo-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"])
     if code:
@@ -261,6 +264,8 @@ def run_job(notes, agent, dry, say, st=None, model=None):
 def report(st, err, say):
     say("\n━━━━━━━━ 📋 RESULT ━━━━━━━━")
     say(("❌ FAILED at " + st.get("stage", "?")) if err else "✅ SUCCEEDED")
+    if st.get("enhanced_by"):
+        say(f"✨ prompt enhanced with {ENH.get('provider', 'DeepSeek')} ({st['enhanced_by']}) as a product manager")
     if st.get("agent"):
         mdl = CLAUDE_MODELS.get(st.get("model")) if st.get("agent") == "claude" else None
         say(f"🧭 agent: {st['agent']}" + (f" ({mdl})" if mdl else "") + f" · {st.get('why', '')}")
@@ -328,6 +333,7 @@ class H(BaseHTTPRequestHandler):
             body = json.loads(self.rfile.read(min(int(self.headers.get("Content-Length", 0)), 100000)))
             notes, agent, dry = str(body.get("notes", "")).strip(), body.get("agent", "auto"), bool(body.get("dry"))
             model = body.get("model") or None
+            enhanced_by = ENH.get("model") if body.get("enhanced_by") == ENH.get("model") else None
             assert notes and len(notes) <= MAX_NOTES and (agent in KEYS or agent == "auto") and (model is None or model in CLAUDE_MODELS)
         except Exception:
             self.send_response(400)
@@ -335,10 +341,21 @@ class H(BaseHTTPRequestHandler):
             self.end_headers()
             return
         if body.get("preview"):  # show exactly what would be sent, run nothing, take no lock
-            a2, m2, why = route(notes, agent, model)
-            prompt = task_prompt(notes, dry)
+            a2, m2, why = route(notes, agent, model)  # routing looks at the owner's own notes, not the rewritten ones
+            improved, enh = None, {"ok": False, "error": "enhancement off", "model": ENH.get("model")}
+            if body.get("enhance", True) and ENH:
+                try:
+                    sys.path.insert(0, str(ROOT / "scripts"))
+                    import prompt_corrector
+                    enh = prompt_corrector.enhance(notes, vault_secret(ENH["secret"]), ENH)
+                except Exception as e:
+                    enh = {"ok": False, "error": str(e)[:120], "model": ENH.get("model")}
+                improved = enh["text"] if enh["ok"] and len(enh["text"]) <= MAX_NOTES else None
+            prompt = task_prompt(improved or notes, dry)
             payload = json.dumps({"agent": a2, "model": m2, "model_id": CLAUDE_MODELS.get(m2) if a2 == "claude" else None,
-                                  "why": why, "chars": len(prompt), "prompt": prompt}).encode()
+                                  "why": why, "chars": len(prompt), "prompt": prompt, "original": notes, "improved": improved,
+                                  "enhanced_by": ENH.get("model") if improved else None, "enhancer": ENH.get("provider"),
+                                  "enhance_error": None if improved or not body.get("enhance", True) else enh.get("error")}).encode()
             self.send_response(200)
             self.send_header("Content-Type", "application/json; charset=utf-8")
             self.send_header("Cache-Control", "no-store")
@@ -364,6 +381,7 @@ class H(BaseHTTPRequestHandler):
             return
         st = {}
         try:
+            st["enhanced_by"] = enhanced_by
             res = run_job(notes, agent, dry, say, st, model)
             err = None
         except Exception as e:

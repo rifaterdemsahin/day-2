@@ -224,20 +224,37 @@
     if (/\(no comments\)|No comments written yet/.test(notes)) { msg.textContent = "✍️ Write a note first (the 📝 panel, a card, or highlight text), then press 🚀."; return; }
     var old = document.getElementById("d2prev"); if (old) old.remove();
     var box = document.createElement("div"); box.id = "d2prev"; box.className = "card"; out.parentNode.insertBefore(box, out);
-    box.innerHTML = "<b>👀 Prompt to send</b> <small id=\"d2pm\">asking the runner…</small><pre id=\"d2pp\"></pre><div class=\"bar\"><button id=\"d2send\" class=\"primary\" disabled>🚀 Send</button><button id=\"d2cancel\">✖️ Cancel</button><button id=\"d2copy\">📋 Copy prompt</button></div>";
-    var pp = box.querySelector("#d2pp"), pm = box.querySelector("#d2pm"), send = box.querySelector("#d2send"), prompt = "";
+    var enh = true; try { enh = localStorage.getItem("d2enh") !== "0"; } catch (e) {}
+    box.innerHTML = "<b>👀 Prompt to send</b> <small id=\"d2pm\">asking the runner…</small><div id=\"d2en\" class=\"enh\"></div>" +
+      "<label class=\"check\"><input type=\"checkbox\" id=\"d2enh\"" + (enh ? " checked" : "") + "> ✨ Improve with DeepSeek (product-manager rewrite) before sending</label>" +
+      "<details id=\"d2orig\"><summary>📝 Your original notes</summary><pre id=\"d2po\"></pre></details><pre id=\"d2pp\"></pre>" +
+      "<div class=\"bar\"><button id=\"d2send\" class=\"primary\" disabled>🚀 Send</button><button id=\"d2cancel\">✖️ Cancel</button><button id=\"d2copy\">📋 Copy prompt</button></div>";
+    var pp = box.querySelector("#d2pp"), pm = box.querySelector("#d2pm"), send = box.querySelector("#d2send"), en = box.querySelector("#d2en"), prompt = "", sendNotes = notes, sendAgent = agent, enhBy = null;
+    box.querySelector("#d2po").textContent = notes;
     box.querySelector("#d2cancel").onclick = function () { box.remove(); msg.textContent = "Cancelled: nothing was sent."; };
     box.querySelector("#d2copy").onclick = function () { copy(prompt || notes, this); };
-    fetch("http://127.0.0.1:" + port + "/run", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ notes: notes, agent: agent.split(":")[0], model: agent.split(":")[1] || undefined, preview: true }) })
-      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
-      .then(function (j) { prompt = j.prompt; pp.textContent = j.prompt; pm.textContent = "🧭 " + j.agent + (j.model_id ? " (" + j.model_id + ")" : "") + " · " + j.why + " · " + j.chars.toLocaleString() + " characters"; send.disabled = false; })
-      .catch(function () { pp.textContent = "(runner not reachable, so this is only your notes)\n\n" + notes; pm.textContent = "❌ start it: python3 scripts/notes_runner.py"; });
-    send.onclick = function () { box.remove(); doRun(notes, btn, agent, out, msg); };
+    function ask() {
+      send.disabled = true; pm.textContent = "asking the runner…"; en.textContent = ""; pp.textContent = "";
+      var on = box.querySelector("#d2enh").checked; try { localStorage.setItem("d2enh", on ? "1" : "0"); } catch (e) {}
+      fetch("http://127.0.0.1:" + port + "/run", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ notes: notes, agent: agent.split(":")[0], model: agent.split(":")[1] || undefined, preview: true, enhance: on }) })
+        .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+        .then(function (j) {
+          prompt = j.prompt; pp.textContent = j.prompt; sendNotes = j.improved || notes; enhBy = j.enhanced_by || null;
+          sendAgent = j.agent + (j.agent === "claude" && j.model && j.model !== "default" ? ":" + j.model : "");
+          pm.textContent = "🧭 " + j.agent + (j.model_id ? " (" + j.model_id + ")" : "") + " · " + j.why + " · " + j.chars.toLocaleString() + " characters";
+          en.innerHTML = j.enhanced_by ? "✨ <b>Prompt enhanced with " + (j.enhancer || "DeepSeek") + " (" + j.enhanced_by + ")</b> as a product manager. Your notes were sent to " + (j.enhancer || "DeepSeek") + " to do this; check the text below before sending."
+            : (j.enhance_error ? "⚠️ Not enhanced (" + j.enhance_error.replace(/</g, "&lt;") + "): your original notes are used." : "➖ Enhancement is off: your original notes are used.");
+          send.disabled = false;
+        })
+        .catch(function () { pp.textContent = "(runner not reachable, so this is only your notes)\n\n" + notes; pm.textContent = "❌ start it: python3 scripts/notes_runner.py"; });
+    }
+    box.querySelector("#d2enh").onchange = ask; ask();
+    send.onclick = function () { box.remove(); doRun(sendNotes, btn, sendAgent, out, msg, enhBy); };
   }
-  function doRun(notes, btn, agent, out, msg) {
+  function doRun(notes, btn, agent, out, msg, enhBy) {
     var port = (window.SPRITE && window.SPRITE.runner_port) || 8947;
     out.hidden = false; out.textContent = "⏳ connecting to the runner on 127.0.0.1:" + port + " …\n"; btn.disabled = true;
-    fetch("http://127.0.0.1:" + port + "/run", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ notes: notes, agent: agent.split(":")[0], model: agent.split(":")[1] || undefined }) })
+    fetch("http://127.0.0.1:" + port + "/run", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ notes: notes, agent: agent.split(":")[0], model: agent.split(":")[1] || undefined, enhanced_by: enhBy || undefined }) })
       .then(function (r) {
         if (!r.ok) throw new Error("runner answered " + r.status);
         var rd = r.body.getReader(), dec = new TextDecoder();

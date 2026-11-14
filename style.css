@@ -90,3 +90,7 @@ body.picking{cursor:crosshair}
 #pickbox{position:fixed;z-index:50;pointer-events:none;display:none;outline:2px solid #ff4dd8;background:#ff4dd826;border-radius:3px}
 #pickbar{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:51;background:#001;color:#fff;border:1px solid #ff4dd8;border-radius:10px;padding:8px 12px;display:flex;gap:10px;align-items:center;max-width:94vw;font:13px ui-monospace,Menlo,monospace}
 #pickbar span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:70vw}
+
+#d2prev .enh{margin:6px 0;font-size:13px}
+#d2prev details{margin:6px 0}
+#d2prev details pre{max-height:18vh}

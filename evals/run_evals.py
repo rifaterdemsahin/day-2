@@ -229,6 +229,44 @@ def offline():
         return all(x in js for x in ("ppick", "refOf", "pickbar")) and "Object picker" in fb and "🎯" in cm and len(cm) // 4 <= 1500, "picker code, feedback-page docs and CLAUDE.md note must exist"
     check("feedback", "object picker exists, is documented on the feedback page and in CLAUDE.md", picker)
 
+    def corrector():
+        import http.server, threading, json as _j
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import prompt_corrector as pc
+
+        class H(http.server.BaseHTTPRequestHandler):
+            def log_message(self, *a):
+                pass
+
+            def do_POST(self):
+                n = int(self.headers.get("Content-Length", 0))
+                req = _j.loads(self.rfile.read(n))
+                if self.headers.get("Authorization") != "Bearer testkey":
+                    self.send_response(401); self.end_headers(); return
+                if "PAYMENT" in req["messages"][1]["content"]:
+                    self.send_response(402); self.end_headers(); self.wfile.write(b"{}"); return
+                out = _j.dumps({"choices": [{"message": {"content": "**Goal**: improved."}}], "usage": {"total_tokens": 9}}).encode()
+                self.send_response(200); self.send_header("Content-Type", "application/json"); self.end_headers(); self.wfile.write(out)
+        srv = http.server.HTTPServer(("127.0.0.1", 0), H)
+        threading.Thread(target=srv.serve_forever, daemon=True).start()
+        cfg = {"endpoint": f"http://127.0.0.1:{srv.server_port}/chat/completions", "model": "deepseek-flash"}
+        ref = '🎯 [s2-x.html › #xgo] <button> "Compute"'
+        ok1 = pc.enhance("make it nicer\n" + ref, "testkey", cfg)
+        bad = pc.enhance("PAYMENT test", "testkey", cfg)
+        rej = pc.enhance("x", "wrong", cfg)
+        srv.shutdown()
+        good = ok1["ok"] and ref in ok1["text"] and "improved" in ok1["text"]  # the element reference survives verbatim
+        return good and not bad["ok"] and "402" in bad["error"] and not rej["ok"] and "401" in rej["error"], f"ok={ok1['ok']} ref kept={ref in ok1['text']} 402={bad['error']} 401={rej['error']}"
+    check("runner", "prompt corrector (DeepSeek): rewrites, keeps 🎯 references, and falls back cleanly on 401/402", corrector)
+
+    def enhancer_wiring():
+        src = (ROOT / "scripts/notes_runner.py").read_text(encoding="utf-8")
+        js = (ROOT / "app.js").read_text(encoding="utf-8")
+        cfg = DATA["sprite"].get("enhancer", {})
+        return (cfg.get("model") == "deepseek-flash" and cfg.get("secret") == "deepseek-api-key" and "prompt_corrector" in src
+                and "Prompt enhanced with" in js and "d2enh" in js and "key" not in json.dumps(cfg).replace("secret", "").replace("api-key", "")), "enhancer config, runner call and the UI notice must exist; no key value in short.json"
+    check("runner", "prompt enhancement is configured (model + Key Vault secret name), wired into the runner and shown in the UI", enhancer_wiring)
+
     def docker_builds_site():
         d = (ROOT / "Dockerfile").read_text(encoding="utf-8")
         return "build_short_site.py" in d and "COPY --from=build" in d, "Dockerfile must compile site/ in a build stage"

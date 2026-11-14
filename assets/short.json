@@ -531,7 +531,15 @@
   "default_agent": "auto",
   "preview_url": "https://day-2-boqry.sprites.app/",
   "preview_service": "preview",
-  "dashboard_url": "https://fly.io/dashboard/erdem-391/sprites/day-2"
+  "dashboard_url": "https://fly.io/dashboard/erdem-391/sprites/day-2",
+  "enhancer": {
+   "provider": "DeepSeek",
+   "model": "deepseek-flash",
+   "secret": "deepseek-api-key",
+   "endpoint": "https://api.deepseek.com/chat/completions",
+   "max_tokens": 1200,
+   "role": "product manager"
+  }
  },
  "deploy": {
   "host": "fly.io",
@@ -591,6 +599,11 @@
     "👀",
     "Added a preview service on the Sprite, a local server, and trunk-based development (main only, push and deploy every time)",
     "You can look at what the Sprite serves, run the same pages locally, and every change is a small, reversible commit."
+   ],
+   [
+    "✨",
+    "Added a prompt corrector: before the prompt preview, the runner rewrites your notes as a product manager would (goal, numbered changes, acceptance criteria) with DeepSeek (deepseek-flash), using the key from Azure Key Vault (secret deepseek-api-key)",
+    "A raw note is often short or vague. A clear work request gets a better edit from a cheap agent. The preview says 'Prompt enhanced with DeepSeek', keeps your 🎯 references word for word, shows your original notes, can be switched off, and falls back to your own notes if DeepSeek fails. No library to install: it uses the Python standard library. Your notes are sent to DeepSeek for this step, so check the text before sending."
    ]
   ],
   "why_video": [
