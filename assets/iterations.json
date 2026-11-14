@@ -1,5 +1,16 @@
 [
  {
+  "v": "v0.50",
+  "date": "2026-11-14",
+  "emoji": "🏷️",
+  "codes": [
+   "S2-00"
+  ],
+  "change": "🏷️ Title options on 🧭 S2-00 Brief, hook and loop: added exactly 2 new title options alongside the existing ones, simple language a 12-year-old understands, each posing a question or tease to spark curiosity. Existing options unchanged; nothing else on the page or elsewhere changed.",
+  "why": "Owner feedback: In the “🏷️ Title options” section of 🧭 S2-00 Brief, hook and loop, add two additional title options that make a 12-year-old understand the content and feel curious enough to watch.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.49",
   "date": "2026-11-14",
   "emoji": "🔄",
