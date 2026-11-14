@@ -254,6 +254,16 @@
     try { if (localStorage.getItem("d2panel") === "1") panel.hidden = false; } catch (e) {}
   }
 
+  // ---- footer: when this was last deployed (site/deployed.json is written at deploy time)
+  (function () {
+    var el = document.getElementById("deployed"); if (!el) return;
+    function ago(ms) { var s = Math.max(0, Math.round((Date.now() - ms) / 1000)); if (s < 60) return s + " s"; var m = Math.round(s / 60); if (m < 60) return m + " min"; var h = Math.floor(m / 60); if (h < 48) return h + " h " + (m % 60) + " min"; return Math.floor(h / 24) + " days"; }
+    fetch("deployed.json", { cache: "no-store" }).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (d) {
+      function paint() { el.innerHTML = "🕒 Last deployed: <b>" + d.at.replace("T", " ").replace("Z", " UTC") + "</b> · <b>" + ago(d.epoch_ms) + " ago</b> · 🔗 <a href=\"" + d.site + "\">" + d.site.replace("https://", "") + "</a> · <a href=\"" + d.commit_url + "\" target=\"d2-commit\" rel=\"noopener\">commit " + d.commit + "</a>"; }
+      paint(); setInterval(paint, 30000);
+    }).catch(function () { el.textContent = "🕒 Not deployed from here (local copy): no deploy stamp."; });
+  })();
+
   paintNav(); paintProgress(); paintHL();
 
   // ---- feedback page

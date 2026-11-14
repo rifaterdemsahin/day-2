@@ -191,6 +191,9 @@ def run_job(notes, agent, dry, say, st=None):
 
     # 6. deploy + verify
     st["stage"] = "6/6 fly deploy + verify"
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import stamp
+    stamp.write_stamp()
     code, o = sh(["fly", "deploy", "--remote-only", "-a", DEP["fly_app"]], timeout=900)
     if code:
         raise RuntimeError("fly deploy failed:\n" + o[-600:])

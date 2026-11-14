@@ -2,6 +2,17 @@
  {
   "v": "v0.33",
   "date": "2026-11-14",
+  "emoji": "🕒",
+  "codes": [
+   "all pages"
+  ],
+  "change": "Every page footer now shows when the site was last deployed (UTC time), how long ago (live, updates every 30 s), the site link and the commit link. A deploy stamp site/deployed.json is written just before every fly deploy (deploy_and_wait.py and the notes runner); it is git-ignored so it does not dirty the repo. Local copy shows \"not deployed from here\".",
+  "why": "Owner: add the footer with when it last got deployed, how long ago, and the link.",
+  "status": "🚀 deployed"
+ },
+ {
+  "v": "v0.33",
+  "date": "2026-11-14",
   "emoji": "🐛",
   "codes": [
    "S2-00",

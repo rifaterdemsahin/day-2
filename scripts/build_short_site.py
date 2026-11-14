@@ -79,7 +79,7 @@ def page(fname, title, body, extra_head=""):
 </head><body>
 {nav(fname)}
 <main>{body}</main>
-<footer>🔁 Update → deploy → feedback. Copy your feedback with 📋 and paste it back to Claude.</footer>
+<footer>🔁 Update → deploy → feedback. Copy your feedback with 📋 and paste it back to Claude.<br><span id="deployed">🕒 Last deployed: checking…</span></footer>
 <script>window.PAGES={pages};window.SPRITE={json.dumps(D.get("sprite", {}))};</script>
 <script src="app.js"></script>
 </body></html>"""
