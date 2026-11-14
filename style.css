@@ -75,7 +75,7 @@ label.check input{margin-right:6px}details{margin-top:8px}summary{cursor:pointer
 /* big centered notes modal (button ⤢ in the panel header, Esc or ⤡ to shrink) */
 #pback{position:fixed;inset:0;z-index:19;background:#000a;display:none}
 body.pbig #pback{display:block}
-#panel.big{right:auto;bottom:auto;left:50%;top:50%;transform:translate(-50%,-50%);width:min(920px,94vw);max-height:90vh;padding:18px;z-index:21;box-shadow:0 20px 80px #000c}
+#panel.big{right:auto;bottom:auto;inset:0;margin:auto;height:fit-content;width:min(920px,94vw);max-height:90vh;padding:18px;z-index:21;box-shadow:0 20px 80px #000c}
 #panel.big textarea{min-height:34vh;font-size:16px}
 #panel.big #pspout{max-height:32vh;font-size:13px}
 #panel.big .ph b{font-size:18px}
@@ -98,3 +98,16 @@ body.picking{cursor:crosshair}
 #d2prev .enh{margin:6px 0;font-size:13px}
 #d2prev details{margin:6px 0}
 #d2prev details pre{max-height:18vh}
+
+#d2prev textarea#d2pp{width:100%;min-height:26vh;background:#070b1c;color:#dfe;border:1px solid var(--acc);border-radius:8px;padding:8px;font:13px/1.45 ui-monospace,Menlo,monospace;resize:vertical}
+#panel.big #d2prev textarea#d2pp{min-height:36vh}
+#d2prev.modal{position:fixed;inset:0;margin:auto;height:fit-content;width:min(920px,94vw);max-height:90vh;overflow:auto;z-index:61;box-shadow:0 20px 80px #000c}
+#d2back{position:fixed;inset:0;background:#000a;z-index:60}
+#panel.big.previewing #pnote{min-height:9vh}
+#panel.previewing #hlist,#panel.previewing .hltitle{display:none}
+
+/* log window: toolbar + full screen */
+.logbar{display:flex;gap:6px;align-items:center;margin-top:6px}
+.logbar small{opacity:.7}
+.logfull,#pspout:fullscreen,#fspout:fullscreen{position:fixed!important;inset:0;width:auto;max-height:none!important;height:auto;z-index:70;font-size:15px!important;line-height:1.5;padding:18px;border-radius:0;margin:0;box-sizing:border-box;overflow:auto}
+.logbar.onfull{position:fixed;top:10px;right:16px;z-index:71;background:#001d;padding:6px 8px;border-radius:8px;border:1px solid var(--acc)}

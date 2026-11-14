@@ -266,6 +266,18 @@ def offline():
         return all(x in s for x in ("**Role**", "**Context**", "**Rules**", "**Constraints**", "product manager", "🎯 [")), "the corrector must ask for Role, Context, Rules, Constraints with Role = product manager and keep 🎯 references"
     check("runner", "prompt corrector uses the Role / Context / Rule / Constraint framework with Role = product manager", framework)
 
+    def editable_prompt():
+        js = (ROOT / "app.js").read_text(encoding="utf-8")
+        src = (ROOT / "scripts/notes_runner.py").read_text(encoding="utf-8")
+        return all(x in js for x in ("maximize()", "<textarea id=\\\"d2pp\\\"", "d2reset", "edited by you")) and 'body.get("edited")' in src, "Sprite Implement must maximize the window and offer an editable enhanced prompt (reset, edited flag)"
+    check("runner", "Sprite Implement maximizes the window and the enhanced prompt is editable before sending", editable_prompt)
+
+    def log_fullscreen():
+        js = (ROOT / "app.js").read_text(encoding="utf-8")
+        css = (ROOT / "style.css").read_text(encoding="utf-8")
+        return all(x in js for x in ("ensureLogBar", "requestFullscreen", "logFull")) and ".logfull" in css and ".logbar.onfull" in css, "the run log needs a full screen button, a fallback overlay and a visible exit button"
+    check("runner", "the run log window has a full screen mode (button, Esc, visible exit, copy log)", log_fullscreen)
+
     def enhancer_wiring():
         src = (ROOT / "scripts/notes_runner.py").read_text(encoding="utf-8")
         js = (ROOT / "app.js").read_text(encoding="utf-8")

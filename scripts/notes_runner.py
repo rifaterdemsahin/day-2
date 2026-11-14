@@ -266,6 +266,8 @@ def report(st, err, say):
     say(("❌ FAILED at " + st.get("stage", "?")) if err else "✅ SUCCEEDED")
     if st.get("enhanced_by"):
         say(f"✨ prompt enhanced with {ENH.get('label') or ENH.get('provider', 'DeepSeek')} ({st['enhanced_by']}) as a product manager")
+    if st.get("edited"):
+        say("✏️ you edited the prompt before sending")
     if st.get("agent"):
         mdl = CLAUDE_MODELS.get(st.get("model")) if st.get("agent") == "claude" else None
         say(f"🧭 agent: {st['agent']}" + (f" ({mdl})" if mdl else "") + f" · {st.get('why', '')}")
@@ -334,6 +336,7 @@ class H(BaseHTTPRequestHandler):
             notes, agent, dry = str(body.get("notes", "")).strip(), body.get("agent", "auto"), bool(body.get("dry"))
             model = body.get("model") or None
             enhanced_by = ENH.get("model") if body.get("enhanced_by") == ENH.get("model") else None
+            edited = bool(body.get("edited"))
             assert notes and len(notes) <= MAX_NOTES and (agent in KEYS or agent == "auto") and (model is None or model in CLAUDE_MODELS)
         except Exception:
             self.send_response(400)
@@ -382,6 +385,7 @@ class H(BaseHTTPRequestHandler):
         st = {}
         try:
             st["enhanced_by"] = enhanced_by
+            st["edited"] = edited
             res = run_job(notes, agent, dry, say, st, model)
             err = None
         except Exception as e:

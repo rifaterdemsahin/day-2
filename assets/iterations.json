@@ -1,16 +1,38 @@
 [
-  {
-   "v": "v0.47",
-   "date": "2026-11-14",
-   "emoji": "🧩",
-   "codes": [
-    "all pages"
-   ],
-   "change": "Header sub-menus PREPROD, PROD and POSTPROD are now independently collapsible: click each section heading (or press Enter/Space) to expand/collapse its links. State is remembered per browser in localStorage. The header title and Menu toggle are unchanged; the Setup section (S2-W.setup) stays as-is with ✅ approve.",
-   "why": "Owner: in the header of s2-w.html, make the sub menus PREPROD, PROD and POSTPROD collapsable. Expected result: each sub menu can be collapsed and expanded independently. Keep the existing header title and Menu toggle unchanged. Leave the Setup section (S2-W.setup) as is.",
-   "status": "🚀 deployed"
-  },
-  {
+ {
+  "v": "v0.48",
+  "date": "2026-11-14",
+  "emoji": "⛶",
+  "codes": [
+   "all pages"
+  ],
+  "change": "Run log window: a toolbar above the log with ⛶ Full screen and 📋 Copy log. Full screen uses the browser full screen when allowed and a fixed full-window overlay otherwise; while full screen a floating \"⤡ Exit full screen\" and \"Copy log\" stay top right, Esc leaves it, text is larger. Works in the notes panel and on the feedback page card. The big modal and the prompt modal now center with margin:auto instead of a transform so the overlay is not trapped inside them. Checked in Chrome with a stubbed 60-line run: log covered the whole window, exit button visible, Esc restored it.",
+  "why": "Owner: the log window should also have the ability to go full screen.",
+  "status": "🚀 deployed"
+ },
+ {
+  "v": "v0.47",
+  "date": "2026-11-14",
+  "emoji": "✏️",
+  "codes": [
+   "all pages"
+  ],
+  "change": "🚀 Sprite Implement now maximizes the window (the notes panel jumps to the big centered view; on the feedback page the preview becomes a centered modal with a dimmed backdrop, Esc cancels) and the enhanced prompt is editable before sending: the Role / Context / Rules / Constraints text sits in a text box with a live character count and \"✏️ edited by you\", ↩️ Reset to enhanced, 📋 Copy full prompt (runner instructions + your text), and the runner's fixed task instructions in a read-only fold-out. Send uses exactly what is in the box; the RESULT block adds \"✏️ you edited the prompt before sending\". Works the same when enhancement is off or failed (you edit your own notes). Checked in Chrome: window maximized from small, edit counted, reset restored, Send stayed enabled; nothing was sent.",
+  "why": "Owner: when I click Sprite Implement maximize the window / task and give me the ability to update the enhanced prompt.",
+  "status": "🚀 deployed"
+ },
+ {
+  "v": "v0.47",
+  "date": "2026-11-14",
+  "emoji": "🧩",
+  "codes": [
+   "all pages"
+  ],
+  "change": "Header sub-menus PREPROD, PROD and POSTPROD are now independently collapsible: click each section heading (or press Enter/Space) to expand/collapse its links. State is remembered per browser in localStorage. The header title and Menu toggle are unchanged; the Setup section (S2-W.setup) stays as-is with ✅ approve.",
+  "why": "Owner: in the header of s2-w.html, make the sub menus PREPROD, PROD and POSTPROD collapsable. Expected result: each sub menu can be collapsed and expanded independently. Keep the existing header title and Menu toggle unchanged. Leave the Setup section (S2-W.setup) as is.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.46",
   "date": "2026-11-14",
   "emoji": "🧱",

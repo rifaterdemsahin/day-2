@@ -233,43 +233,78 @@
   })();
 
   // ---- shared: stream a run from the local runner into a <pre>
+  // ---- log window: toolbar with ⛶ Full screen (browser full screen, with a fixed overlay as fallback) and 📋 Copy log
+  function logFull(out, on) {
+    out.classList.toggle("logfull", on);
+    var b = out.previousElementSibling; if (b && b.classList.contains("logbar")) { b.querySelector(".lfs").textContent = on ? "⤡ Exit full screen" : "⛶ Full screen"; b.classList.toggle("onfull", on); }
+    if (on && out.requestFullscreen) { out.requestFullscreen().catch(function () {}); }
+    else if (!on && document.fullscreenElement) { document.exitFullscreen().catch(function () {}); }
+  }
+  document.addEventListener("fullscreenchange", function () { if (!document.fullscreenElement) document.querySelectorAll(".logfull").forEach(function (o) { logFull(o, false); }); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") document.querySelectorAll(".logfull").forEach(function (o) { logFull(o, false); }); }, true);
+  function ensureLogBar(out) {
+    var p = out.previousElementSibling; if (p && p.classList.contains("logbar")) return;
+    var bar = document.createElement("div"); bar.className = "logbar";
+    bar.innerHTML = '<button class="lfs" title="Show the log full screen (Esc to leave)">⛶ Full screen</button><button class="lcp">📋 Copy log</button><small>run log</small>';
+    out.parentNode.insertBefore(bar, out);
+    bar.querySelector(".lfs").onclick = function () { logFull(out, !out.classList.contains("logfull")); };
+    bar.querySelector(".lcp").onclick = function () { copy(out.textContent, this); };
+  }
+  var maximize = function () {};
   // step 1 of a run: show the exact prompt (task + your notes) and the routing, and send only after "Send"
   function runAgent(notes, btn, agent, out, msg) {
     var port = (window.SPRITE && window.SPRITE.runner_port) || 8947;
     if (/\(no comments\)|No comments written yet/.test(notes)) { msg.textContent = "✍️ Write a note first (the 📝 panel, a card, or highlight text), then press 🚀."; return; }
     var old = document.getElementById("d2prev"); if (old) old.remove();
+    var oldB = document.getElementById("d2back"); if (oldB) oldB.remove();
     var box = document.createElement("div"); box.id = "d2prev"; box.className = "card"; out.parentNode.insertBefore(box, out);
+    // maximize: the notes panel becomes the big centered window; on the feedback page the preview itself becomes a modal
+    if (document.getElementById("panel")) maximize(); else { box.classList.add("modal"); var bk = document.createElement("div"); bk.id = "d2back"; document.body.appendChild(bk); }
+    var pnl = document.getElementById("panel"); if (pnl) pnl.classList.add("previewing");
+    setTimeout(function () { box.scrollIntoView({ block: "nearest", behavior: "smooth" }); }, 50);
+    function closeBox() { if (pnl) pnl.classList.remove("previewing"); box.remove(); var b = document.getElementById("d2back"); if (b) b.remove(); document.removeEventListener("keydown", escKey, true); }
+    function escKey(ev) { if (ev.key === "Escape" && box.classList.contains("modal")) { ev.preventDefault(); closeBox(); msg.textContent = "Cancelled: nothing was sent."; } }
+    document.addEventListener("keydown", escKey, true);
     var enh = true; try { enh = localStorage.getItem("d2enh") !== "0"; } catch (e) {}
     box.innerHTML = "<b>👀 Prompt to send</b> <small id=\"d2pm\">asking the runner…</small><div id=\"d2en\" class=\"enh\"></div>" +
       "<label class=\"check\"><input type=\"checkbox\" id=\"d2enh\"" + (enh ? " checked" : "") + "> ✨ Improve with DeepSeek (product-manager rewrite) before sending</label>" +
-      "<details id=\"d2orig\"><summary>📝 Your original notes</summary><pre id=\"d2po\"></pre></details><pre id=\"d2pp\"></pre>" +
-      "<div class=\"bar\"><button id=\"d2send\" class=\"primary\" disabled>🚀 Send</button><button id=\"d2cancel\">✖️ Cancel</button><button id=\"d2copy\">📋 Copy prompt</button></div>";
-    var pp = box.querySelector("#d2pp"), pm = box.querySelector("#d2pm"), send = box.querySelector("#d2send"), en = box.querySelector("#d2en"), prompt = "", sendNotes = notes, sendAgent = agent, enhBy = null;
+      "<details id=\"d2orig\"><summary>📝 Your original notes</summary><pre id=\"d2po\"></pre></details>" +
+      "<details id=\"d2wrap\"><summary>🧰 Task instructions the runner adds (read only)</summary><pre id=\"d2pw\"></pre></details>" +
+      "<div><b>✏️ Enhanced prompt: edit it before sending</b> <small id=\"d2cc\"></small></div><textarea id=\"d2pp\" spellcheck=\"false\" disabled></textarea>" +
+      "<div class=\"bar\"><button id=\"d2send\" class=\"primary\" disabled>🚀 Send</button><button id=\"d2cancel\">✖️ Cancel</button><button id=\"d2copy\">📋 Copy full prompt</button><button id=\"d2reset\">↩️ Reset to enhanced</button></div>";
+    var pp = box.querySelector("#d2pp"), pm = box.querySelector("#d2pm"), send = box.querySelector("#d2send"), en = box.querySelector("#d2en"), cc = box.querySelector("#d2cc"),
+        wrapper = "", base = notes, sendAgent = agent, enhBy = null;
+    function full() { return wrapper + "OWNER FEEDBACK:\n" + pp.value.trim() + "\n"; }
+    function count() { var ed = pp.value.trim() !== base.trim(); cc.textContent = pp.value.length.toLocaleString() + " characters" + (ed ? " · ✏️ edited by you" : ""); }
+    pp.oninput = count;
     box.querySelector("#d2po").textContent = notes;
-    box.querySelector("#d2cancel").onclick = function () { box.remove(); msg.textContent = "Cancelled: nothing was sent."; };
-    box.querySelector("#d2copy").onclick = function () { copy(prompt || notes, this); };
+    box.querySelector("#d2cancel").onclick = function () { closeBox(); msg.textContent = "Cancelled: nothing was sent."; };
+    box.querySelector("#d2copy").onclick = function () { copy(wrapper ? full() : pp.value, this); };
+    box.querySelector("#d2reset").onclick = function () { pp.value = base; count(); };
     function ask() {
-      send.disabled = true; pm.textContent = "asking the runner…"; en.textContent = ""; pp.textContent = "";
+      send.disabled = true; pp.disabled = true; pm.textContent = "asking the runner…"; en.textContent = "";
       var on = box.querySelector("#d2enh").checked; try { localStorage.setItem("d2enh", on ? "1" : "0"); } catch (e) {}
       fetch("http://127.0.0.1:" + port + "/run", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ notes: notes, agent: agent.split(":")[0], model: agent.split(":")[1] || undefined, preview: true, enhance: on }) })
         .then(function (r) { if (!r.ok) throw 0; return r.json(); })
         .then(function (j) {
-          prompt = j.prompt; pp.textContent = j.prompt; sendNotes = j.improved || notes; enhBy = j.enhanced_by || null;
+          var i = j.prompt.indexOf("OWNER FEEDBACK:\n"); wrapper = i >= 0 ? j.prompt.slice(0, i) : "";
+          box.querySelector("#d2pw").textContent = wrapper;
+          base = j.improved || notes; pp.value = base; pp.disabled = false; count(); enhBy = j.enhanced_by || null;
           sendAgent = j.agent + (j.agent === "claude" && j.model && j.model !== "default" ? ":" + j.model : "");
-          pm.textContent = "🧭 " + j.agent + (j.model_id ? " (" + j.model_id + ")" : "") + " · " + j.why + " · " + j.chars.toLocaleString() + " characters";
-          en.innerHTML = j.enhanced_by ? "✨ <b>Prompt enhanced with " + (j.enhancer || "DeepSeek") + " (" + j.enhanced_by + ")</b> as a product manager (Role · Context · Rules · Constraints). Your notes were sent to " + (j.enhancer || "DeepSeek") + " to do this; check the text below before sending."
-            : (j.enhance_error ? "⚠️ Not enhanced (" + j.enhance_error.replace(/</g, "&lt;") + "): your original notes are used." : "➖ Enhancement is off: your original notes are used.");
+          pm.textContent = "🧭 " + j.agent + (j.model_id ? " (" + j.model_id + ")" : "") + " · " + j.why;
+          en.innerHTML = j.enhanced_by ? "✨ <b>Prompt enhanced with " + (j.enhancer || "DeepSeek") + " (" + j.enhanced_by + ")</b> as a product manager (Role · Context · Rules · Constraints). Your notes were sent to " + (j.enhancer || "DeepSeek") + " to do this. <b>Edit the text below if you want, then press Send.</b>"
+            : (j.enhance_error ? "⚠️ Not enhanced (" + j.enhance_error.replace(/</g, "&lt;") + "): your original notes are used. You can still edit them below." : "➖ Enhancement is off: your original notes are used. You can still edit them below.");
           send.disabled = false;
         })
-        .catch(function () { pp.textContent = "(runner not reachable, so this is only your notes)\n\n" + notes; pm.textContent = "❌ start it: python3 scripts/notes_runner.py"; });
+        .catch(function () { pp.value = notes; pm.textContent = "❌ runner not reachable: start it with python3 scripts/notes_runner.py"; });
     }
     box.querySelector("#d2enh").onchange = ask; ask();
-    send.onclick = function () { box.remove(); doRun(sendNotes, btn, sendAgent, out, msg, enhBy); };
+    send.onclick = function () { var txt = pp.value.trim(); if (!txt) { pm.textContent = "✍️ The prompt is empty."; return; } var ed = txt !== base.trim(); closeBox(); doRun(txt, btn, sendAgent, out, msg, enhBy, ed); };
   }
-  function doRun(notes, btn, agent, out, msg, enhBy) {
+  function doRun(notes, btn, agent, out, msg, enhBy, edited) {
     var port = (window.SPRITE && window.SPRITE.runner_port) || 8947;
-    out.hidden = false; out.textContent = "⏳ connecting to the runner on 127.0.0.1:" + port + " …\n"; btn.disabled = true;
-    fetch("http://127.0.0.1:" + port + "/run", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ notes: notes, agent: agent.split(":")[0], model: agent.split(":")[1] || undefined, enhanced_by: enhBy || undefined }) })
+    out.hidden = false; ensureLogBar(out); out.textContent = "⏳ connecting to the runner on 127.0.0.1:" + port + " …\n"; btn.disabled = true;
+    fetch("http://127.0.0.1:" + port + "/run", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ notes: notes, agent: agent.split(":")[0], model: agent.split(":")[1] || undefined, enhanced_by: enhBy || undefined, edited: edited || undefined }) })
       .then(function (r) {
         if (!r.ok) throw new Error("runner answered " + r.status);
         var rd = r.body.getReader(), dec = new TextDecoder();
@@ -309,6 +344,7 @@
     var pback = document.createElement("div"); pback.id = "pback";
     document.body.appendChild(pback); document.body.appendChild(fab); document.body.appendChild(panel);
     function setBig(on) { panel.classList.toggle("big", on); document.body.classList.toggle("pbig", on); var b = panel.querySelector("#pbig"); b.textContent = on ? "⤡ Small" : "⤢ Big"; try { localStorage.setItem("d2big", on ? "1" : "0"); } catch (e) {} if (on) { panel.hidden = false; panel.querySelector("#pnote").focus(); } }
+    maximize = function () { setBig(true); };
     panel.querySelector("#pbig").onclick = function () { setBig(!panel.classList.contains("big")); };
     pback.onclick = function () { setBig(false); };
     var pd = pageNote(PAGE), pn = panel.querySelector("#pnote"), pr = panel.querySelector("#prev");
