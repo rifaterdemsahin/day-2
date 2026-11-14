@@ -1,5 +1,5 @@
 {
- "when": "2026-11-14 18:55",
+ "when": "2026-11-14 18:59",
  "mode": "offline",
  "passed": 39,
  "total": 39,
@@ -9,7 +9,7 @@
    "name": "builds without error and is idempotent",
    "ok": true,
    "detail": "second build changed: []",
-   "s": 0.2
+   "s": 0.3
   },
   {
    "group": "pages",
@@ -107,7 +107,7 @@
    "name": "per-clip clip/voice/render status lives in short.json, syncs from disk and shows on the Workbench",
    "ok": true,
    "detail": "shape ok: True; sync exit 0; page shows status: True",
-   "s": 0.0
+   "s": 0.1
   },
   {
    "group": "production",
@@ -121,7 +121,7 @@
    "name": "a patch is not applied if the repo changed (dirty or new commit) while the agent worked",
    "ok": true,
    "detail": "clean=True dirty=False moved=False",
-   "s": 0.1
+   "s": 0.0
   },
   {
    "group": "build",
@@ -149,7 +149,7 @@
    "name": "prompt corrector (DeepSeek): rewrites, keeps 🎯 references, and falls back cleanly on 401/402",
    "ok": true,
    "detail": "ok=True ref kept=True 402=HTTP 402 from the model API: no balance on the provider account (top it up) 401=HTTP 401 from the model API: key rejected",
-   "s": 0.5
+   "s": 0.0
   },
   {
    "group": "runner",
@@ -219,7 +219,7 @@
    "name": "patch contains source changes only (no generated site/ or stub html)",
    "ok": true,
    "detail": "got ['assets/short.json', 'new.txt']",
-   "s": 0.1
+   "s": 0.0
   },
   {
    "group": "runner-http",

@@ -51,12 +51,16 @@ def nav(active):
         groups.setdefault(PHASE.get(h, "site"), []).append((h, t))
     items = ""
     for sec in PHASE_ORDER:
-        items += f'<h3 class="navsec">{PHASE_LABEL[sec]}</h3>'
+        items += (f'<h3 class="navsec" data-phase="{sec}" aria-expanded="true" tabindex="0">{PHASE_LABEL[sec]}</h3>'
+                  f'<div class="navphase" data-phase="{sec}">')
         for h, t in groups.get(sec, []):
             items += f'<a href="{h}"{" class=active" if h == active else ""}>{t}</a>'
-    items += '<h3 class="navsec">📖 Site</h3>'
+        items += '</div>'
+    items += '<h3 class="navsec" data-phase="site" aria-expanded="true" tabindex="0">📖 Site</h3>'
+    items += '<div class="navphase" data-phase="site">'
     for h, t in groups.get("site", []):
         items += f'<a href="{h}"{" class=active" if h == active else ""}>{t}</a>'
+    items += '</div>'
     return (f'<header><div class="hbar"><button id="menu-btn" aria-expanded="true">▾ Menu</button>'
             f'<b class="brand">📱 {E(D["code"])} · {E(D["title"])}</b>'
             f'<button id="hidden-btn" type="button" aria-pressed="false" title="Show the pages hidden from the menu (approved pages)">🙈 Hidden: 0</button></div>'

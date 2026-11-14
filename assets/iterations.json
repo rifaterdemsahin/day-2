@@ -1,5 +1,16 @@
 [
- {
+  {
+   "v": "v0.47",
+   "date": "2026-11-14",
+   "emoji": "🧩",
+   "codes": [
+    "all pages"
+   ],
+   "change": "Header sub-menus PREPROD, PROD and POSTPROD are now independently collapsible: click each section heading (or press Enter/Space) to expand/collapse its links. State is remembered per browser in localStorage. The header title and Menu toggle are unchanged; the Setup section (S2-W.setup) stays as-is with ✅ approve.",
+   "why": "Owner: in the header of s2-w.html, make the sub menus PREPROD, PROD and POSTPROD collapsable. Expected result: each sub menu can be collapsed and expanded independently. Keep the existing header title and Menu toggle unchanged. Leave the Setup section (S2-W.setup) as is.",
+   "status": "🚀 deployed"
+  },
+  {
   "v": "v0.46",
   "date": "2026-11-14",
   "emoji": "🧱",

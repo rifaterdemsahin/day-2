@@ -25,6 +25,21 @@
   try { if (localStorage.getItem("d2menu") === "closed") nav.classList.add("closed"); } catch (e) {}
   if (mb) mb.onclick = function () { var c = nav.classList.toggle("closed"); mb.setAttribute("aria-expanded", !c); try { localStorage.setItem("d2menu", c ? "closed" : "open"); } catch (e) {} };
 
+  // ---- phase sections (PREPROD, PROD, POSTPROD, Site) fold
+  document.querySelectorAll(".navsec").forEach(function (sec) {
+    var phase = sec.getAttribute("data-phase");
+    var phaseEl = document.querySelector('.navphase[data-phase="' + phase + '"]');
+    var key = "d2phase:" + phase;
+    try { if (localStorage.getItem(key) === "closed") { phaseEl.classList.add("collapsed"); sec.setAttribute("aria-expanded", "false"); } } catch (e) {}
+    function toggle() {
+      var c = phaseEl.classList.toggle("collapsed");
+      sec.setAttribute("aria-expanded", c ? "false" : "true");
+      try { localStorage.setItem(key, c ? "closed" : "open"); } catch (e) {}
+    }
+    sec.onclick = toggle;
+    sec.onkeydown = function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); } };
+  });
+
   // ---- copy buttons
   document.querySelectorAll("button.copy").forEach(function (b) { b.onclick = function () { copy(b.getAttribute("data-copy"), b); }; });
 
