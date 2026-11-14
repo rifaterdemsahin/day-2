@@ -17,7 +17,7 @@
     if (!d.text && !d.s) return "";
     return "💬 [" + id + "] " + label + (d.s ? " — " + ST[d.s] : "") + (d.text ? "\n" + d.text : "");
   }
-  function reviewed(h) { return !!get("rev:" + h).v; }
+  function reviewed(h) { return !!get("rev:" + h).v || get("page:" + h).s === "ok"; }
   function pageNote(h) { return get("page:" + h); }
 
   // ---- menu fold
@@ -236,9 +236,9 @@
     function toggle(open) { panel.hidden = open === undefined ? !panel.hidden : !open; try { localStorage.setItem("d2panel", panel.hidden ? "0" : "1"); } catch (e) {} if (!panel.hidden) pn.focus(); }
     fab.onclick = function () { toggle(); };
     panel.querySelector("#pclose").onclick = function () { toggle(false); };
-    panel.querySelectorAll(".st button").forEach(function (b) { b.onclick = function () { pd.s = (pd.s === b.dataset.s) ? "" : b.dataset.s; set("page:" + PAGE, pd); paintP(); }; });
+    panel.querySelectorAll(".st button").forEach(function (b) { b.onclick = function () { pd.s = (pd.s === b.dataset.s) ? "" : b.dataset.s; set("page:" + PAGE, pd); pr.checked = reviewed(PAGE); paintP(); paintNav(); paintProgress(); }; });
     pn.oninput = function () { pd.text = pn.value; set("page:" + PAGE, pd); paintP(); };
-    pr.onchange = function () { set("rev:" + PAGE, { v: pr.checked }); paintP(); paintNav(); paintProgress(); };
+    pr.onchange = function () { set("rev:" + PAGE, { v: pr.checked }); if (!pr.checked && pd.s === "ok") { pd.s = ""; set("page:" + PAGE, pd); } paintP(); paintNav(); paintProgress(); };
     panel.querySelector("#pcopy").onclick = function () { copy(pageText(), this); };
     panel.querySelector("#pall").onclick = function () { copy(allText(), this); };
     var pagent = panel.querySelector("#pagent"); pagent.value = (window.SPRITE && window.SPRITE.default_agent) || "kilo";

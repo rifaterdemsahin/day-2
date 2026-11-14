@@ -1,5 +1,17 @@
 [
  {
+  "v": "v0.33",
+  "date": "2026-11-14",
+  "emoji": "🐛",
+  "codes": [
+   "S2-00",
+   "S2-R"
+  ],
+  "change": "A page marked ✅ Approve in the 📝 notes panel now counts as reviewed: the hub progress list and the ✔️ menu mark update at once (app.js). Un-ticking reviewed also clears the approval.",
+  "why": "Owner: I have approved research but it did not get reflected on the hub; fix the issue.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.32",
   "date": "2026-11-14",
   "emoji": "📚",
