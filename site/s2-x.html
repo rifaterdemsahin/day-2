@@ -24,6 +24,18 @@
 <li>🪤 Untick the box: the answer becomes one of the input words. That is the known trap of the original demo.</li>
 <li>🎯 "Virtue" is also one of my five dimensions, so reaching it is partly built in. The honest check is the real-model script, which now includes <code>pride − vanity + honor → virtue</code>.</li>
 <li>🔬 Real test: run <code>python3 -I scripts/pride_vanity_real.py</code> (needs <code>pip install gensim</code> and downloads GloVe, about 130 MB). <b>Not run yet.</b></li></ul></div>
+<h2>📖 Reading <code>pride − vanity + honor</code> word by word</h2>
+<div class="card hero"><ul>
+<li>🦁 <b>pride</b> = healthy self-respect: you think well of yourself because of something real. High self-regard, high "earned", mostly good.</li>
+<li>🪞 <b>vanity</b> = self-regard that lives on looks and applause: high self-regard, but <i>hollow</i>, needs others' admiration, little earned, a bit negative.</li>
+<li>🏅 <b>honor</b> = recognition you actually earned, with good character behind it: high "earned", high virtue.</li>
+<li>🌿 <b>virtue</b> = being good in a lasting way: high "earned", high virtue, little hollowness.</li></ul>
+<p><b>Why the sum makes sense:</b></p>
+<ol><li>➖ <b>pride − vanity</b>: both share the same high self-regard, so that part cancels. What is left is what pride has and vanity lacks: <i>earned</i> and <i>virtue</i> up, <i>hollowness</i> and <i>needing applause</i> down. This is the "healthy, not hollow" direction, the same kind of step as man → woman in king − man + woman.</li>
+<li>➕ <b>+ honor</b>: honor adds more of exactly what that direction already points to (earned, virtue). So the result becomes <i>pride without the hollow part, plus earned goodness</i>.</li>
+<li>🎯 That is the everyday meaning of virtue: <b>self-respect that is earned, not shown off.</b> The nearest word to the result is virtue, which is why it lands there.</li></ol>
+<div id="xexp"></div>
+<small>🛠️ Same caveat as above: the numbers are my hand-written toy values, so this explains why the <i>arithmetic</i> works; whether a real model has the same shape is the GloVe test.</small></div>
 <script>(function(){var S={"dims": ["self-regard", "hollowness", "needs applause", "earned", "virtue"], "words": {"pride": [0.8, 0.2, 0.3, 0.8, 0.5], "vanity": [0.8, 0.9, 0.9, 0.1, -0.4], "confidence": [0.7, 0.1, 0.1, 0.7, 0.6], "arrogance": [0.9, 0.6, 0.4, 0.3, -0.6], "humility": [0.1, 0, 0, 0.6, 0.9], "modesty": [0.2, 0.1, 0.1, 0.5, 0.8], "honor": [0.6, 0.1, 0.4, 0.9, 0.9], "shame": [-0.7, 0.3, 0.7, 0, 0.1], "ego": [0.9, 0.5, 0.4, 0.3, -0.2], "envy": [-0.4, 0.5, 0.8, 0, -0.7], "flattery": [0.2, 0.9, 0.9, 0, -0.5], "praise": [0.3, 0.2, 0.9, 0.5, 0.4], "virtue": [0.4, 0, 0.1, 0.8, 1.0]}, "presets": [{"a": "vanity", "b": "pride", "c": "confidence", "expect": "arrogance", "why": "pride is to vanity as confidence is to arrogance (the hollow twin)"}, {"a": "pride", "b": "vanity", "c": "arrogance", "expect": "confidence", "why": "the same step backwards: remove the hollowness"}, {"a": "pride", "b": "vanity", "c": "flattery", "expect": "honor", "why": "swap empty applause for earned recognition"}]};var W=S.words,names=Object.keys(W);
 function cos(a,b){var s=0,x=0,y=0;for(var i=0;i<a.length;i++){s+=a[i]*b[i];x+=a[i]*a[i];y+=b[i]*b[i];}return s/Math.sqrt(x*y)}
 function calc(a,b,c,ex){var v=W[a].map(function(_,i){return W[a][i]-W[b][i]+W[c][i]});return names.filter(function(w){return !ex||[a,b,c].indexOf(w)<0}).map(function(w){return [w,cos(v,W[w])]}).sort(function(p,q){return q[1]-p[1]})}
@@ -45,6 +57,7 @@ function nr(vec,ex){var r=names.filter(function(w){return ex.indexOf(w)<0}).map(
 document.getElementById("xwalk").innerHTML="<ol><li>🧍 <b>Start at pride</b>: already "+cos(p,W.virtue).toFixed(2)+" close to virtue.</li><li>➖ <b>Take away vanity</b> (the hollow, applause part): the leftover points to <i>"+nr(s1,["pride","vanity"])+"</i>. Closeness to virtue: "+cos(s1,W.virtue).toFixed(2)+".</li><li>➕ <b>Add "+c+"</b>: nearest word is <i>"+nr(s2,["pride","vanity",c])+"</i>. Closeness to virtue: "+cos(s2,W.virtue).toFixed(2)+(nr(s2,["pride","vanity",c]).indexOf("virtue")===0?" ✅ <b>we reached virtue</b>":" ❌ not virtue")+".</li></ol>";
 document.getElementById("xbars").innerHTML=bars([["vanity",v],["pride",p],["pride − vanity + "+c,s2],["virtue",W.virtue]])}
 SEL.onchange=walk;walk();
+var EX=document.getElementById("xexp"),P=W.pride,V=W.vanity,H=W.honor,R=P.map(function(x,i){return x-V[i]}),T=R.map(function(x,i){return x+H[i]});EX.innerHTML=bars([["pride",P],["− vanity",V.map(function(x){return -x})],["= pride − vanity",R],["+ honor",H],["= result",T],["virtue (target)",W.virtue]])+"<p>cosine(result, virtue) = <b>"+cos(T,W.virtue).toFixed(2)+"</b></p>";
 
 var tb=document.getElementById("xtab"),ok=0;S.presets.forEach(function(p){var r=calc(p.a,p.b,p.c,true),top=r[0][0],rank=r.map(function(x){return x[0]}).indexOf(p.expect)+1,pass=top===p.expect;if(pass)ok++;
 var tr=document.createElement("tr");tr.innerHTML="<td>"+(pass?"✅":"❌")+"</td><td>"+p.a+" − "+p.b+" + "+p.c+"<br><small>"+p.why+"</small></td><td>"+p.expect+"</td><td>"+r.slice(0,3).map(function(x){return x[0]+" "+x[1].toFixed(2)}).join("<br>")+"</td><td>"+(pass?"top 1":"expected is #"+rank)+"</td>";tb.appendChild(tr)});

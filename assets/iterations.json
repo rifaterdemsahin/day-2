@@ -1,5 +1,16 @@
 [
  {
+  "v": "v0.29",
+  "date": "2026-11-14",
+  "emoji": "📖",
+  "codes": [
+   "S2-X"
+  ],
+  "change": "S2-X bottom: \"Reading pride − vanity + honor word by word\": plain meaning of pride, vanity, honor and virtue, why subtracting vanity leaves the healthy-not-hollow direction, why adding honor pushes it to virtue, and a live dimension-by-dimension table (result vs virtue, cosine 0.96).",
+  "why": "Owner: explain the word meaning at the bottom for pride − vanity + honor and why this makes sense.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.28",
   "date": "2026-11-14",
   "emoji": "🧭",

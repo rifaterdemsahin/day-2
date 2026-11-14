@@ -1,5 +1,5 @@
 {
- "when": "2026-11-14 15:24",
+ "when": "2026-11-14 15:27",
  "mode": "offline",
  "passed": 21,
  "total": 21,
@@ -9,7 +9,7 @@
    "name": "builds without error and is idempotent",
    "ok": true,
    "detail": "second build changed files",
-   "s": 0.1
+   "s": 0.2
   },
   {
    "group": "pages",
@@ -65,7 +65,7 @@
    "name": "no API keys or tokens in tracked files",
    "ok": true,
    "detail": "possible secret in: ",
-   "s": 0.0
+   "s": 0.1
   },
   {
    "group": "security",
