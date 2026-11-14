@@ -1,8 +1,8 @@
 {
- "when": "2026-11-14 17:11",
+ "when": "2026-11-14 17:14",
  "mode": "offline",
- "passed": 26,
- "total": 26,
+ "passed": 30,
+ "total": 30,
  "results": [
   {
    "group": "build",
@@ -72,6 +72,34 @@
    "name": "one module per page under pages/ (each with build()), none larger than ~7k tokens",
    "ok": true,
    "detail": "24 modules, largest ~4925 tokens, without build(): []",
+   "s": 0.0
+  },
+  {
+   "group": "runner",
+   "name": "size-based routing: small to kilo, medium to claude haiku, large/structural to claude, manual override wins",
+   "ok": true,
+   "detail": "small=('kilo', 'default') medium=('claude', 'haiku') big=('claude', 'default') heavy=('claude', 'default') manual=('claude', 'haiku')",
+   "s": 0.0
+  },
+  {
+   "group": "runner",
+   "name": "claude runs with --output-format json (and the cheap model when routed)",
+   "ok": true,
+   "detail": "claude -p \"$(cat /tmp/d2prompt.txt)\" --output-format json --model claude-haiku-5-5 --permission-mode acceptEdits --allowedTools \"Edit Write Read Glob Grep Bash(",
+   "s": 0.0
+  },
+  {
+   "group": "runner",
+   "name": "RESULT block prints input/output tokens and USD cost",
+   "ok": true,
+   "detail": "ead 9,074 · cache write 11,140 · 💵 $0.0455\n🧾 git commit: none (no commit was made)\n⬆️ git push:   ➖ nothing to push (no change)\n🌐 fly deploy: ➖ nothing to deploy (no change)\n━━━━━━━━━━━━━━━━━━━━━━━━━━",
+   "s": 0.0
+  },
+  {
+   "group": "ci",
+   "name": "deploy-on-push and scheduled health workflows exist",
+   "ok": true,
+   "detail": "deploy.yml needs FLY_API_TOKEN + push to main; health.yml needs schedule + live evals + sprite_check",
    "s": 0.0
   },
   {

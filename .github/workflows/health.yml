@@ -1,0 +1,29 @@
+name: Health (live evals + sprite check)
+# Daily: are the live site, the old Pages redirect and the agent CLIs on the sprite still fine?
+# The sprite part runs only when the repo secret SPRITE_API_TOKEN and the repo variable
+# SPRITE_CLI_URL (the official install script URL for the sprite CLI, copied from its docs) are set.
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    env:
+      SPRITE_API_TOKEN: ${{ secrets.SPRITE_API_TOKEN }}
+      SPRITE_CLI_URL: ${{ vars.SPRITE_CLI_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install the sprite CLI (only if configured)
+        if: ${{ env.SPRITE_CLI_URL != '' && env.SPRITE_API_TOKEN != '' }}
+        run: |
+          curl -fsSL "$SPRITE_CLI_URL" | sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          "$HOME/.local/bin/sprite" auth setup --token "$SPRITE_API_TOKEN"
+      - name: Build + live evals (Fly pages, Pages redirect; sprite checks run when the CLI is present)
+        run: python3 -I scripts/build_short_site.py && python3 evals/run_evals.py --live
+      - name: Sprite agent check (claude, kilo, agy installed and signed in)
+        if: ${{ env.SPRITE_CLI_URL != '' && env.SPRITE_API_TOKEN != '' }}
+        run: python3 -I scripts/sprite_check.py

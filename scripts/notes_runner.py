@@ -14,7 +14,7 @@ Flow for one run (everything streams back to the notes panel):
 Safety: binds to loopback only, accepts only the site's own origins (CORS + Origin check),
 checks the Host header, one run at a time, notes capped, secrets scrubbed from streamed output.
 """
-import argparse, base64, json, pathlib, shlex, subprocess, sys, threading, time, urllib.request
+import re, argparse, base64, json, pathlib, shlex, subprocess, sys, threading, time, urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse
 
@@ -38,11 +38,31 @@ ALLOWED = {origin_of(DEP["url"]), origin_of(DEP["old_pages"]),
            f"http://127.0.0.1:{LOCAL_PORT}", f"http://localhost:{LOCAL_PORT}"}
 
 
-def agent_cmd(agent, dry):
+CLAUDE_MODELS = {"default": None, "haiku": "claude-haiku-5-5", "sonnet": "claude-sonnet-5-5"}
+SMALL_MAX, MEDIUM_MAX = 500, 2000  # characters of notes
+HEAVY = re.compile(r"refactor|restructur|migrat|architecture|module|generator|python|workflow|dockerfile|runner|\bcss\b|javascript|\.py\b|\.js\b", re.I)
+
+
+def route(notes, agent="auto", model=None):
+    """Pick the agent by size: small text edit -> kilo (free); medium -> claude haiku (cheap); larger or structural -> claude.
+    A manual agent (and optional model) always wins. Returns (agent, model_key, reason)."""
+    if agent != "auto":
+        return agent, model or "default", "manual choice"
+    n = len(notes)
+    heavy = bool(HEAVY.search(notes))
+    if n <= SMALL_MAX and not heavy:
+        return "kilo", "default", f"small text edit ({n} chars) → kilo (free)"
+    if n <= MEDIUM_MAX and not heavy:
+        return "claude", "haiku", f"medium note ({n} chars) → claude haiku (cheap)"
+    return "claude", "default", f"{'structural keywords' if heavy else str(n) + ' chars'} → claude (primary model)"
+
+
+def agent_cmd(agent, dry, model="default"):
     if agent == "claude":
         mode = "plan" if dry else "acceptEdits"
         tools = '"Edit Write Read Glob Grep Bash(python3:*) Bash(git status:*) Bash(git diff:*) Bash(ls:*) Bash(cat:*)"'
-        return f'claude -p "$(cat /tmp/d2prompt.txt)" --permission-mode {mode} --allowedTools {tools}'
+        mflag = f" --model {CLAUDE_MODELS[model]}" if CLAUDE_MODELS.get(model) else ""
+        return f'claude -p "$(cat /tmp/d2prompt.txt)" --output-format json{mflag} --permission-mode {mode} --allowedTools {tools}'
     if agent == "kilo":
         ag = "--agent plan" if dry else "--auto"
         return ('export PATH=$(npm prefix -g)/bin:$PATH; command -v kilo >/dev/null || npm i -g @kilocode/cli >/dev/null 2>&1; '
@@ -84,20 +104,22 @@ def sh(cmd, cwd=ROOT, timeout=600):
 PATCH_EXCLUDES = "':!site' ':!*.html' ':!404.html'"
 
 
-def build_script(notes, agent, dry, prelude=""):
+def build_script(notes, agent, dry, prelude="", model="default"):
     """The bash script piped to `sprite exec ... bash -l -s` (secrets only in `prelude`, only on stdin)."""
     return (prelude + "set -e\nexport CI=1\nD=$HOME/day-2\n"
             f"[ -d $D/.git ] || git clone -q {SPR['repo']} $D\ncd $D\n"
             "git fetch -q origin main && git reset -q --hard origin/main && git clean -fdq\n"
             "cat > /tmp/d2prompt.txt <<'D2PROMPT'\n" + task_prompt(notes, dry) + "D2PROMPT\n"
-            + agent_cmd(agent, dry) + " </dev/null\n"
+            + agent_cmd(agent, dry, model) + " </dev/null\n"
             "echo '===AGENT-DONE==='\ngit add -A\n"
             f"git diff --cached --binary -- . {PATCH_EXCLUDES} | base64 -w0 > /tmp/d2patch.b64\n"
             "echo '===PATCH-BEGIN==='; cat /tmp/d2patch.b64; echo; echo '===PATCH-END==='\n")
 
 
-def run_job(notes, agent, dry, say, st=None):
+def run_job(notes, agent, dry, say, st=None, model=None):
     st = st if st is not None else {}
+    agent, model, why = route(notes, agent, model)
+    st["agent"], st["model"], st["why"] = agent, model, why
     secrets = []
 
     def out(s):
@@ -115,6 +137,8 @@ def run_job(notes, agent, dry, say, st=None):
         raise RuntimeError("local main is not equal to origin/main; pull or push first")
     out(f"✅ 1/6 repo clean and in sync ({sh(['git', 'rev-parse', '--short', 'HEAD'])[1]})")
 
+    out(f"🧭 routing: {why}")
+
     # 2. key
     env_name, secret_name = KEYS[agent]
     prelude = ""
@@ -128,8 +152,8 @@ def run_job(notes, agent, dry, say, st=None):
 
     # 3. agent on the sprite
     st["stage"] = "3/6 agent on the sprite"
-    script = build_script(notes, agent, dry, prelude)
-    out(f"🛰️ 3/6 running {agent} on sprite {SPR['name']} …")
+    script = build_script(notes, agent, dry, prelude, model)
+    out(f"🛰️ 3/6 running {agent}{'' if model == 'default' or agent != 'claude' else ' (' + CLAUDE_MODELS[model] + ')'} on sprite {SPR['name']} …")
     p = subprocess.Popen(["sprite", "exec", "-s", SPR["name"], "--stdin", "--", "bash", "-l", "-s"], stdin=subprocess.PIPE,
                          stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     p.stdin.write(script)
@@ -139,6 +163,17 @@ def run_job(notes, agent, dry, say, st=None):
         line = line.rstrip("\n")
         if "bind: warning" in line:
             continue
+        if line.startswith('{"') and '"total_cost_usd"' in line:  # claude --output-format json: one result object
+            try:
+                j = json.loads(line)
+                u = j.get("usage", {})
+                st["usage"] = {"in": u.get("input_tokens", 0), "out": u.get("output_tokens", 0), "cache_read": u.get("cache_read_input_tokens", 0),
+                               "cache_write": u.get("cache_creation_input_tokens", 0), "usd": j.get("total_cost_usd", 0.0), "turns": j.get("num_turns")}
+                for t in str(j.get("result", "")).splitlines():
+                    out("   " + t)
+                continue
+            except Exception:
+                pass
         if line == "===PATCH-BEGIN===":
             in_patch = True
             continue
@@ -212,6 +247,14 @@ def run_job(notes, agent, dry, say, st=None):
 def report(st, err, say):
     say("\n━━━━━━━━ 📋 RESULT ━━━━━━━━")
     say(("❌ FAILED at " + st.get("stage", "?")) if err else "✅ SUCCEEDED")
+    if st.get("agent"):
+        mdl = CLAUDE_MODELS.get(st.get("model")) if st.get("agent") == "claude" else None
+        say(f"🧭 agent: {st['agent']}" + (f" ({mdl})" if mdl else "") + f" · {st.get('why', '')}")
+    u = st.get("usage")
+    if u:
+        say(f"🔢 tokens: input {u['in']:,} · output {u['out']:,} · cache read {u['cache_read']:,} · cache write {u['cache_write']:,} · 💵 ${u['usd']:.4f}")
+    elif st.get("agent"):
+        say("🔢 tokens: not reported by " + st["agent"] + (" (free model, $0)" if st["agent"] == "kilo" else ""))
     say("🧾 git commit: " + (st.get("commit") or "none (no commit was made)"))
     if st.get("stat"):
         say(st["stat"])
@@ -269,8 +312,9 @@ class H(BaseHTTPRequestHandler):
             return
         try:
             body = json.loads(self.rfile.read(min(int(self.headers.get("Content-Length", 0)), 100000)))
-            notes, agent, dry = str(body.get("notes", "")).strip(), body.get("agent", "claude"), bool(body.get("dry"))
-            assert notes and len(notes) <= MAX_NOTES and agent in KEYS
+            notes, agent, dry = str(body.get("notes", "")).strip(), body.get("agent", "auto"), bool(body.get("dry"))
+            model = body.get("model") or None
+            assert notes and len(notes) <= MAX_NOTES and (agent in KEYS or agent == "auto") and (model is None or model in CLAUDE_MODELS)
         except Exception:
             self.send_response(400)
             self._cors(o)
@@ -294,7 +338,7 @@ class H(BaseHTTPRequestHandler):
             return
         st = {}
         try:
-            res = run_job(notes, agent, dry, say, st)
+            res = run_job(notes, agent, dry, say, st, model)
             err = None
         except Exception as e:
             res, err = {}, str(e)

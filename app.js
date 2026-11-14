@@ -181,7 +181,7 @@
     var port = (window.SPRITE && window.SPRITE.runner_port) || 8947;
     if (/\(no comments\)|No comments written yet/.test(notes)) { msg.textContent = "✍️ Write a note first (the 📝 panel, a card, or highlight text), then press 🚀."; return; }
     out.hidden = false; out.textContent = "⏳ connecting to the runner on 127.0.0.1:" + port + " …\n"; btn.disabled = true;
-    fetch("http://127.0.0.1:" + port + "/run", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ notes: notes, agent: agent }) })
+    fetch("http://127.0.0.1:" + port + "/run", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ notes: notes, agent: agent.split(":")[0], model: agent.split(":")[1] || undefined }) })
       .then(function (r) {
         if (!r.ok) throw new Error("runner answered " + r.status);
         var rd = r.body.getReader(), dec = new TextDecoder();
@@ -214,7 +214,7 @@
       '<div class="hltitle">✨ Highlight notes on this page <small>(select any text to add one)</small></div><div id="hlist"></div>' +
       '<label class="rvchk"><input type="checkbox" id="prev"> ✔️ I have reviewed this page</label>' +
       '<div class="pb"><button id="pcopy" class="primary">📋 Copy this page</button><button id="pall">📋 Copy all</button><a href="feedback.html">💬 Summary</a></div>' +
-      '<div class="pb"><select id="pagent" title="Which CLI runs the task on the Sprite"><option value="kilo">🧠 kilo</option><option value="claude">🤖 claude</option><option value="antigravity">🪐 antigravity</option></select><button id="psp" class="primary" title="Sends this page\'s notes to the agent on your Fly.io Sprite, then pushes and redeploys">🚀 Run: this page</button><button id="pspa">🚀 all notes</button></div>' +
+      '<div class="pb"><select id="pagent" title="auto picks by note size: small to kilo (free), medium to claude haiku, larger to claude"><option value="auto">🧭 auto (by size)</option><option value="kilo">🧠 kilo (free)</option><option value="claude:haiku">🤖 claude haiku (cheap)</option><option value="claude">🤖 claude (primary)</option><option value="antigravity">🪐 antigravity</option></select><button id="psp" class="primary" title="Sends this page\'s notes to the agent on your Fly.io Sprite, then pushes and redeploys">🚀 Run: this page</button><button id="pspa">🚀 all notes</button></div>' +
       '<div class="pb"><button id="pspc" title="Copies a Terminal command instead (no runner needed)">📋 command</button><a href="s2-sp.html">🛰️ Setup</a></div>' +
       '<small id="pspmsg">Start the runner once: <code>python3 scripts/notes_runner.py</code>, then press 🚀. The agent edits, the runner pushes and redeploys.</small><pre id="pspout" hidden></pre>';
     document.body.appendChild(fab); document.body.appendChild(panel);

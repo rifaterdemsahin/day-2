@@ -1,0 +1,26 @@
+name: Deploy to Fly.io
+# Every push to main deploys (trunk-based). The site/ folder is compiled inside the Docker image.
+# One-time setup (the owner does this, the value never goes in the repo):
+#   fly tokens create deploy -a day-2-short --expiry 168h   # short-lived; renew before it expires
+#   gh secret set FLY_API_TOKEN                              # paste the token when asked
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+concurrency:
+  group: deploy-fly
+  cancel-in-progress: false
+permissions:
+  contents: read
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Deploy stamp (shown in every page footer)
+        run: python3 scripts/stamp.py
+      - name: fly deploy
+        run: flyctl deploy --remote-only -a day-2-short
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
