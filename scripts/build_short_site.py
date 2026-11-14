@@ -5,6 +5,8 @@ Run: python3 -I scripts/build_short_site.py
 import html, json, pathlib, shutil
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
+import hashlib
+ASSET_V = {n: hashlib.md5((ROOT / n).read_bytes()).hexdigest()[:8] for n in ("style.css", "app.js")}  # cache-busting: browsers reload changed files
 D = json.loads((ROOT / "assets/short.json").read_text(encoding="utf-8"))
 SITE = ROOT / "site"  # the real site (deployed to Fly.io); root *.html are only redirect stubs for GitHub Pages
 SITE.mkdir(exist_ok=True)
@@ -75,13 +77,13 @@ def page(fname, title, body, extra_head=""):
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{E(title)}</title>
 {fav_head}
-<link rel="stylesheet" href="style.css">{extra_head}
+<link rel="stylesheet" href="style.css?v={ASSET_V["style.css"]}">{extra_head}
 </head><body>
 {nav(fname)}
 <main>{body}</main>
 <footer>🔁 Update → deploy → feedback. Copy your feedback with 📋 and paste it back to Claude.<br><span id="deployed">🕒 Last deployed: checking…</span></footer>
 <script>window.PAGES={pages};window.SPRITE={json.dumps(D.get("sprite", {}))};</script>
-<script src="app.js"></script>
+<script src="app.js?v={ASSET_V["app.js"]}"></script>
 </body></html>"""
     (SITE / fname).write_text(out, encoding="utf-8")
     WRITTEN.append(fname)
