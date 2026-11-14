@@ -2,6 +2,17 @@
  {
   "v": "v0.22",
   "date": "2026-11-14",
+  "emoji": "🖥️",
+  "codes": [
+   "feedback"
+  ],
+  "change": "Feedback page: 🖥️ link to the sprite terminal in the Fly dashboard (fly.io/dashboard/erdem-391/sprites/day-2), 📋 live-shell command (sprite console) and 📋 preview-log tail command.",
+  "why": "Owner: from preview sprite, show the running terminal at the Fly dashboard sprite page.",
+  "status": "🚀 deployed"
+ },
+ {
+  "v": "v0.22",
+  "date": "2026-11-14",
   "emoji": "📝",
   "codes": [
    "S2-DEV",

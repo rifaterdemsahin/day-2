@@ -268,6 +268,9 @@
       document.getElementById("fsp").onclick = function () { runAgent(build(), this, fa.value, fo, fm); };
       document.getElementById("fspc").onclick = function () { copy(spriteCmd(build()), this); fm.textContent = "✅ Execute command copied. Paste it in Terminal."; };
       document.getElementById("fprc").onclick = function () { copy(previewCmd(), this); fm.textContent = "✅ Preview restart command copied (it pulls main, rebuilds, serves on the sprite)."; };
+      var S0 = window.SPRITE || {}, sn = S0.name || "day-2", fd = document.getElementById("fdash"); if (fd && S0.dashboard_url) fd.href = S0.dashboard_url;
+      document.getElementById("fterm").onclick = function () { copy("sprite console -s " + sn, this); fm.textContent = "✅ Copied. Paste in Terminal for a live shell on the sprite."; };
+      document.getElementById("flog").onclick = function () { copy("sprite exec -s " + sn + " --no-stdin -- tail -n 50 -f /.sprite/logs/services/" + (S0.preview_service || "preview") + ".log", this); fm.textContent = "✅ Copied. Paste in Terminal to watch the preview server log."; };
       var pl = document.getElementById("fprev"); if (pl && window.SPRITE && window.SPRITE.preview_url) pl.href = window.SPRITE.preview_url;
     }
     document.getElementById("clear-all").onclick = function () {

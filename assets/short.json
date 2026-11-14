@@ -509,7 +509,8 @@
   "kilo_model": "kilo/kilo-auto/free",
   "default_agent": "kilo",
   "preview_url": "https://day-2-boqry.sprites.app/",
-  "preview_service": "preview"
+  "preview_service": "preview",
+  "dashboard_url": "https://fly.io/dashboard/erdem-391/sprites/day-2"
  },
  "deploy": {
   "host": "fly.io",
