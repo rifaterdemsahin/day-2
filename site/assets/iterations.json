@@ -1,16 +1,5 @@
 [
  {
-  "v": "v0.19",
-  "date": "2026-11-14",
-  "emoji": "📈",
-  "codes": [
-   "S2-08"
-  ],
-  "change": "Added one more bullet to the metrics list on the S2-08 Publish and analytics page: \"🧪 BROWSERTEST-1 notes-button check\".",
-  "why": "Owner feedback: 📄 📈 S2-08 Publish and analytics — on this S2-08 page add one more bullet to the metrics list: \"🧪 BROWSERTEST-1 notes-button check\". Nothing else.",
-  "status": "🚀 deployed"
- },
- {
   "v": "v0.18",
   "date": "2026-11-14",
   "emoji": "💬",
