@@ -110,7 +110,7 @@ def run_job(notes, agent, dry, say):
               f"[ -d $D/.git ] || git clone -q {SPR['repo']} $D\ncd $D\n"
               "git fetch -q origin main && git reset -q --hard origin/main && git clean -fdq\n"
               "cat > /tmp/d2prompt.txt <<'D2PROMPT'\n" + task_prompt(notes, dry) + "D2PROMPT\n"
-              + agent_cmd(agent, dry) + "\n"
+              + agent_cmd(agent, dry) + " </dev/null\n"
               "echo '===AGENT-DONE==='\ngit add -A\n"
               "git diff --cached --binary -- . ':!site' ':!*.html' ':!404.html' | base64 -w0 > /tmp/d2patch.b64\n"
               "echo '===PATCH-BEGIN==='; cat /tmp/d2patch.b64; echo; echo '===PATCH-END==='\n")
