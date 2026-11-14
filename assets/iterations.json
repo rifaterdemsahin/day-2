@@ -1,5 +1,17 @@
 [
  {
+  "v": "v0.40",
+  "date": "2026-11-14",
+  "emoji": "👀",
+  "codes": [
+   "all pages",
+   "S2-SP"
+  ],
+  "change": "🚀 Run now shows the exact prompt first: the runner has a preview mode (nothing runs, no lock) that returns the routing decision (agent, model, why) and the full prompt including your notes; the panel (and the feedback page card) shows it with 🚀 Send, ✖️ Cancel and 📋 Copy prompt. Only Send starts the run. New 🗑️ Clear notes button in the panel: asks twice, then clears this page's note, status and highlight notes. Checked in Chrome: preview showed kilo routing, 1,125 characters, the note and the CLAUDE.md line; Cancel sent nothing; Clear emptied the note.",
+  "why": "Owner: when I click run show me the prompt that is going to be sent including the notes, and add a clear notes button.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.43",
   "date": "2026-11-14",
   "emoji": "👀",

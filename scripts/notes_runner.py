@@ -334,6 +334,18 @@ class H(BaseHTTPRequestHandler):
             self._cors(o)
             self.end_headers()
             return
+        if body.get("preview"):  # show exactly what would be sent, run nothing, take no lock
+            a2, m2, why = route(notes, agent, model)
+            prompt = task_prompt(notes, dry)
+            payload = json.dumps({"agent": a2, "model": m2, "model_id": CLAUDE_MODELS.get(m2) if a2 == "claude" else None,
+                                  "why": why, "chars": len(prompt), "prompt": prompt}).encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Cache-Control", "no-store")
+            self._cors(o)
+            self.end_headers()
+            self.wfile.write(payload)
+            return
         self.send_response(200)
         self.send_header("Content-Type", "text/plain; charset=utf-8")
         self.send_header("Cache-Control", "no-store")

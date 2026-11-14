@@ -1,15 +1,15 @@
 {
- "when": "2026-11-14 18:21",
+ "when": "2026-11-14 18:24",
  "mode": "offline",
- "passed": 34,
- "total": 34,
+ "passed": 35,
+ "total": 35,
  "results": [
   {
    "group": "build",
    "name": "builds without error and is idempotent",
    "ok": true,
    "detail": "second build changed: []",
-   "s": 0.3
+   "s": 0.2
   },
   {
    "group": "pages",
@@ -121,13 +121,20 @@
    "name": "a patch is not applied if the repo changed (dirty or new commit) while the agent worked",
    "ok": true,
    "detail": "clean=True dirty=False moved=False",
-   "s": 0.0
+   "s": 0.1
   },
   {
    "group": "build",
    "name": "no merge-conflict markers and every tracked JSON file parses",
    "ok": true,
    "detail": "conflict markers or invalid JSON: ",
+   "s": 0.0
+  },
+  {
+   "group": "runner",
+   "name": "run shows the exact prompt first (preview mode + Send/Cancel) and the panel has Clear notes",
+   "ok": true,
+   "detail": "preview endpoint, Send/Cancel box and Clear notes button must exist",
    "s": 0.0
   },
   {
@@ -184,14 +191,14 @@
    "name": "patch contains source changes only (no generated site/ or stub html)",
    "ok": true,
    "detail": "got ['assets/short.json', 'new.txt']",
-   "s": 0.0
+   "s": 0.1
   },
   {
    "group": "runner-http",
    "name": "health answers the site's own origin",
    "ok": true,
    "detail": "",
-   "s": 0.0
+   "s": 0.1
   },
   {
    "group": "runner-http",

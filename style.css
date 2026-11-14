@@ -80,3 +80,6 @@ body.pbig #pback{display:block}
 #rbanner[hidden]{display:none}
 #rbanner button,#rbanner button.primary{background:#001;color:#fff;border:0;border-radius:8px;padding:6px 12px;cursor:pointer;white-space:nowrap;width:auto}
 #rbanner span{flex:1 1 260px}
+
+#d2prev pre{max-height:40vh;overflow:auto;white-space:pre-wrap;font:12px/1.4 ui-monospace,Menlo,monospace;background:#070b1c;color:#dfe;border:1px solid var(--line);border-radius:8px;padding:8px}
+#panel.big #d2prev pre{max-height:36vh;font-size:13px}

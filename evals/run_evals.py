@@ -214,6 +214,14 @@ def offline():
         return not bad, "conflict markers or invalid JSON: " + ", ".join(bad[:5])
     check("build", "no merge-conflict markers and every tracked JSON file parses", no_conflicts)
 
+    def preview_mode():
+        import notes_runner as nr
+        src = (ROOT / "scripts/notes_runner.py").read_text(encoding="utf-8")
+        js = (ROOT / "app.js").read_text(encoding="utf-8")
+        p = nr.task_prompt("PREVIEW-NOTE", False)
+        return ("body.get(\"preview\")" in src and "PREVIEW-NOTE" in p and "d2send" in js and "pclear" in js), "preview endpoint, Send/Cancel box and Clear notes button must exist"
+    check("runner", "run shows the exact prompt first (preview mode + Send/Cancel) and the panel has Clear notes", preview_mode)
+
     def docker_builds_site():
         d = (ROOT / "Dockerfile").read_text(encoding="utf-8")
         return "build_short_site.py" in d and "COPY --from=build" in d, "Dockerfile must compile site/ in a build stage"

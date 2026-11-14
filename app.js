@@ -218,9 +218,24 @@
   })();
 
   // ---- shared: stream a run from the local runner into a <pre>
+  // step 1 of a run: show the exact prompt (task + your notes) and the routing, and send only after "Send"
   function runAgent(notes, btn, agent, out, msg) {
     var port = (window.SPRITE && window.SPRITE.runner_port) || 8947;
     if (/\(no comments\)|No comments written yet/.test(notes)) { msg.textContent = "✍️ Write a note first (the 📝 panel, a card, or highlight text), then press 🚀."; return; }
+    var old = document.getElementById("d2prev"); if (old) old.remove();
+    var box = document.createElement("div"); box.id = "d2prev"; box.className = "card"; out.parentNode.insertBefore(box, out);
+    box.innerHTML = "<b>👀 Prompt to send</b> <small id=\"d2pm\">asking the runner…</small><pre id=\"d2pp\"></pre><div class=\"bar\"><button id=\"d2send\" class=\"primary\" disabled>🚀 Send</button><button id=\"d2cancel\">✖️ Cancel</button><button id=\"d2copy\">📋 Copy prompt</button></div>";
+    var pp = box.querySelector("#d2pp"), pm = box.querySelector("#d2pm"), send = box.querySelector("#d2send"), prompt = "";
+    box.querySelector("#d2cancel").onclick = function () { box.remove(); msg.textContent = "Cancelled: nothing was sent."; };
+    box.querySelector("#d2copy").onclick = function () { copy(prompt || notes, this); };
+    fetch("http://127.0.0.1:" + port + "/run", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ notes: notes, agent: agent.split(":")[0], model: agent.split(":")[1] || undefined, preview: true }) })
+      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(function (j) { prompt = j.prompt; pp.textContent = j.prompt; pm.textContent = "🧭 " + j.agent + (j.model_id ? " (" + j.model_id + ")" : "") + " · " + j.why + " · " + j.chars.toLocaleString() + " characters"; send.disabled = false; })
+      .catch(function () { pp.textContent = "(runner not reachable, so this is only your notes)\n\n" + notes; pm.textContent = "❌ start it: python3 scripts/notes_runner.py"; });
+    send.onclick = function () { box.remove(); doRun(notes, btn, agent, out, msg); };
+  }
+  function doRun(notes, btn, agent, out, msg) {
+    var port = (window.SPRITE && window.SPRITE.runner_port) || 8947;
     out.hidden = false; out.textContent = "⏳ connecting to the runner on 127.0.0.1:" + port + " …\n"; btn.disabled = true;
     fetch("http://127.0.0.1:" + port + "/run", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ notes: notes, agent: agent.split(":")[0], model: agent.split(":")[1] || undefined }) })
       .then(function (r) {
@@ -254,7 +269,7 @@
       '<textarea id="pnote" placeholder="💬 Quick note about this whole page…"></textarea>' +
       '<div class="hltitle">✨ Highlight notes on this page <small>(select any text to add one)</small></div><div id="hlist"></div>' +
       '<label class="rvchk"><input type="checkbox" id="prev"> ✔️ I have reviewed this page</label>' +
-      '<div class="pb"><button id="pcopy" class="primary">📋 Copy this page</button><button id="pall">📋 Copy all</button><a href="feedback.html">💬 Summary</a></div>' +
+      '<div class="pb"><button id="pcopy" class="primary">📋 Copy this page</button><button id="pall">📋 Copy all</button><button id="pclear" title="Clears this page\'s note, status and highlight notes (asks twice)">🗑️ Clear notes</button><a href="feedback.html">💬 Summary</a></div>' +
       '<div class="pb"><select id="pagent" title="auto picks by note size: small to kilo (free), medium to claude haiku, larger to claude"><option value="auto">🧭 auto (by size)</option><option value="kilo">🧠 kilo (free)</option><option value="claude:haiku">🤖 claude haiku (cheap)</option><option value="claude">🤖 claude (primary)</option><option value="antigravity">🪐 antigravity</option></select><button id="psp" class="primary" title="Sends this page\'s notes to the agent on your Fly.io Sprite, then pushes and redeploys">🚀 Run: this page</button><button id="pspa">🚀 all notes</button></div>' +
       '<div class="pb"><button id="pspc" title="Copies a Terminal command instead (no runner needed)">📋 command</button><a href="s2-sp.html">🛰️ Setup</a></div>' +
       '<small id="pspmsg">Start the runner once: <code>python3 scripts/notes_runner.py</code>, then press 🚀. The agent edits, the runner pushes and redeploys.</small><pre id="pspout" hidden></pre>';
@@ -287,6 +302,13 @@
     pr.onchange = function () { set("rev:" + PAGE, { v: pr.checked }); if (!pr.checked && pd.s === "ok") { pd.s = ""; set("page:" + PAGE, pd); } paintP(); paintNav(); paintProgress(); };
     panel.querySelector("#pcopy").onclick = function () { copy(pageText(), this); };
     panel.querySelector("#pall").onclick = function () { copy(allText(), this); };
+    var pclr = panel.querySelector("#pclear"), clrT;
+    function clrReset() { pclr.dataset.sure = ""; pclr.textContent = "🗑️ Clear notes"; clearTimeout(clrT); }
+    pclr.onclick = function () {
+      if (!pclr.dataset.sure) { pclr.dataset.sure = "1"; pclr.textContent = "⚠️ Click again to clear"; clrT = setTimeout(clrReset, 4000); return; }
+      pd.text = ""; pd.s = ""; pn.value = ""; set("page:" + PAGE, pd); HL.list = []; saveHL(); paintHL(); renderHL(); paintP(); clrReset();
+      var m = document.getElementById("pspmsg"); if (m) m.textContent = "🗑️ Cleared this page's notes (note, status and highlights).";
+    };
     var pagent = panel.querySelector("#pagent"); pagent.value = (window.SPRITE && window.SPRITE.default_agent) || "kilo";
     function runOnSprite(notes, btn) { runAgent(notes, btn, pagent.value, panel.querySelector("#pspout"), document.getElementById("pspmsg")); }
     panel.querySelector("#psp").onclick = function () { runOnSprite(pageText(), this); };
