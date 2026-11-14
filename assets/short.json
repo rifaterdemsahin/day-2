@@ -625,5 +625,43 @@
     "Flow clips, the voice and the final render are still manual or slow steps. The agent only speeds up the editing of the plan around them. Kilo runs on a free model, so keep notes small and specific and read the RESULT block each time."
    ]
   ]
+ },
+ "production": {
+  "updated": "2026-11-14",
+  "clips": {
+   "c1": {
+    "clip": "missing",
+    "voice": "ready",
+    "render": "pending"
+   },
+   "c2": {
+    "clip": "missing",
+    "voice": "ready",
+    "render": "pending"
+   },
+   "c3": {
+    "clip": "missing",
+    "voice": "ready",
+    "render": "pending"
+   },
+   "c4": {
+    "clip": "missing",
+    "voice": "ready",
+    "render": "pending"
+   },
+   "c5": {
+    "clip": "missing",
+    "voice": "ready",
+    "render": "pending"
+   },
+   "c6": {
+    "clip": "missing",
+    "voice": "ready",
+    "render": "pending"
+   }
+  },
+  "checks": {
+   "S2-05.4": true
+  }
  }
 }

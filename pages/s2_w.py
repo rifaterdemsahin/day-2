@@ -36,6 +36,11 @@ def build():
     def chk(key, text, extra=""):
         return f'<label class="card check"><input type="checkbox" data-check="{key}"> {text}{("<br>" + extra) if extra else ""}</label>'
     s_html = "".join(chk(k, t, e) for k, t, e in setup)
+    pr = D.get("production", {})
+    ico = {"missing": "⬜ missing", "placed": "🟡 placed", "synced": "✅ synced", "pending": "⬜ pending", "ready": "✅ ready", "rendered": "✅ rendered"}
+    rows = "".join(f'<tr><td><b>{c}</b></td><td>{ico[v["clip"]]}</td><td>{ico[v["voice"]]}</td><td>{ico[v["render"]]}</td></tr>' for c, v in pr.get("clips", {}).items())
+    prod_table = (f'<div class="tablewrap"><table class="cmp"><tr><th>Clip</th><th>🎞️ Clip file</th><th>🗣️ Voice timing</th><th>🎬 Render</th></tr>{rows}</table></div>'
+                  f'<small>📅 last synced {E(pr.get("updated", "never"))}</small>') if rows else "<p>No status yet: run <code>python3 -I scripts/sync_status.py</code>.</p>"
     clips = ""
     for i, (c, s) in enumerate(CLIPS):
         hf = f"{s['prompt']} Camera preset: {s['hf_camera']}. Style: {D['style']}"
@@ -48,9 +53,10 @@ def build():
                   f'<label class="check"><input type="checkbox" data-check="S2-04.{c}"> 💾 saved as <code>S2-04-{c}.mp4</code></label>'
                   f'<details><summary>🌈 Second opinion in Higgsfield ({E(s["hf_camera"])})</summary>{copybtn(hf, "📋 Copy Higgsfield prompt")}{openbtn("higgs", "🌈 Go to Higgsfield", "d2-higgs")}</details>'
                   f'{fb("S2-W." + c, "🧰 " + c + " in Flow: how did the take come out? what to change in the prompt?")}</div>')
-    mv = "mkdir -p ~/projects/day-2/remotion/public/clips && cp ~/Downloads/day-2/S2-04-c*.mp4 ~/projects/day-2/remotion/public/clips/ && cd ~/projects/day-2/remotion && npm run sync"
+    mv = "mkdir -p ~/projects/day-2/remotion/public/clips && cp ~/Downloads/day-2/S2-04-c*.mp4 ~/projects/day-2/remotion/public/clips/ && cd ~/projects/day-2/remotion && npm run sync && cd ~/projects/day-2 && python3 -I scripts/sync_status.py --commit"
     loop = "".join(chk(f"S2-06.{k}", t) for k, t in [("a", "🎞️ Last frame matches first frame"), ("b", "🗣️ Last word flows into first word"), ("c", "🥚 Tiny 9246 visible in the Queen on the 2nd watch"), ("d", "💬 Captions in safe area, large"), ("e", "⏱️ 45 s or less, 9:16")])
     body = step_head(st) + f"""<div class="card hero" id="next"><b>👉 Next up</b> <small>· every card has ✅ 🔧 ❌ and a 📋 Copy feedback button; paste it to Claude and I iterate</small><p id="next-txt">…</p><div class="bar-track"><div class="bar-fill" id="wbar" style="width:0%"></div></div><small id="wcount"></small><br><button id="goto">⬇️ Jump to it</button> <button id="wreset">↩️ Reset workbench ticks</button></div>
+<h2>📁 Production status (from disk)</h2><div class="card">{prod_table}<p><small>Source: <code>assets/short.json › production</code>, written by <code>python3 -I scripts/sync_status.py</code> (also run by <code>npm run sync|studio|render</code>). Flow, Higgsfield and the render stay manual.</small></p>{copybtn("cd ~/projects/day-2 && python3 -I scripts/sync_status.py --commit", "📋 Copy: sync status + commit")}</div>
 <h2>🪟 The two-window rule</h2>{layout_svg()}
 <ul><li>🚫 Never open a third kind of tab. Close extras with <kbd>⌘ W</kbd>.</li><li>🔁 The buttons reuse the same tab each time, so you never pile up Flow tabs.</li><li>⌨️ <kbd>⌘ 1…9</kbd> jumps to a pinned tab, <kbd>⌘ ⌥ →</kbd> cycles tabs.</li>
 <li>💾 Progress is saved on this device for this address. Ticks here also tick S2-04 and S2-06.</li></ul>
@@ -63,7 +69,7 @@ def build():
 <h2>5️⃣ Export and publish</h2>
 {chk("W.render", "🎬 Render the final video.", copybtn("cd ~/projects/day-2/remotion && npm run render", "📋 Copy render command"))}
 {chk("W.publish", '📤 Add title, description and hashtags, upload, then paste the numbers on S2-08. <a href="s2-07.html">Open S2-07</a>')}
-<p class="intro">🧭 MVP: ticks live in your browser (not in the repo). Next version could write them to a file so Claude can see them.</p>
+<p class="intro">🧭 Boxes marked 📁 are proven by the files on disk (<code>assets/short.json › production</code>), so they survive a new browser or device. The other ticks still live in this browser.</p>
 {fb('S2-W', '🧰 Workbench: what was confusing or missing?')}
 <script>document.addEventListener("DOMContentLoaded",function(){{
 var boxes=[].slice.call(document.querySelectorAll("main input[data-check]"));

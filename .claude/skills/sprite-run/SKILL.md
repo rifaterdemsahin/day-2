@@ -32,3 +32,6 @@ python3 evals/run_evals.py --e2e                               # one real note, 
 - Agents must run with `</dev/null` (kilo otherwise swallows the piped script).
 - One run at a time; notes max 20,000 characters; the runner accepts only the site's own origins.
 - Check the sprite with `sprite list`; the CLI is logged in with the Key Vault secret `sprite-api-token` (`sprite auth setup --token …`).
+
+## Routing and cost (2026-11-14)
+`agent: "auto"` (default) routes by note size: up to 500 chars with no structural words → kilo (free); up to 2,000 → claude haiku; larger or structural → claude. A manual agent (and `model`: haiku/sonnet) always wins. claude runs with `--output-format json`; the RESULT block prints input/output/cache tokens and USD. The sprite agent reads `CLAUDE.md` (not the spec) and edits one `pages/*.py` module.

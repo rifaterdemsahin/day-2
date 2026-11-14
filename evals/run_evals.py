@@ -163,6 +163,23 @@ def offline():
         return ok, "deploy.yml needs FLY_API_TOKEN + push to main; health.yml needs schedule + live evals + sprite_check"
     check("ci", "deploy-on-push and scheduled health workflows exist", workflows)
 
+    def production_status():
+        import subprocess as sp
+        d = json.loads((ROOT / "assets/short.json").read_text(encoding="utf-8"))
+        pr = d.get("production", {})
+        cl = pr.get("clips", {})
+        ids = [s["clips"][0] for s in d["scenes"]]
+        shape = sorted(cl) == sorted(ids) and all(set(v) == {"clip", "voice", "render"} for v in cl.values())
+        r = sp.run([sys.executable, "-I", str(ROOT / "scripts/sync_status.py")], cwd=ROOT, capture_output=True, text=True)
+        html = (ROOT / "site/s2-w.html").read_text(encoding="utf-8")
+        return shape and r.returncode == 0 and "window.PROD=" in html and "Production status" in html, f"shape ok: {shape}; sync exit {r.returncode}; page shows status: {'Production status' in html}"
+    check("production", "per-clip clip/voice/render status lives in short.json, syncs from disk and shows on the Workbench", production_status)
+
+    def sync_hook():
+        p = json.loads((ROOT / "remotion/package.json").read_text(encoding="utf-8"))["scripts"]
+        return "sync_status.py" in p["sync"] and "npm run sync" in p["studio"] and "npm run sync" in p["render"], "remotion scripts must call sync_status.py"
+    check("production", "npm run sync|studio|render refreshes the production status", sync_hook)
+
     def docker_builds_site():
         d = (ROOT / "Dockerfile").read_text(encoding="utf-8")
         return "build_short_site.py" in d and "COPY --from=build" in d, "Dockerfile must compile site/ in a build stage"

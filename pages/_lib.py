@@ -88,7 +88,7 @@ def page(fname, title, body, extra_head=""):
 {nav(fname)}
 <main>{body}</main>
 <footer>🔁 Update → deploy → feedback. Copy your feedback with 📋 and paste it back to Claude.<br><span id="deployed">🕒 Last deployed: checking…</span></footer>
-<script>window.PAGES={pages};window.SPRITE={json.dumps(D.get("sprite", {}))};</script>
+<script>window.PAGES={pages};window.SPRITE={json.dumps(D.get("sprite", {}))};window.PROD={json.dumps(D.get("production", {}))};</script>
 <script src="app.js?v={ASSET_V["app.js"]}"></script>
 </body></html>"""
     (SITE / fname).write_text(out, encoding="utf-8")

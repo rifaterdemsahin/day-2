@@ -44,6 +44,8 @@
   // ---- checklists
   document.querySelectorAll("input[data-check]").forEach(function (c) {
     var k = "chk:" + c.dataset.check; c.checked = !!get(k).v; c.onchange = function () { set(k, { v: c.checked }); };
+    // durable state: what the files on disk prove (assets/short.json › production, written by scripts/sync_status.py) wins over this browser
+    if (window.PROD && PROD.checks && PROD.checks[c.dataset.check]) { c.checked = true; c.title = "📁 proven by the files on disk (short.json › production)"; var lb = c.closest("label"); if (lb && !lb.querySelector(".disk")) { var sp = document.createElement("small"); sp.className = "disk"; sp.textContent = " 📁 from disk"; lb.appendChild(sp); } }
   });
 
   // ---- review check marks in the menu

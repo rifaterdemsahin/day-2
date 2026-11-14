@@ -3,11 +3,11 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "sync": "node scripts/sync.mjs",
-    "studio": "node scripts/sync.mjs && remotion studio --port=3001",
-    "render": "node scripts/sync.mjs && remotion render Short out/S2-06-final.mp4 --browser-executable=\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\"",
-    "tsc": "node scripts/sync.mjs && tsc --noEmit",
-    "still": "node scripts/sync.mjs && remotion still Short out/frame.png --frame=700 --browser-executable=\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\""
+    "sync": "node scripts/sync.mjs && python3 -I ../scripts/sync_status.py",
+    "studio": "npm run sync --silent && remotion studio --port=3001",
+    "render": "npm run sync --silent && remotion render Short out/S2-06-final.mp4 --browser-executable=\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\"",
+    "tsc": "npm run sync --silent && tsc --noEmit",
+    "still": "npm run sync --silent && remotion still Short out/frame.png --frame=700 --browser-executable=\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\""
   },
   "dependencies": {
     "@remotion/cli": "4.0.250",

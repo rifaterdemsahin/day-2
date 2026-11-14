@@ -1,8 +1,8 @@
 {
- "when": "2026-11-14 17:14",
+ "when": "2026-11-14 17:18",
  "mode": "offline",
- "passed": 30,
- "total": 30,
+ "passed": 32,
+ "total": 32,
  "results": [
   {
    "group": "build",
@@ -100,6 +100,20 @@
    "name": "deploy-on-push and scheduled health workflows exist",
    "ok": true,
    "detail": "deploy.yml needs FLY_API_TOKEN + push to main; health.yml needs schedule + live evals + sprite_check",
+   "s": 0.0
+  },
+  {
+   "group": "production",
+   "name": "per-clip clip/voice/render status lives in short.json, syncs from disk and shows on the Workbench",
+   "ok": true,
+   "detail": "shape ok: True; sync exit 0; page shows status: True",
+   "s": 0.0
+  },
+  {
+   "group": "production",
+   "name": "npm run sync|studio|render refreshes the production status",
+   "ok": true,
+   "detail": "remotion scripts must call sync_status.py",
    "s": 0.0
   },
   {

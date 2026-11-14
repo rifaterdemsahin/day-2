@@ -1,5 +1,18 @@
 [
  {
+  "v": "v0.36",
+  "date": "2026-11-14",
+  "emoji": "♻️",
+  "codes": [
+   "S2-RC",
+   "S2-W",
+   "S2-SP"
+  ],
+  "change": "Refactor in 4 phases. (1) spec split into spec/*.md, B7 removed, MASTER_SPEC.md generated; CLAUDE.md briefing (~0.8k tokens); prompts rely on it. (2) site generator split into 22 modules in pages/ (output byte-identical, ~0.1 s build); site/ and the root stubs untracked, only index.html kept; Dockerfile builds site/ in the image (tested with docker build and on Fly). (3) runner prints tokens and USD from claude --output-format json, auto routing (kilo / claude haiku / claude) with manual override; deploy.yml (needs FLY_API_TOKEN secret) and health.yml (live evals + sprite_check). (4) per-clip clip/voice/render status in short.json, synced from disk by scripts/sync_status.py and shown on the Workbench. S2-RC now shows which recommendations are implemented plus 16 new producer recommendations for quality, retention and value. Evals 32/32 offline.",
+  "why": "Owner: implement the recommendations; check which are implemented and add a new set for a video producer (high quality, high retention, high value).",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.35",
   "date": "2026-11-14",
   "emoji": "📄",
