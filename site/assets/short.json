@@ -324,7 +324,7 @@
     "title": "How AI Knows King − Man + Woman = Queen 🤯 #shorts",
     "description": "Tokens are just numbers. So how does an AI know that king minus man plus woman equals queen? In 45 seconds: embeddings turn one number into 1,536 coordinates, and meaning becomes distance. Day 2 of the series, the sequel to Day 1 (tokens). Next: how do these vectors talk to each other? 👀",
     "tags": "#shorts #ai #embeddings #machinelearning #llm #vectors #tokens #chatgpt #learnai #explained",
-    "pinned": "Did you spot the tiny number hiding in the Queen? 👀 Watch it again 🔁"
+    "pinned": "Did you spot the tiny number hiding in the Queen? 👀 Watch it again 🔁 Hint: the number 9246 hides inside the Queen on your second watch."
   },
   "why": {
     "title": "Why this short matters (for you, the producer)",
@@ -505,7 +505,9 @@
     "dir": "~/day-2",
     "repo": "https://github.com/rifaterdemsahin/day-2.git",
     "pages": "https://day-2-short.fly.dev/",
-    "runner_port": 8947
+    "runner_port": 8947,
+    "kilo_model": "kilo/kilo-auto/free",
+    "default_agent": "kilo"
   },
   "deploy": {
     "host": "fly.io",

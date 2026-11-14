@@ -1,5 +1,16 @@
 [
  {
+  "v": "v0.18",
+  "date": "2026-11-14",
+  "emoji": "💬",
+  "codes": [
+   "S2-07"
+  ],
+  "change": "Pinned comment (metadata › pinned, shown on the S2-07 page) now ends with the owner's sentence: \"Hint: the number 9246 hides inside the Queen on your second watch.\"",
+  "why": "Owner feedback: 💬 [S2-07] Pinned comment: end it with the sentence \"Hint: the number 9246 hides inside the Queen on your second watch.\"",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.17",
   "date": "2026-11-14",
   "emoji": "🛫",
