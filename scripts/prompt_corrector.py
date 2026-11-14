@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Prompt corrector: rewrite the owner's raw notes as a product manager would (goal, changes, acceptance criteria)
-with DeepSeek, before the prompt is shown for approval.
+with DeepSeek (any OpenAI-compatible host: DeepInfra today), before the prompt is shown for approval.
 
 Only the standard library is used (urllib + json), so there is nothing to install. The API key comes from Azure Key
 Vault inside notes_runner.py and is passed in memory; it is never printed, logged or put in a command line.
-The endpoint is OpenAI-compatible (POST /chat/completions). Config: assets/short.json › sprite.enhancer.
+The endpoint is OpenAI-compatible (POST /chat/completions); the provider and model are in the config. Config: assets/short.json › sprite.enhancer.
 
   enhance(notes, key, cfg) -> {"ok": bool, "text": str, "model": str, "error": str, "usage": dict}
 
@@ -40,8 +40,8 @@ def enhance(notes, key, cfg, timeout=60):
         if not text:
             raise ValueError("empty answer")
     except urllib.error.HTTPError as e:
-        why = {401: "key rejected", 402: "no balance on the DeepSeek account (top it up)", 429: "rate limited"}.get(e.code, "")
-        return {"ok": False, "text": "", "model": model, "error": f"DeepSeek HTTP {e.code}" + (f": {why}" if why else ""), "usage": {}}
+        why = {401: "key rejected", 402: "no balance on the provider account (top it up)", 429: "rate limited"}.get(e.code, "")
+        return {"ok": False, "text": "", "model": model, "error": f"HTTP {e.code} from the model API" + (f": {why}" if why else ""), "usage": {}}
     except Exception as e:  # network, timeout, bad JSON
         return {"ok": False, "text": "", "model": model, "error": f"{type(e).__name__}: {str(e)[:100]}", "usage": {}}
     # element references must survive the rewrite word for word

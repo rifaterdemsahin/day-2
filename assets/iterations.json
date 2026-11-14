@@ -1,5 +1,17 @@
 [
  {
+  "v": "v0.44",
+  "date": "2026-11-14",
+  "emoji": "🔁",
+  "codes": [
+   "all pages",
+   "S2-SP"
+  ],
+  "change": "Prompt corrector now uses DeepSeek V4.1 Flash (1017) through DeepInfra, because DeepSeek's own API returned 402 no balance. The owner's DeepInfra key was saved to Azure Key Vault as a new secret day-2-deepinfra-api-key (a different key from the existing deepinfra-api-key, which was left untouched; the temp file used to store it was deleted). Model id deepseek-ai/DeepSeek-V4.1-Flash-1017 confirmed in the DeepInfra model list; a chat call returned HTTP 200. Verified end to end: the runner preview rewrote a note into Goal / Changes / Acceptance criteria / Out of scope, and the UI shows \"Prompt enhanced with DeepSeek via DeepInfra (deepseek-ai/DeepSeek-V4.1-Flash-1017) as a product manager\". Config in short.json › sprite.enhancer. The key was pasted in plain text in chat: rotate it.",
+  "why": "Owner: DeepSeek returned 402, use DeepInfra instead and save the key to Key Vault.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.43",
   "date": "2026-11-14",
   "emoji": "✨",

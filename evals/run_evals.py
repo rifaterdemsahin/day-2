@@ -263,7 +263,7 @@ def offline():
         src = (ROOT / "scripts/notes_runner.py").read_text(encoding="utf-8")
         js = (ROOT / "app.js").read_text(encoding="utf-8")
         cfg = DATA["sprite"].get("enhancer", {})
-        return (cfg.get("model") == "deepseek-flash" and cfg.get("secret") == "deepseek-api-key" and "prompt_corrector" in src
+        return ("DeepSeek" in cfg.get("model", "") and cfg.get("secret") == "day-2-deepinfra-api-key" and "prompt_corrector" in src
                 and "Prompt enhanced with" in js and "d2enh" in js and "key" not in json.dumps(cfg).replace("secret", "").replace("api-key", "")), "enhancer config, runner call and the UI notice must exist; no key value in short.json"
     check("runner", "prompt enhancement is configured (model + Key Vault secret name), wired into the runner and shown in the UI", enhancer_wiring)
 

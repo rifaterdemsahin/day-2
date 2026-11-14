@@ -1,5 +1,5 @@
 {
- "when": "2026-11-14 18:40",
+ "when": "2026-11-14 18:52",
  "mode": "offline",
  "passed": 38,
  "total": 38,
@@ -107,7 +107,7 @@
    "name": "per-clip clip/voice/render status lives in short.json, syncs from disk and shows on the Workbench",
    "ok": true,
    "detail": "shape ok: True; sync exit 0; page shows status: True",
-   "s": 0.0
+   "s": 0.1
   },
   {
    "group": "production",
@@ -148,7 +148,7 @@
    "group": "runner",
    "name": "prompt corrector (DeepSeek): rewrites, keeps 🎯 references, and falls back cleanly on 401/402",
    "ok": true,
-   "detail": "ok=True ref kept=True 402=DeepSeek HTTP 402: no balance on the DeepSeek account (top it up) 401=DeepSeek HTTP 401: key rejected",
+   "detail": "ok=True ref kept=True 402=HTTP 402 from the model API: no balance on the provider account (top it up) 401=HTTP 401 from the model API: key rejected",
    "s": 0.5
   },
   {

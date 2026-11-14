@@ -533,10 +533,11 @@
   "preview_service": "preview",
   "dashboard_url": "https://fly.io/dashboard/erdem-391/sprites/day-2",
   "enhancer": {
-   "provider": "DeepSeek",
-   "model": "deepseek-flash",
-   "secret": "deepseek-api-key",
-   "endpoint": "https://api.deepseek.com/chat/completions",
+   "provider": "DeepInfra",
+   "label": "DeepSeek via DeepInfra",
+   "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+   "secret": "day-2-deepinfra-api-key",
+   "endpoint": "https://api.deepinfra.com/v1/openai/chat/completions",
    "max_tokens": 1200,
    "role": "product manager"
   }
@@ -602,8 +603,8 @@
    ],
    [
     "✨",
-    "Added a prompt corrector: before the prompt preview, the runner rewrites your notes as a product manager would (goal, numbered changes, acceptance criteria) with DeepSeek (deepseek-flash), using the key from Azure Key Vault (secret deepseek-api-key)",
-    "A raw note is often short or vague. A clear work request gets a better edit from a cheap agent. The preview says 'Prompt enhanced with DeepSeek', keeps your 🎯 references word for word, shows your original notes, can be switched off, and falls back to your own notes if DeepSeek fails. No library to install: it uses the Python standard library. Your notes are sent to DeepSeek for this step, so check the text before sending."
+    "Added a prompt corrector: before the prompt preview, the runner rewrites your notes as a product manager would (goal, numbered changes, acceptance criteria) with DeepSeek V4.1 Flash (1017) served by DeepInfra, using the key from Azure Key Vault (secret day-2-deepinfra-api-key)",
+    "A raw note is often short or vague. A clear work request gets a better edit from a cheap agent. The preview says 'Prompt enhanced with DeepSeek', keeps your 🎯 references word for word, shows your original notes, can be switched off, and falls back to your own notes if the call fails (the first provider, DeepSeek's own API, returned 402 no balance, so the same model is used through DeepInfra). No library to install: it uses the Python standard library. Your notes are sent to DeepInfra (running DeepSeek) for this step, so check the text before sending."
    ]
   ],
   "why_video": [

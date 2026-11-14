@@ -265,7 +265,7 @@ def report(st, err, say):
     say("\n━━━━━━━━ 📋 RESULT ━━━━━━━━")
     say(("❌ FAILED at " + st.get("stage", "?")) if err else "✅ SUCCEEDED")
     if st.get("enhanced_by"):
-        say(f"✨ prompt enhanced with {ENH.get('provider', 'DeepSeek')} ({st['enhanced_by']}) as a product manager")
+        say(f"✨ prompt enhanced with {ENH.get('label') or ENH.get('provider', 'DeepSeek')} ({st['enhanced_by']}) as a product manager")
     if st.get("agent"):
         mdl = CLAUDE_MODELS.get(st.get("model")) if st.get("agent") == "claude" else None
         say(f"🧭 agent: {st['agent']}" + (f" ({mdl})" if mdl else "") + f" · {st.get('why', '')}")
@@ -354,7 +354,7 @@ class H(BaseHTTPRequestHandler):
             prompt = task_prompt(improved or notes, dry)
             payload = json.dumps({"agent": a2, "model": m2, "model_id": CLAUDE_MODELS.get(m2) if a2 == "claude" else None,
                                   "why": why, "chars": len(prompt), "prompt": prompt, "original": notes, "improved": improved,
-                                  "enhanced_by": ENH.get("model") if improved else None, "enhancer": ENH.get("provider"),
+                                  "enhanced_by": ENH.get("model") if improved else None, "enhancer": ENH.get("label") or ENH.get("provider"),
                                   "enhance_error": None if improved or not body.get("enhance", True) else enh.get("error")}).encode()
             self.send_response(200)
             self.send_header("Content-Type", "application/json; charset=utf-8")
