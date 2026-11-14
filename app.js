@@ -270,6 +270,7 @@
       '<div class="hltitle">✨ Highlight notes on this page <small>(select any text to add one)</small></div><div id="hlist"></div>' +
       '<label class="rvchk"><input type="checkbox" id="prev"> ✔️ I have reviewed this page</label>' +
       '<div class="pb"><button id="pcopy" class="primary">📋 Copy this page</button><button id="pall">📋 Copy all</button><button id="pclear" title="Clears this page\'s note, status and highlight notes (asks twice)">🗑️ Clear notes</button><a href="feedback.html">💬 Summary</a></div>' +
+      '<div class="pb"><button id="ppick" title="Click any element on the page: its reference (page + id or selector + text) is copied and added to your note">🎯 Pick element</button><small id="ppickmsg">point at anything to add its reference</small></div>' +
       '<div class="pb"><select id="pagent" title="auto picks by note size: small to kilo (free), medium to claude haiku, larger to claude"><option value="auto">🧭 auto (by size)</option><option value="kilo">🧠 kilo (free)</option><option value="claude:haiku">🤖 claude haiku (cheap)</option><option value="claude">🤖 claude (primary)</option><option value="antigravity">🪐 antigravity</option></select><button id="psp" class="primary" title="Sends this page\'s notes to the agent on your Fly.io Sprite, then pushes and redeploys">🚀 Run: this page</button><button id="pspa">🚀 all notes</button></div>' +
       '<div class="pb"><button id="pspc" title="Copies a Terminal command instead (no runner needed)">📋 command</button><a href="s2-sp.html">🛰️ Setup</a></div>' +
       '<small id="pspmsg">Start the runner once: <code>python3 scripts/notes_runner.py</code>, then press 🚀. The agent edits, the runner pushes and redeploys.</small><pre id="pspout" hidden></pre>';
@@ -302,6 +303,61 @@
     pr.onchange = function () { set("rev:" + PAGE, { v: pr.checked }); if (!pr.checked && pd.s === "ok") { pd.s = ""; set("page:" + PAGE, pd); } paintP(); paintNav(); paintProgress(); };
     panel.querySelector("#pcopy").onclick = function () { copy(pageText(), this); };
     panel.querySelector("#pall").onclick = function () { copy(allText(), this); };
+
+    // ---- 🎯 object picker: point at any element; copies "[page › #id or selector] <tag> "text" · section: …" and adds it to the note
+    var picking = false, pbox = null, pbar = null, hover = null, wasHidden = false;
+    function inUI(el) { return el.closest && el.closest("#panel,#fab,#pickbar,#rbanner,#pback,#nav,#menu"); }
+    function esc(s) { return window.CSS && CSS.escape ? CSS.escape(s) : s.replace(/[^\w-]/g, "\\$&"); }
+    function selectorOf(el) {
+      if (el.id) return "#" + esc(el.id);
+      var ds = ["data-fb", "data-check", "data-s", "data-copy"]; for (var i = 0; i < ds.length; i++) { var v = el.getAttribute && el.getAttribute(ds[i]); if (v) return "[" + ds[i] + "=\"" + v + "\"]"; }
+      var parts = [], n = el;
+      while (n && n !== document.body && parts.length < 5) {
+        if (n.id) { parts.unshift("#" + esc(n.id)); break; }
+        var tag = n.tagName.toLowerCase(), sib = n.parentNode ? [].slice.call(n.parentNode.children).filter(function (x) { return x.tagName === n.tagName; }) : [];
+        parts.unshift(tag + (sib.length > 1 ? ":nth-of-type(" + (sib.indexOf(n) + 1) + ")" : "")); n = n.parentNode;
+      }
+      return parts.join(" > ");
+    }
+    function sectionOf(el) {
+      var h = null, n = el;
+      while (n && n !== document.body && !h) {
+        var p = n; while (p && !h) { p = p.previousElementSibling; if (p && /^H[1-4]$/.test(p.tagName)) h = p; else if (p && p.querySelector) { var hh = p.querySelectorAll("h2,h3"); if (hh.length) h = hh[hh.length - 1]; } }
+        n = n.parentNode;
+      }
+      return h ? oneLine(h.textContent).slice(0, 60) : "";
+    }
+    function refOf(el) {
+      var txt = oneLine(el.innerText || el.value || el.alt || el.title || "").slice(0, 60), sec = sectionOf(el);
+      return "🎯 [" + PAGE + " › " + selectorOf(el) + "] <" + el.tagName.toLowerCase() + ">" + (txt ? ' "' + txt + '"' : "") + (sec ? " · section: " + sec : "");
+    }
+    function pickMove(e) {
+      var el = e.target; if (!el || inUI(el)) { pbox.style.display = "none"; hover = null; return; }
+      hover = el; var r = el.getBoundingClientRect();
+      pbox.style.cssText = "display:block;left:" + r.left + "px;top:" + r.top + "px;width:" + r.width + "px;height:" + r.height + "px";
+      pbar.querySelector("span").textContent = "🎯 " + selectorOf(el) + " · click to pick · Esc to cancel";
+    }
+    function pickEnd(el) {
+      picking = false; document.body.classList.remove("picking");
+      document.removeEventListener("mousemove", pickMove, true); document.removeEventListener("click", pickClick, true); document.removeEventListener("keydown", pickKey, true);
+      if (pbox) pbox.remove(); if (pbar) pbar.remove(); pbox = pbar = null;
+      if (!wasHidden) panel.hidden = false;
+      var m = document.getElementById("ppickmsg");
+      if (el) {
+        var ref = refOf(el); try { navigator.clipboard && navigator.clipboard.writeText(ref); } catch (e) {}
+        pd.text = (pd.text ? pd.text.replace(/\s+$/, "") + "\n" : "") + ref + "\n→ "; pn.value = pd.text; set("page:" + PAGE, pd); paintP(); pn.focus();
+        if (m) m.textContent = "✅ Added and copied: " + ref.slice(0, 80);
+      } else if (m) m.textContent = "Cancelled.";
+    }
+    function pickClick(e) { if (inUI(e.target)) return; e.preventDefault(); e.stopPropagation(); pickEnd(e.target); }
+    function pickKey(e) { if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); pickEnd(null); } }
+    panel.querySelector("#ppick").onclick = function () {
+      if (picking) return; picking = true; wasHidden = panel.hidden; panel.hidden = true; document.body.classList.add("picking");
+      pbox = document.createElement("div"); pbox.id = "pickbox"; document.body.appendChild(pbox);
+      pbar = document.createElement("div"); pbar.id = "pickbar"; pbar.innerHTML = "<span>🎯 Move over the page, click the thing you mean</span> <button>✖️ Cancel</button>"; document.body.appendChild(pbar);
+      pbar.querySelector("button").onclick = function () { pickEnd(null); };
+      document.addEventListener("mousemove", pickMove, true); document.addEventListener("click", pickClick, true); document.addEventListener("keydown", pickKey, true);
+    };
     var pclr = panel.querySelector("#pclear"), clrT;
     function clrReset() { pclr.dataset.sure = ""; pclr.textContent = "🗑️ Clear notes"; clearTimeout(clrT); }
     pclr.onclick = function () {

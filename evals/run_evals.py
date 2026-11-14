@@ -222,6 +222,13 @@ def offline():
         return ("body.get(\"preview\")" in src and "PREVIEW-NOTE" in p and "d2send" in js and "pclear" in js), "preview endpoint, Send/Cancel box and Clear notes button must exist"
     check("runner", "run shows the exact prompt first (preview mode + Send/Cancel) and the panel has Clear notes", preview_mode)
 
+    def picker():
+        js = (ROOT / "app.js").read_text(encoding="utf-8")
+        fb = (ROOT / "site/feedback.html").read_text(encoding="utf-8")
+        cm = (ROOT / "CLAUDE.md").read_text(encoding="utf-8")
+        return all(x in js for x in ("ppick", "refOf", "pickbar")) and "Object picker" in fb and "🎯" in cm and len(cm) // 4 <= 1500, "picker code, feedback-page docs and CLAUDE.md note must exist"
+    check("feedback", "object picker exists, is documented on the feedback page and in CLAUDE.md", picker)
+
     def docker_builds_site():
         d = (ROOT / "Dockerfile").read_text(encoding="utf-8")
         return "build_short_site.py" in d and "COPY --from=build" in d, "Dockerfile must compile site/ in a build stage"

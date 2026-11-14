@@ -83,3 +83,9 @@ body.pbig #pback{display:block}
 
 #d2prev pre{max-height:40vh;overflow:auto;white-space:pre-wrap;font:12px/1.4 ui-monospace,Menlo,monospace;background:#070b1c;color:#dfe;border:1px solid var(--line);border-radius:8px;padding:8px}
 #panel.big #d2prev pre{max-height:36vh;font-size:13px}
+
+/* 🎯 object picker */
+body.picking{cursor:crosshair}
+#pickbox{position:fixed;z-index:50;pointer-events:none;display:none;outline:2px solid #ff4dd8;background:#ff4dd826;border-radius:3px}
+#pickbar{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:51;background:#001;color:#fff;border:1px solid #ff4dd8;border-radius:10px;padding:8px 12px;display:flex;gap:10px;align-items:center;max-width:94vw;font:13px ui-monospace,Menlo,monospace}
+#pickbar span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:70vw}

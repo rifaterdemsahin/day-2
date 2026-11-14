@@ -1,5 +1,17 @@
 [
  {
+  "v": "v0.41",
+  "date": "2026-11-14",
+  "emoji": "🎯",
+  "codes": [
+   "all pages",
+   "feedback"
+  ],
+  "change": "Object picker in the notes panel: 🎯 Pick element hides the panel, a pink frame follows the mouse with the element address in a top bar, click picks, Esc cancels. The reference \"🎯 [page.html › #id | [data-…] | short path] <tag> \"text\" · section: …\" is copied to the clipboard and appended to the note with \"→ \" ready for the change. Documented in a card on the 💬 All feedback page (how to use, what the reference contains, limits), as spec rule 9 and in CLAUDE.md (how agents map page.html to pages/<module>.py). Checked in Chrome on #xgo (id) and a table cell (path).",
+  "why": "Owner: add and document an object picker in the notes section: point at items, the picker copies the object id with the page name, so I can give feedback.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.40",
   "date": "2026-11-14",
   "emoji": "👀",

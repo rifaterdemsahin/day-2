@@ -66,3 +66,4 @@
 45. [10. Lessons learned (this project)](#10-lessons-learned-this-project)
 46. [11. Start prompt for a new Claude session (short form; the full prompt is at the top of this file)](#11-start-prompt-for-a-new-claude-session-short-form-the-full-prompt-is-at-the-top-of-this-file)
 <!--/TOC-->
+9. 🎯 **Object picker (feedback by pointing):** the 📝 notes panel has a 🎯 Pick element button; it copies and adds `🎯 [page.html › #id or selector] <tag> "text" · section: …` to the note. Agents map `page.html` to `pages/<page_with_underscores>.py`, find the text or id there, and never edit built HTML. Documented on the 💬 All feedback page.

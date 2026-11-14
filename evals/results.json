@@ -1,8 +1,8 @@
 {
- "when": "2026-11-14 18:24",
+ "when": "2026-11-14 18:32",
  "mode": "offline",
- "passed": 35,
- "total": 35,
+ "passed": 36,
+ "total": 36,
  "results": [
   {
    "group": "build",
@@ -64,7 +64,7 @@
    "group": "refactor",
    "name": "CLAUDE.md is at most ~1.5k tokens and points to short.json and one spec file at a time",
    "ok": true,
-   "detail": "774 tokens (limit 1500); missing: []",
+   "detail": "866 tokens (limit 1500); missing: []",
    "s": 0.0
   },
   {
@@ -121,7 +121,7 @@
    "name": "a patch is not applied if the repo changed (dirty or new commit) while the agent worked",
    "ok": true,
    "detail": "clean=True dirty=False moved=False",
-   "s": 0.1
+   "s": 0.2
   },
   {
    "group": "build",
@@ -135,6 +135,13 @@
    "name": "run shows the exact prompt first (preview mode + Send/Cancel) and the panel has Clear notes",
    "ok": true,
    "detail": "preview endpoint, Send/Cancel box and Clear notes button must exist",
+   "s": 0.0
+  },
+  {
+   "group": "feedback",
+   "name": "object picker exists, is documented on the feedback page and in CLAUDE.md",
+   "ok": true,
+   "detail": "picker code, feedback-page docs and CLAUDE.md note must exist",
    "s": 0.0
   },
   {
@@ -198,7 +205,7 @@
    "name": "health answers the site's own origin",
    "ok": true,
    "detail": "",
-   "s": 0.1
+   "s": 0.0
   },
   {
    "group": "runner-http",

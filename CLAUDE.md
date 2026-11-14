@@ -11,6 +11,9 @@ Read this, not the whole spec. Facts live in data; pages are generated; keep ans
 6. 🙋 Google Flow has no API: the owner pastes the prompts you write. Flow, Higgsfield and the Remotion render stay manual and local.
 7. 🌐 Open local apps with `open -a "Google Chrome" <url>`.
 
+## Reading the owner's notes
+A note may contain element references made by the 🎯 picker: `🎯 [s2-x.html › #xgo] <button> "▶️ Compute" · section: …`. Page `s2-x.html` = module `pages/s2_x.py` (`-` → `_`; `index.html` = `pages/index.py`). Grep the module for the quoted text or the id; edit data in `assets/*.json` when the text comes from there. Never edit built HTML.
+
 ## Where things are
 - `assets/short.json`: ALL facts (scenes, voice lines, steps, prompts, sprite, deploy, production status). Edit data here first.
 - `pages/*.py`: one module per page (`pages/s2_x.py` builds s2-x.html); `pages/_lib.py` shared helpers (page, fb, copybtn, nav).
