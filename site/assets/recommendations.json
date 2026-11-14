@@ -1,0 +1,96 @@
+{
+ "when": "2026-11-14",
+ "scan": [
+  [
+   "MASTER_SPEC.md",
+   "~32k tokens",
+   "The sprite agent is told to read it in full on every run. Part A (long form) is most of it and a short never needs it."
+  ],
+  [
+   "scripts/build_short_site.py",
+   "~23k tokens",
+   "Every page is built from one file, so the agent loads all of it to change one page."
+  ],
+  [
+   "B7 updates table (in the spec)",
+   "~3.5k tokens, growing",
+   "Auto-generated and read on every run, so it works against the token goal."
+  ],
+  [
+   "assets/iterations.json / short.json",
+   "~5k / ~7.5k tokens",
+   "Fine now, but both grow every round."
+  ],
+  [
+   "Build and deploy",
+   "build 0.08 s",
+   "Fast already; the remote Fly build is the only slow step."
+  ],
+  [
+   "remotion/node_modules",
+   "404 MB",
+   "Not in git, harmless."
+  ]
+ ],
+ "recs": [
+  [
+   "🧾",
+   "Give the agent a small briefing instead of the full spec",
+   "Saves ~30k tokens per run. Add a repo-root CLAUDE.md of about 1.5k tokens (standing rules, file map, facts live in short.json); the agent loads it automatically. Change the task prompt to read one named spec section only when needed."
+  ],
+  [
+   "✂️",
+   "Split MASTER_SPEC.md into files",
+   "spec/rules.md, part-a-long.md, part-b-short.md, and generate the full file for reading. Move B7 out of the spec: the Iterations page already has it."
+  ],
+  [
+   "🧩",
+   "Split the site generator into one file per page",
+   "pages/s2_x.py and so on. A note about one page then costs 1–2k tokens instead of 23k, and edits get less error-prone."
+  ],
+  [
+   "📊",
+   "Log the cost of every run",
+   "claude -p --output-format json returns usage. Print tokens and cost in the RESULT block so you can measure what the changes save."
+  ],
+  [
+   "🚦",
+   "Route by size",
+   "Small text edits to kilo (free) or a cheaper claude model, bigger changes to claude. The runner can pick from the note length, or you pick."
+  ],
+  [
+   "🤖",
+   "Auto-deploy on push",
+   "A GitHub Action runs fly deploy on every push to main. Fits trunk-based development and removes the laptop from the deploy step. Needs a Fly token as a GitHub secret; keep it short-lived."
+  ],
+  [
+   "🧹",
+   "Stop committing site/ and the 22 root redirect pages",
+   "Build site/ inside the Docker image. Diffs and patches get much smaller. Keep only the tiny GitHub Pages redirect."
+  ]
+ ],
+ "tech": [
+  [
+   "🗄️",
+   "SQLite",
+   "Not a token saver for the spec or the log: those are text the agent edits and git is the audit trail. It does help your review ticks and notes, which live in each browser's localStorage and reset on a new device or address. A small SQLite database on a Fly volume (about 1 GB, cheap) keeps them across devices and lets the agent ask for only the unresolved feedback (a few hundred tokens instead of a pasted dump). Cost: a small server and a volume instead of static nginx. Do it after items 1–4."
+  ],
+  [
+   "⚛️",
+   "React",
+   "Not worth it: 23 mostly static pages, 0.08 s build. React adds a build chain and more code for the agent to read. If you want components, Astro (Markdown plus small interactive parts) fits better, but only if the Python generator becomes painful after splitting it. The notes panel and the sandbox can stay plain JavaScript."
+  ]
+ ],
+ "video": [
+  "Make progress durable: clip, voice and render ticks should live in a file or database, not the browser. Add a per-clip status in short.json and sync it with the move-and-sync step.",
+  "The 🚀 button needs your laptop's runner to be running. To work without it, the whole job can run on the Sprite, which needs a repo-only GitHub token on it (giving up the current no-token safety). Only trade that if the laptop dependence hurts.",
+  "Keep Flow, Higgsfield and the Remotion render manual and local. The agent only speeds up the plan around them.",
+  "Reliability: run the live evals on a schedule and put the agent check (sprite_check.py) in the same run."
+ ],
+ "house": [
+  "Revoke the fal key that was pasted into chat earlier.",
+  "The Key Vault ANTHROPIC-API-KEY returns 401: replace or delete it.",
+  "Kilo runs on a free model: keep notes small and read the RESULT block every time."
+ ],
+ "first": "Start with items 1–4: about an hour, the biggest difference to tokens, no infrastructure changes."
+}

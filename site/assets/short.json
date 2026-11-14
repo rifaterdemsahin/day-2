@@ -101,6 +101,13 @@
    "intro": "Automated checks for the site, the notes runner and the notes → sprite → redeploy loop. Last run results below."
   },
   {
+   "code": "S2-RC",
+   "emoji": "💡",
+   "name": "Recommendations",
+   "slug": "s2-rc",
+   "intro": "Scan of the project: what costs tokens, what to change first, and an honest view on SQLite and React for faster, cheaper updates while producing the video."
+  },
+  {
    "code": "S2-DEV",
    "emoji": "💻",
    "name": "Development",

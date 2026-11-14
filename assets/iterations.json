@@ -1,5 +1,16 @@
 [
  {
+  "v": "v0.34",
+  "date": "2026-11-14",
+  "emoji": "💡",
+  "codes": [
+   "S2-RC"
+  ],
+  "change": "New S2-RC page: the project scan and recommendations (token drivers: spec 32k, generator 23k, B7 table; 7 ranked fixes; honest view on SQLite and React; video-production and housekeeping items). Data in assets/recommendations.json. Recommendations only, nothing implemented.",
+  "why": "Owner: save your recommendations to a page and open that page.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.33",
   "date": "2026-11-14",
   "emoji": "🕒",
