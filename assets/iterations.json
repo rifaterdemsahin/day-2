@@ -1,4 +1,15 @@
 [
+ {
+  "v": "v0.53",
+  "date": "2026-11-14",
+  "emoji": "🗄️",
+  "codes": [
+   "S2-DB"
+  ],
+  "change": "🗄️ Dictionary step 1: SQLite schema (terms, scenes, history; status enum idea…published) in api/db.py and scripts/migrate_short_json.py, which imports assets/short.json as the first term (tokenization-embeddings, status script) and is idempotent. data/ and *.db are git-ignored. Eval added. No site change yet.",
+  "why": "Owner: turn the single short into a dictionary of up to 100 terms, edited in my own site, backed by SQLite on a Fly volume with a FastAPI backend and safe bulk updates from the Sprite. Step 1 only, then wait for OK.",
+  "status": "🚀 deployed"
+ },
   {
    "v": "v0.52",
    "date": "2026-11-14",

@@ -292,6 +292,36 @@ def offline():
                 and "Prompt enhanced with" in js and "d2enh" in js and "key" not in json.dumps(cfg).replace("secret", "").replace("api-key", "")), "enhancer config, runner call and the UI notice must exist; no key value in short.json"
     check("runner", "prompt enhancement is configured (model + Key Vault secret name), wired into the runner and shown in the UI", enhancer_wiring)
 
+    def term_schema():
+        import sqlite3, tempfile
+        sys.path.insert(0, str(ROOT))
+        from api.db import connect, STATUSES
+        import migrate_short_json as mg
+        db = pathlib.Path(tempfile.mkdtemp()) / "t.db"
+        con = connect(db)
+        r1 = mg.migrate(con, DATA)
+        n1 = [con.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0] for t in ("terms", "scenes", "history")]
+        r2 = mg.migrate(con, DATA)
+        n2 = [con.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0] for t in ("terms", "scenes", "history")]
+        bad = 0
+        for q in ("INSERT INTO terms(slug,term,status,updated_at) VALUES('x','x','bogus','n')",
+                  "INSERT INTO scenes(term_slug,n) VALUES('tokenization-embeddings',7)",
+                  "INSERT INTO terms(slug,term,title_options,updated_at) VALUES('y','y','{bad','n')",
+                  "INSERT INTO terms(slug,term,updated_at) VALUES('Bad Slug','x','n')"):
+            try:
+                con.execute(q); bad += 1
+            except sqlite3.IntegrityError:
+                pass
+        ok = (r1 == "inserted" and r2 == "unchanged" and n1 == n2 and n1[:2] == [1, 6] and bad == 0
+              and STATUSES == ("idea", "script", "clips", "voice", "rendered", "published"))
+        return ok, f"migration {r1}/{r2}, counts {n1}->{n2}, constraints not enforced: {bad}"
+    check("terms", "term database: schema constraints hold, short.json migrates once and is idempotent", term_schema)
+
+    def db_not_in_git():
+        c, o = sh(["git", "check-ignore", "data/terms.db"])
+        return c == 0, "data/terms.db must be git-ignored"
+    check("terms", "the database file is git-ignored", db_not_in_git)
+
     def docker_builds_site():
         d = (ROOT / "Dockerfile").read_text(encoding="utf-8")
         return "build_short_site.py" in d and "COPY --from=build" in d, "Dockerfile must compile site/ in a build stage"

@@ -32,6 +32,7 @@ Do NOT read `MASTER_SPEC.md` (generated, ~30k tokens). Rules in this file are en
 - Checks: `python3 evals/run_evals.py` (offline); `--live`, `--e2e` need the sprite and Key Vault
 - Deploy: `python3 scripts/deploy_and_wait.py [page.html]` (builds, `fly deploy`, opens Chrome); CI deploys on push to `main`
 - Local site + runner: `python3 -I scripts/serve_local.py` (http://127.0.0.1:8950/)
+- Term database (dictionary): `python3 -I scripts/migrate_short_json.py [--db PATH]` creates `data/terms.db` (git-ignored, never commit) and imports `short.json` once; schema in `api/db.py`.
 - Sync production status from disk: `python3 -I scripts/sync_status.py`
 
 ## Working on the sprite (when run by the 🚀 runner)

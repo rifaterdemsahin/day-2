@@ -7,3 +7,7 @@ __pycache__/
 MASTER_SPEC.md
 site/
 deployed.json
+data/
+*.db
+*.db-wal
+*.db-shm
