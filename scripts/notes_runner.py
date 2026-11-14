@@ -116,6 +116,14 @@ def build_script(notes, agent, dry, prelude="", model="default"):
             "echo '===PATCH-BEGIN==='; cat /tmp/d2patch.b64; echo; echo '===PATCH-END==='\n")
 
 
+def repo_unchanged(base, cwd=ROOT):
+    """True only if the repo is clean and still at the commit the run started from (the agent takes minutes;
+    a parallel edit or commit must never get a patch applied on top of it)."""
+    dirty = sh(["git", "status", "--porcelain"], cwd=cwd)[1]
+    head = sh(["git", "rev-parse", "HEAD"], cwd=cwd)[1]
+    return (not dirty and head == base), (f"uncommitted changes: {dirty[:120]}" if dirty else f"HEAD moved {base[:7]} → {head[:7]}")
+
+
 def run_job(notes, agent, dry, say, st=None, model=None):
     st = st if st is not None else {}
     agent, model, why = route(notes, agent, model)
@@ -135,6 +143,7 @@ def run_job(notes, agent, dry, say, st=None, model=None):
     sh(["git", "fetch", "-q", "origin", "main"])
     if sh(["git", "rev-parse", "HEAD"])[1] != sh(["git", "rev-parse", "origin/main"])[1]:
         raise RuntimeError("local main is not equal to origin/main; pull or push first")
+    st["base"] = sh(["git", "rev-parse", "HEAD"])[1]
     out(f"✅ 1/6 repo clean and in sync ({sh(['git', 'rev-parse', '--short', 'HEAD'])[1]})")
 
     out(f"🧭 routing: {why}")
@@ -195,6 +204,11 @@ def run_job(notes, agent, dry, say, st=None, model=None):
         return {"changed": False}
     patch = base64.b64decode(b64)
     out(f"📦 4/6 patch received ({len(patch)} bytes)")
+    ok_tree, why_not = repo_unchanged(st["base"])
+    if not ok_tree:
+        keep = pathlib.Path("/tmp/d2-rejected.patch")
+        keep.write_bytes(patch)
+        raise RuntimeError(f"the repo changed while the agent was working ({why_not}); the patch was NOT applied and is saved at {keep}. Commit or stash your work, then run the note again.")
 
     # 5. apply, build, commit, push
     st["stage"] = "5/6 apply patch, build, commit, push"

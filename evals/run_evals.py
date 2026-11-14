@@ -180,6 +180,40 @@ def offline():
         return "sync_status.py" in p["sync"] and "npm run sync" in p["studio"] and "npm run sync" in p["render"], "remotion scripts must call sync_status.py"
     check("production", "npm run sync|studio|render refreshes the production status", sync_hook)
 
+    def race_guard():
+        import notes_runner as nr
+        d = tempfile.mkdtemp()
+        sh(["git", "init", "-q", "-b", "main"], cwd=d)
+        sh(["git", "-c", "user.email=e@e", "-c", "user.name=e", "commit", "-q", "--allow-empty", "-m", "a"], cwd=d)
+        base = sh(["git", "rev-parse", "HEAD"], cwd=d)[1].strip()
+        clean = nr.repo_unchanged(base, d)[0]
+        pathlib.Path(d, "x.txt").write_text("dirty")
+        dirty = nr.repo_unchanged(base, d)[0]
+        sh(["git", "add", "-A"], cwd=d)
+        sh(["git", "-c", "user.email=e@e", "-c", "user.name=e", "commit", "-q", "-m", "b"], cwd=d)
+        moved = nr.repo_unchanged(base, d)[0]
+        shutil.rmtree(d)
+        return clean and not dirty and not moved, f"clean={clean} dirty={dirty} moved={moved}"
+    check("runner", "a patch is not applied if the repo changed (dirty or new commit) while the agent worked", race_guard)
+
+    def no_conflicts():
+        files = sh(["git", "ls-files"])[1].split("\n")
+        bad = []
+        for f in files:
+            p = ROOT / f
+            if not p.is_file() or p.suffix not in (".json", ".py", ".md", ".js", ".css", ".yml", ".html"):
+                continue
+            t = p.read_text(encoding="utf-8", errors="ignore")
+            if "\n<<<<<<< " in t or "\n>>>>>>> " in t:
+                bad.append(f)
+            if p.suffix == ".json":
+                try:
+                    json.loads(t)
+                except Exception:
+                    bad.append(f + " (invalid JSON)")
+        return not bad, "conflict markers or invalid JSON: " + ", ".join(bad[:5])
+    check("build", "no merge-conflict markers and every tracked JSON file parses", no_conflicts)
+
     def docker_builds_site():
         d = (ROOT / "Dockerfile").read_text(encoding="utf-8")
         return "build_short_site.py" in d and "COPY --from=build" in d, "Dockerfile must compile site/ in a build stage"

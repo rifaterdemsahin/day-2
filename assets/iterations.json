@@ -1,33 +1,28 @@
 [
-<<<<<<< ours
  {
-  "v": "v0.37",
+  "v": "v0.38",
   "date": "2026-11-14",
   "emoji": "⤢",
   "codes": [
    "all pages"
   ],
-  "change": "Notes panel: new ⤢ Big button turns it into a large centered modal (up to 920 px wide, 90% of the screen high, dimmed backdrop, bigger text box and run log). ⤡ Small, Esc (even while typing) or a click on the backdrop shrinks it; closing the panel also resets it. The size choice is remembered per browser. Checked in Chrome: centered, Esc shrinks, backdrop clears.",
+  "change": "Notes panel: new ⤢ Big button turns it into a large centered modal (up to 920 px wide, 90% of the screen high, dimmed backdrop, bigger text box and run log). ⤡ Small, Esc (even while typing) or a click on the backdrop shrinks it; closing the panel also resets it. The size choice is remembered per browser. Checked in Chrome: centered, Esc shrinks, backdrop clears. Incident: a 🚀 note run from the page finished while I was editing, its patch hit iterations.json and left conflict markers that I committed, so the Fly build failed (the live site stayed on the previous version). Fixed the file (both v0.37 entries kept, mine renumbered v0.38). Runner now re-checks that the repo is clean and still at the starting commit before applying a patch, and refuses (patch saved to /tmp/d2-rejected.patch) otherwise. Evals: race guard and no-conflict-markers checks.",
   "why": "Owner: a button to size the notes section centered and big like a modal popup.",
   "status": "🚀 deployed"
  },
  {
+  "v": "v0.37",
+  "date": "2026-11-14",
+  "emoji": "💡",
+  "codes": [
+   "S2-RC"
+  ],
+  "change": "S2-RC Recommendations page reorganized into two clear sections: ⚙️ Technical recommendations (spec split, page modules, token savings, SQLite/React, deploy automation, housekeeping) and 🎬 Video production recommendations (16 producer items for hook, retention, quality, packaging, value, measure, series, process). The 'Where we are' summary now distinguishes implemented technical fixes from the video production list.",
+  "why": "Owner: separate recommendations into technical and video production ones.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.36",
-=======
-  {
-   "v": "v0.37",
-   "date": "2026-11-14",
-   "emoji": "💡",
-   "codes": [
-    "S2-RC"
-   ],
-   "change": "S2-RC Recommendations page reorganized into two clear sections: ⚙️ Technical recommendations (spec split, page modules, token savings, SQLite/React, deploy automation, housekeeping) and 🎬 Video production recommendations (16 producer items for hook, retention, quality, packaging, value, measure, series, process). The 'Where we are' summary now distinguishes implemented technical fixes from the video production list.",
-   "why": "Owner: separate recommendations into technical and video production ones.",
-   "status": "🚀 deployed"
-  },
-  {
-   "v": "v0.36",
->>>>>>> theirs
   "date": "2026-11-14",
   "emoji": "♻️",
   "codes": [
