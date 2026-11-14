@@ -1,5 +1,16 @@
 [
  {
+  "v": "v0.27",
+  "date": "2026-11-14",
+  "emoji": "🪞",
+  "codes": [
+   "S2-X"
+  ],
+  "change": "New S2-X page: an in-browser sandbox that replays King − Man + Woman = Queen with pride and vanity (12 hand-written toy words, 5 dimensions). Pick three words, see the nearest words by cosine, toggle the \"exclude inputs\" trap, and 3 live presets. Result: 2 of 3 presets put the expected word first; vanity − pride + confidence puts arrogance 3rd (0.90 vs 0.91). scripts/pride_vanity_real.py is a real GloVe version, not run yet.",
+  "why": "Owner: create one page, do the king queen example with pride and vanity in the sandbox, and test the idea.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.26",
   "date": "2026-11-14",
   "emoji": "🌳",

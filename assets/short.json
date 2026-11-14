@@ -108,6 +108,13 @@
    "intro": "The code behind the short: token lookup, unfolding into coordinates, cosine distance, and live vector arithmetic (king − man + woman = queen) explained step-by-step."
   },
   {
+   "code": "S2-X",
+   "emoji": "🪞",
+   "name": "Sandbox: pride & vanity",
+   "slug": "s2-x",
+   "intro": "The King − Man + Woman = Queen trick, replayed with pride and vanity in an in-browser sandbox. Change the words, see the nearest word, and read what the test does and does not prove."
+  },
+  {
    "code": "S2-A",
    "emoji": "📊",
    "name": "YouTube Analytics",
