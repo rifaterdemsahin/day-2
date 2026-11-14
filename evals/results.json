@@ -1,14 +1,14 @@
 {
- "when": "2026-11-14 17:10",
+ "when": "2026-11-14 17:11",
  "mode": "offline",
- "passed": 21,
- "total": 21,
+ "passed": 26,
+ "total": 26,
  "results": [
   {
    "group": "build",
    "name": "builds without error and is idempotent",
    "ok": true,
-   "detail": "second build changed files",
+   "detail": "second build changed: []",
    "s": 0.2
   },
   {
@@ -41,9 +41,44 @@
   },
   {
    "group": "redirect",
-   "name": "every root page is a stub redirecting to the Fly.io site",
+   "name": "the only tracked html is the root index.html that redirects to the Fly.io site",
    "ok": true,
-   "detail": "stub not redirecting: ",
+   "detail": "index.html redirects: True; tracked html: ['index.html']",
+   "s": 0.0
+  },
+  {
+   "group": "refactor",
+   "name": "generated files (site/, MASTER_SPEC.md, deployed.json) are not tracked",
+   "ok": true,
+   "detail": "tracked generated files: ",
+   "s": 0.0
+  },
+  {
+   "group": "refactor",
+   "name": "spec is split into 3 files, B7 removed, MASTER_SPEC.md is generated",
+   "ok": true,
+   "detail": "spec files ['part-a-long.md', 'part-b-short.md', 'rules.md']",
+   "s": 0.0
+  },
+  {
+   "group": "refactor",
+   "name": "CLAUDE.md is at most ~1.5k tokens and points to short.json and one spec file at a time",
+   "ok": true,
+   "detail": "774 tokens (limit 1500); missing: []",
+   "s": 0.0
+  },
+  {
+   "group": "refactor",
+   "name": "one module per page under pages/ (each with build()), none larger than ~7k tokens",
+   "ok": true,
+   "detail": "24 modules, largest ~4925 tokens, without build(): []",
+   "s": 0.0
+  },
+  {
+   "group": "refactor",
+   "name": "Dockerfile compiles site/ inside the image",
+   "ok": true,
+   "detail": "Dockerfile must compile site/ in a build stage",
    "s": 0.0
   },
   {

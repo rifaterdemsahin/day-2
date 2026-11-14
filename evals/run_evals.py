@@ -54,10 +54,15 @@ def offline():
         c, o = sh([sys.executable, "-I", "scripts/build_short_site.py"])
         if c:
             return False, o[-200:]
-        before = sh(["git", "status", "--porcelain"])[1]
+        import hashlib
+
+        def tree():
+            return {str(p.relative_to(ROOT / "site")): hashlib.md5(p.read_bytes()).hexdigest()
+                    for p in sorted((ROOT / "site").rglob("*")) if p.is_file() and p.name != "deployed.json"}
+        before = tree()
         sh([sys.executable, "-I", "scripts/build_short_site.py"])
-        after = sh(["git", "status", "--porcelain"])[1]
-        return before == after, "second build changed files"
+        after = tree()
+        return before == after and len(before) > 30, f"second build changed: {[k for k in after if before.get(k) != after[k]][:3]}"
     check("build", "builds without error and is idempotent", build_idempotent)
 
     def pages_have_core():
@@ -87,13 +92,45 @@ def offline():
     check("workbench", "workbench has next-up, per-clip feedback, shared ticks, reusable tab links", workbench)
 
     def stubs():
-        bad = []
-        for n in site_pages() + ["404.html"]:
-            h = (ROOT / n).read_text(encoding="utf-8")
-            if FLY not in h or "refresh" not in h:
-                bad.append(n)
-        return not bad, "stub not redirecting: " + ", ".join(bad[:5])
-    check("redirect", "every root page is a stub redirecting to the Fly.io site", stubs)
+        h = (ROOT / "index.html").read_text(encoding="utf-8")
+        tracked = sh(["git", "ls-files", "*.html"])[1].split()
+        ok = FLY in h and "refresh" in h and tracked == ["index.html"]
+        return ok, f"index.html redirects: {FLY in h and 'refresh' in h}; tracked html: {tracked}"
+    check("redirect", "the only tracked html is the root index.html that redirects to the Fly.io site", stubs)
+
+    def untracked_generated():
+        t = sh(["git", "ls-files"])[1].split("\n")
+        bad = [x for x in t if x.startswith("site/") or x == "MASTER_SPEC.md" or x == "deployed.json"]
+        return not bad, "tracked generated files: " + ", ".join(bad[:5])
+    check("refactor", "generated files (site/, MASTER_SPEC.md, deployed.json) are not tracked", untracked_generated)
+
+    def spec_split():
+        p = ROOT / "spec"
+        names = sorted(x.name for x in p.glob("*.md"))
+        full = (ROOT / "MASTER_SPEC.md").read_text(encoding="utf-8")
+        ok = names == ["part-a-long.md", "part-b-short.md", "rules.md"] and "GENERATED" in full[:200] and "B7." not in "".join((p / n).read_text(encoding="utf-8") for n in names)
+        return ok, f"spec files {names}"
+    check("refactor", "spec is split into 3 files, B7 removed, MASTER_SPEC.md is generated", spec_split)
+
+    def briefing():
+        s = (ROOT / "CLAUDE.md").read_text(encoding="utf-8")
+        toks = len(s) // 4
+        need = ["short.json", "spec/rules.md", "spec/part-b-short.md", "Do NOT read `MASTER_SPEC.md`"]
+        return toks <= 1500 and all(x in s for x in need), f"{toks} tokens (limit 1500); missing: {[x for x in need if x not in s]}"
+    check("refactor", "CLAUDE.md is at most ~1.5k tokens and points to short.json and one spec file at a time", briefing)
+
+    def page_modules():
+        import re
+        mods = sorted((ROOT / "pages").glob("*.py"))
+        bad = [m.name for m in mods if m.name not in ("__init__.py", "_lib.py") and "def build():" not in m.read_text(encoding="utf-8")]
+        biggest = max(len(m.read_text(encoding="utf-8")) // 4 for m in mods)
+        return not bad and len(mods) >= 20 and biggest < 7000, f"{len(mods)} modules, largest ~{biggest} tokens, without build(): {bad}"
+    check("refactor", "one module per page under pages/ (each with build()), none larger than ~7k tokens", page_modules)
+
+    def docker_builds_site():
+        d = (ROOT / "Dockerfile").read_text(encoding="utf-8")
+        return "build_short_site.py" in d and "COPY --from=build" in d, "Dockerfile must compile site/ in a build stage"
+    check("refactor", "Dockerfile compiles site/ inside the image", docker_builds_site)
 
     def panel_wired():
         a = (ROOT / "app.js").read_text(encoding="utf-8")
@@ -190,7 +227,7 @@ def live():
         check("fly", f"Fly.io serves /{n}", lambda n=n: (get(FLY + n)[0] == 200, f"status {get(FLY + n)[0]}"))
 
     def pages_redirect():
-        s, h = get(OLD + "s2-w.html")
+        s, h = get(OLD)
         return s == 200 and FLY in h and "refresh" in h, f"status {s}, stub target present: {FLY in h}"
     check("redirect", "old GitHub Pages address redirects to Fly.io", pages_redirect)
 

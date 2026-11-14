@@ -1,3 +1,11 @@
 *
-!site
 !Dockerfile
+!scripts
+!pages
+!spec
+!assets
+!style.css
+!app.js
+!README.md
+!deployed.json
+**/__pycache__
