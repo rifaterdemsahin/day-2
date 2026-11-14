@@ -1,5 +1,17 @@
 [
  {
+  "v": "v0.21",
+  "date": "2026-11-14",
+  "emoji": "🖥️",
+  "codes": [
+   "S2-SP",
+   "feedback"
+  ],
+  "change": "Run locally too: scripts/serve_local.py builds site/, serves it on 127.0.0.1:8950 and starts the notes runner beside it (runner now also allows the local origin), opens Chrome. Same pages as Fly.",
+  "why": "Owner: also run locally with code for it, and open the changes in Fly.io and locally.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.20",
   "date": "2026-11-14",
   "emoji": "🛰️",

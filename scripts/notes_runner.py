@@ -32,7 +32,9 @@ def origin_of(url):
     return f"{u.scheme}://{u.netloc}"
 
 
-ALLOWED = {origin_of(DEP["url"]), origin_of(DEP["old_pages"])}
+LOCAL_PORT = 8950  # scripts/serve_local.py
+ALLOWED = {origin_of(DEP["url"]), origin_of(DEP["old_pages"]),
+           f"http://127.0.0.1:{LOCAL_PORT}", f"http://localhost:{LOCAL_PORT}"}
 
 
 def agent_cmd(agent, dry):
