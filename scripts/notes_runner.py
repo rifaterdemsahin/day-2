@@ -22,7 +22,8 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 DATA = json.loads((ROOT / "assets/short.json").read_text(encoding="utf-8"))
 DEP, SPR = DATA["deploy"], DATA["sprite"]
 VAULT = "dp-kv-deliverypilot"
-KEYS = {"claude": ("ANTHROPIC_API_KEY", "ANTHROPIC-API-KEY"), "kilo": ("KILO_API_KEY", "kilo-api-key"), "antigravity": (None, None)}
+KEYS = {"claude": (None, None),  # uses its own /login on the sprite; the vault key returned 401 and would override that login
+         "kilo": ("KILO_API_KEY", "kilo-api-key"), "antigravity": (None, None)}
 MAX_NOTES = 20000
 LOCK = threading.Lock()
 

@@ -23,7 +23,7 @@ python3 evals/run_evals.py --e2e                               # one real note, 
 | agent | command on the sprite | key |
 |---|---|---|
 | kilo (default) | `kilo run -m kilo/kilo-auto/free --auto "<task>"` | Key Vault `kilo-api-key` → `KILO_API_KEY`. The account has no credits, so only free models work |
-| claude | `claude -p "<task>" --permission-mode acceptEdits --allowedTools …` | Key Vault `ANTHROPIC-API-KEY` → `ANTHROPIC_API_KEY`. **Returns 401 as of 2026-11-14**: replace the secret (or `/login` on the sprite) first |
+| claude | `claude -p "<task>" --permission-mode acceptEdits --allowedTools …` | No key sent: uses its own `/login` on the sprite (done 2026-11-14). Do not inject `ANTHROPIC_API_KEY`: the vault key returns 401 and overrides the login ("Invalid API key") |
 | antigravity | `antigravity -z "<task>"` | none; unverified on the sprite (locally it is the hermes CLI) |
 
 ## Rules
