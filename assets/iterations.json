@@ -1,5 +1,17 @@
 [
  {
+  "v": "v0.20",
+  "date": "2026-11-14",
+  "emoji": "🛰️",
+  "codes": [
+   "S2-SP",
+   "feedback"
+  ],
+  "change": "💬 All feedback page now has an Execute on the Sprite card: agent picker, 🚀 run all feedback via the local runner, 📋 execute command (sprite exec), 👀 link to preview the running sprite, and 📋 restart-preview command. The sprite runs a \"preview\" service (sprite-env, port 8080) that pulls main, rebuilds and serves site/ at https://day-2-boqry.sprites.app/ (members-only sign-in). Runner code shared between the notes panel and this page.",
+  "why": "Owner: add an execute-on-the-sprite command and a link to preview the running sprite on the feedback page.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.19",
   "date": "2026-11-14",
   "emoji": "🧪",

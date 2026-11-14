@@ -176,6 +176,27 @@
     return "sprite exec -s " + name + " --stdin -- bash -lc 'cd " + dir + " && claude -p \"$(cat)\" --permission-mode acceptEdits --allowedTools \"Bash(git:*) Bash(python3:*) Bash(curl:*) Bash(ls:*) Edit Write Read Glob Grep\"' <<'D2FEEDBACK'\n" + prompt + "\nD2FEEDBACK\n";
   }
 
+  // ---- shared: stream a run from the local runner into a <pre>
+  function runAgent(notes, btn, agent, out, msg) {
+    var port = (window.SPRITE && window.SPRITE.runner_port) || 8947;
+    if (/\(no comments\)|No comments written yet/.test(notes)) { msg.textContent = "✍️ Write a note first (the 📝 panel, a card, or highlight text), then press 🚀."; return; }
+    out.hidden = false; out.textContent = "⏳ connecting to the runner on 127.0.0.1:" + port + " …\n"; btn.disabled = true;
+    fetch("http://127.0.0.1:" + port + "/run", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ notes: notes, agent: agent }) })
+      .then(function (r) {
+        if (!r.ok) throw new Error("runner answered " + r.status);
+        var rd = r.body.getReader(), dec = new TextDecoder();
+        function pump() { return rd.read().then(function (x) { if (x.done) return; out.textContent += dec.decode(x.value, { stream: true }); out.scrollTop = out.scrollHeight; return pump(); }); }
+        return pump();
+      })
+      .then(function () { msg.innerHTML = /🎉 DONE \(changed\)/.test(out.textContent) ? '✅ Deployed. <a href="" onclick="location.reload();return false">🔄 Reload this page</a>' : (/❌/.test(out.textContent) ? "❌ Run failed, see the log." : "ℹ️ Finished."); })
+      .catch(function () { out.textContent += "\n❌ Runner not reachable. Start it in Terminal: python3 scripts/notes_runner.py   (or press 📋 command and paste that instead)"; })
+      .then(function () { btn.disabled = false; });
+  }
+  function previewCmd() {
+    var S = window.SPRITE || {};
+    return "sprite exec -s " + (S.name || "day-2") + " --no-stdin -- sprite-env services restart " + (S.preview_service || "preview");
+  }
+
   // ---- floating notes panel (every page except the feedback summary)
   function allText() {
     var parts = [], n = 0;
@@ -221,21 +242,7 @@
     panel.querySelector("#pcopy").onclick = function () { copy(pageText(), this); };
     panel.querySelector("#pall").onclick = function () { copy(allText(), this); };
     var pagent = panel.querySelector("#pagent"); pagent.value = (window.SPRITE && window.SPRITE.default_agent) || "kilo";
-    function runOnSprite(notes, btn) {
-      var out = panel.querySelector("#pspout"), msg = document.getElementById("pspmsg"), port = (window.SPRITE && window.SPRITE.runner_port) || 8947;
-      if (/\(no comments\)|No comments written yet/.test(notes)) { msg.textContent = "✍️ Write a note first (this panel, a card, or highlight text), then press 🚀."; return; }
-      out.hidden = false; out.textContent = "⏳ connecting to the runner on 127.0.0.1:" + port + " …\n"; btn.disabled = true;
-      fetch("http://127.0.0.1:" + port + "/run", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ notes: notes, agent: pagent.value }) })
-        .then(function (r) {
-          if (!r.ok) throw new Error("runner answered " + r.status);
-          var rd = r.body.getReader(), dec = new TextDecoder();
-          function pump() { return rd.read().then(function (x) { if (x.done) return; out.textContent += dec.decode(x.value, { stream: true }); out.scrollTop = out.scrollHeight; return pump(); }); }
-          return pump();
-        })
-        .then(function () { msg.innerHTML = /🎉 DONE \(changed\)/.test(out.textContent) ? '✅ Deployed. <a href="" onclick="location.reload();return false">🔄 Reload this page</a>' : (/❌/.test(out.textContent) ? "❌ Run failed, see the log." : "ℹ️ Finished."); })
-        .catch(function () { out.textContent += "\n❌ Runner not reachable. Start it in Terminal: python3 scripts/notes_runner.py   (or press 📋 command and paste that instead)"; })
-        .then(function () { btn.disabled = false; });
-    }
+    function runOnSprite(notes, btn) { runAgent(notes, btn, pagent.value, panel.querySelector("#pspout"), document.getElementById("pspmsg")); }
     panel.querySelector("#psp").onclick = function () { runOnSprite(pageText(), this); };
     panel.querySelector("#pspa").onclick = function () { runOnSprite(allText(), this); };
     panel.querySelector("#pspc").onclick = function () { copy(spriteCmd(pageText()), this); document.getElementById("pspmsg").textContent = "✅ Command copied. Paste it in Terminal (needs S2-SP setup done once)."; };
@@ -255,6 +262,14 @@
     function build() { var t = allText(); cnt.textContent = ""; pre.textContent = t; return t; }
     build();
     document.getElementById("copy-all").onclick = function () { copy(build(), this); };
+    var fa = document.getElementById("fagent"); if (fa) {
+      fa.value = (window.SPRITE && window.SPRITE.default_agent) || "kilo";
+      var fo = document.getElementById("fspout"), fm = document.getElementById("fspmsg");
+      document.getElementById("fsp").onclick = function () { runAgent(build(), this, fa.value, fo, fm); };
+      document.getElementById("fspc").onclick = function () { copy(spriteCmd(build()), this); fm.textContent = "✅ Execute command copied. Paste it in Terminal."; };
+      document.getElementById("fprc").onclick = function () { copy(previewCmd(), this); fm.textContent = "✅ Preview restart command copied (it pulls main, rebuilds, serves on the sprite)."; };
+      var pl = document.getElementById("fprev"); if (pl && window.SPRITE && window.SPRITE.preview_url) pl.href = window.SPRITE.preview_url;
+    }
     document.getElementById("clear-all").onclick = function () {
       if (confirm("Delete all saved feedback and review marks in this browser?")) {
         try { Object.keys(localStorage).filter(function (k) { return k.indexOf(P) === 0 && k.indexOf(P + "chk:") !== 0; }).forEach(function (k) { localStorage.removeItem(k); }); } catch (e) {}
