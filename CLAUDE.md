@@ -35,6 +35,7 @@ Do NOT read `MASTER_SPEC.md` (generated, ~30k tokens). Rules in this file are en
 - Term database (dictionary): `python3 -I scripts/migrate_short_json.py [--db PATH]` creates `data/terms.db` (git-ignored, never commit) and imports `short.json` once; schema in `api/db.py`.
 - API (dictionary): `python3 -m venv .venv && .venv/bin/pip install -r api/requirements.txt httpx`; run `EDIT_TOKEN=... .venv/bin/uvicorn api.main:app --port 8960`; tests `.venv/bin/python evals/test_api.py`. Code: `api/db.py` (schema), `api/changes.py` (preview/apply/undo, stdlib), `api/main.py` (routes). Never print or commit the token. Pages: `pages/terms.py` (terms.html, term.html), JS = the `// ---- dictionary` block in `app.js`; test locally with `D2_DB=/tmp/x.db EDIT_TOKEN=test D2_CORS=http://127.0.0.1:8950 .venv/bin/uvicorn api.main:app --port 8960` next to `serve_local.py`.
 - Export terms to git: `python3 -I scripts/export_terms.py [--db PATH | --api https://day-2-short.fly.dev] [--check]` → `assets/terms/*.json` (generated, read by the build, never edit by hand, commit them).
+- Fly: one uvicorn process serves site + API (Dockerfile, fly.toml); DB on volume `/data`; deploy with `--ha=false` (one machine). Restore terms: `python3 -I scripts/import_terms.py`. Setup commands are on the S2-T page.
 - Sync production status from disk: `python3 -I scripts/sync_status.py`
 
 ## Working on the sprite (when run by the 🚀 runner)

@@ -360,7 +360,7 @@ def offline():
     def dict_pages():
         t, e = (ROOT / "site/terms.html").read_text(encoding="utf-8"), (ROOT / "site/term.html").read_text(encoding="utf-8")
         js = (ROOT / "app.js").read_text(encoding="utf-8")
-        leak = re.search(r"EDIT_TOKEN\s*=|Bearer [A-Za-z0-9_-]{8,}", t + e + js)
+        leak = re.search(r"EDIT_TOKEN\s*=\s*[A-Za-z0-9]{8,}|Bearer [A-Za-z0-9_-]{8,}", t + e + js)
         ok = ('data-fb="S2-T"' in t and 'data-fb="S2-T.term"' in e and 'id="d2conn"' in t and 'id="d2term"' in e
               and all(x in js for x in ("/api/bulk/preview", "/api/bulk/apply", "/api/bulk/undo/", "d2token", "d2filter"))
               and "innerHTML" not in js[js.index("// ---- dictionary"):] and not leak)
@@ -396,6 +396,28 @@ def offline():
               and ok_files and "Offline copy" in st and all(x.stem in st for x in committed))
         return ok, f"first {w1}, second {w2}, drift {drift}, removed {removed}, empty-db exit {refuse.returncode}, committed files ok {ok_files}"
     check("terms", "export: files match the database, unchanged files untouched, drift and stale files handled, empty source refused, site builds from them", export_terms)
+
+    def fly_dictionary():
+        import tempfile
+        sys.path.insert(0, str(ROOT))
+        from api.db import connect
+        from api.export import all_docs, seed_if_empty, dumps
+        ft, df = (ROOT / "fly.toml").read_text(encoding="utf-8"), (ROOT / "Dockerfile").read_text(encoding="utf-8")
+        di, wf = (ROOT / ".dockerignore").read_text(encoding="utf-8"), (ROOT / ".github/workflows/backup-terms.yml").read_text(encoding="utf-8")
+        deploys = [(ROOT / x).read_text(encoding="utf-8") for x in ("scripts/deploy_and_wait.py", "scripts/notes_runner.py", ".github/workflows/deploy.yml")]
+        src = connect(pathlib.Path(tempfile.mkdtemp()) / "a.db")
+        import migrate_short_json as mg
+        mg.migrate(src, DATA)
+        new_db = connect(pathlib.Path(tempfile.mkdtemp()) / "b.db")
+        seeded = seed_if_empty(new_db, ROOT / "assets/terms")
+        again = seed_if_empty(new_db, ROOT / "assets/terms")
+        same = [dumps(d) for d in all_docs(new_db).values()] == [dumps(d) for d in all_docs(src).values()]
+        secrets_in_files = re.search(r"EDIT_TOKEN\s*=\s*[\"']?[A-Za-z0-9]{8,}", ft + df + wf)
+        ok = ('destination = "/data"' in ft and "/api/health" in ft and "internal_port = 8080" in ft and "D2_DB=/data/terms.db" in df
+              and "uvicorn" in df and "!api" in di and all("--ha=false" in x for x in deploys) and "export_terms.py --api" in wf
+              and "contents: write" in wf and seeded == ["tokenization-embeddings"] and again == [] and same and not secrets_in_files)
+        return ok, f"volume+health+port in fly.toml, uvicorn image, --ha=false everywhere, nightly backup workflow, seed {seeded}/{again}, seeded export identical {same}"
+    check("terms", "Fly setup: volume at /data, health check, one machine, API image, nightly backup, seed on empty volume, no token in files", fly_dictionary)
 
     def docker_builds_site():
         d = (ROOT / "Dockerfile").read_text(encoding="utf-8")

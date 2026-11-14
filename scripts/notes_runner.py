@@ -246,7 +246,7 @@ def run_job(notes, agent, dry, say, st=None, model=None):
     sys.path.insert(0, str(ROOT / "scripts"))
     import stamp
     stamp.write_stamp()
-    code, o = sh(["fly", "deploy", "--remote-only", "-a", DEP["fly_app"]], timeout=900)
+    code, o = sh(["fly", "deploy", "--remote-only", "--ha=false", "-a", DEP["fly_app"]], timeout=900)
     if code:
         raise RuntimeError("fly deploy failed:\n" + o[-600:])
     for _ in range(10):

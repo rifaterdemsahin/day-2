@@ -5,18 +5,34 @@
 Reads are public. EVERY write (and bulk preview) needs  Authorization: Bearer <EDIT_TOKEN>.
 If EDIT_TOKEN is not set, all write endpoints answer 503 (fail closed).
 """
-import hmac, json, os
+import hmac, json, os, pathlib
 from fastapi import Body, Depends, FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from . import changes as ch
-from .export import all_docs
+from .export import all_docs, seed_if_empty
 from .db import STATUSES, connect
 
 app = FastAPI(title="day-2 dictionary", docs_url="/api/docs", openapi_url="/api/openapi.json")
 _origins = [o for o in os.environ.get("D2_CORS", "").split(",") if o]
 if _origins:
     app.add_middleware(CORSMiddleware, allow_origins=_origins, allow_methods=["GET", "POST", "PUT"], allow_headers=["Authorization", "Content-Type"])
+
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+
+
+@app.on_event("startup")
+def seed():
+    """First start on an empty volume: load the committed export (assets/terms/*.json, or D2_SEED)."""
+    con = connect()
+    try:
+        added = seed_if_empty(con, os.environ.get("D2_SEED") or ROOT / "assets/terms")
+        if added:
+            print(f"🌱 seeded {len(added)} term(s) from the export: {', '.join(added)}")
+    finally:
+        con.close()
 
 
 def db():
@@ -121,3 +137,9 @@ def bulk_undo(change_set_id: str, con=Depends(db)):
         raise HTTPException(404, str(e))
     except ValueError as e:
         raise HTTPException(409, str(e))
+
+
+# The generated site is served by the same process (one machine, one origin, no CORS). Must stay LAST.
+_site = pathlib.Path(os.environ.get("D2_SITE") or ROOT / "site")
+if _site.is_dir():
+    app.mount("/", StaticFiles(directory=_site, html=True), name="site")

@@ -1,0 +1,31 @@
+name: Back up terms to git
+# Nightly: read the live dictionary (public GET /api/export), write assets/terms/*.json, commit if anything changed.
+# No secrets needed. A commit made with GITHUB_TOKEN does not start the deploy workflow (no loop);
+# the next normal push deploys the refreshed offline copy.
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: backup-terms
+  cancel-in-progress: false
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Export from the live API
+        run: python3 -I scripts/export_terms.py --api https://day-2-short.fly.dev
+      - name: Commit if changed
+        run: |
+          if [ -n "$(git status --porcelain assets/terms)" ]; then
+            git config user.name "terms-backup"
+            git config user.email "terms-backup@users.noreply.github.com"
+            git add assets/terms
+            git commit -m "📦 Nightly terms backup"
+            git push
+          else
+            echo "no changes"
+          fi

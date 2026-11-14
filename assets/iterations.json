@@ -1,5 +1,17 @@
 [
  {
+  "v": "v0.57",
+  "date": "2026-11-14",
+  "emoji": "🚀",
+  "codes": [
+   "S2-DB",
+   "S2-T"
+  ],
+  "change": "🚀 Dictionary step 5 (Fly): one uvicorn process now serves the API and the generated site (nginx removed); SQLite on a Fly volume at /data (D2_DB), seeded from assets/terms on the first start with an empty volume (also the restore path: scripts/import_terms.py); fly.toml has the mount, /api/health check and one machine (--ha=false in every deploy path); nightly workflow backs the live dictionary up to git (public GET /api/export, no secrets); Litestream documented as an option. The S2-T page shows the one-time commands (volume, token to clipboard, deploy). Verified with a real docker build and run: seeded, served site + API, edit survived a restart. NOT deployed to Fly yet: the volume and EDIT_TOKEN must exist first.",
+  "why": "Owner: Step 5: Dockerfile and fly.toml run the API, mount a volume at /data, one machine, health check; document the one-time commands (fly volumes create, fly secrets set EDIT_TOKEN) without running them or printing the token; nightly export to git and a documented Litestream option.",
+  "status": "⏳ ready, waiting for the one-time Fly commands"
+ },
+ {
   "v": "v0.56",
   "date": "2026-11-14",
   "emoji": "📦",

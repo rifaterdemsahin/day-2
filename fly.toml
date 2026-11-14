@@ -1,12 +1,24 @@
 app = "day-2-short"
 primary_region = "lhr"
 
+# One machine only: SQLite on ONE volume cannot be shared. Deploy with --ha=false.
+[mounts]
+  source = "d2data"
+  destination = "/data"
+
 [http_service]
-  internal_port = 80
+  internal_port = 8080
   force_https = true
   auto_stop_machines = "stop"
   auto_start_machines = true
   min_machines_running = 0
+
+  [[http_service.checks]]
+    method = "GET"
+    path = "/api/health"
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "15s"
 
 [[vm]]
   size = "shared-cpu-1x"

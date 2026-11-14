@@ -25,7 +25,17 @@ def build():
     static = (f'<div id="d2static"><h2>📦 Offline copy</h2><p class="intro">Read only, from the last export to git (assets/terms/). '
               f'It is replaced by the live board when the API answers.</p><div class="board">{chips}</div>'
               f'<div class="tablewrap"><table class="cmp"><tr><th>Term</th><th>Status</th><th>Hook</th></tr>{rows}</table></div></div>')
-    body = (step_head(st) + conn + f'<div id="d2terms">{static}</div>'
+    steps = [
+        ("1️⃣ Create the volume (one time, 1 GB is plenty)", "fly volumes create d2data --region lhr --size 1 -a day-2-short"),
+        ("2️⃣ Make a token, copy it to the clipboard without printing it, store it as the Fly secret", 'TOKEN=$(openssl rand -hex 32); printf %s "$TOKEN" | pbcopy; printf "EDIT_TOKEN=%s\\n" "$TOKEN" | fly secrets import -a day-2-short; unset TOKEN'),
+        ("3️⃣ Deploy (one machine only), then open the dictionary and paste the token into 🔌 Connection", "python3 scripts/deploy_and_wait.py terms.html"),
+        ("🔎 Check it", "curl -s https://day-2-short.fly.dev/api/health"),
+        ("🆘 If the deploy says the machine cannot take the volume: remove the old machine, deploy again", "fly machines list -a day-2-short   # then: fly machine destroy <id> --force -a day-2-short"),
+    ]
+    setup = ('<div class="card hero"><b>🚀 One-time Fly setup (you run these, once)</b><p class="intro">Until step 3 is done the live site shows the read-only offline copy. '
+             'The token is shown nowhere: step 2 puts it in your clipboard, paste it into the 🔌 box. Keep it in your password manager too.</p>'
+             + "".join(f'<p>{E(t)}<br><code>{E(c)}</code> {copybtn(c)}</p>' for t, c in steps) + '</div>')
+    body = (step_head(st) + setup + conn + f'<div id="d2terms">{static}</div>'
             + fb("S2-T", "📚 Dictionary: index and status board"))
     page("terms.html", "S2-T Dictionary", body, head)
     body2 = ('<h1>✏️ <span class="code">S2-T</span> <span id="d2tname">Term</span></h1>'

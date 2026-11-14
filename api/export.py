@@ -29,3 +29,34 @@ def all_docs(con):
 
 def dumps(doc):
     return json.dumps(doc, ensure_ascii=False, indent=1) + "\n"
+
+
+def import_docs(con, docs, source="seed"):
+    """Inverse of export: load documents into an EMPTY database (first start on a new volume, or a
+    restore from the committed files). Terms that already exist are never touched. Returns slugs added."""
+    from .changes import now, dump
+    added, at = [], now()
+    for slug, d in sorted(docs.items()):
+        if con.execute("SELECT 1 FROM terms WHERE slug=?", (slug,)).fetchone():
+            continue
+        with con:
+            cols = [k for k in TERM_ORDER if k != "slug"]
+            con.execute("INSERT INTO terms (slug, updated_at, " + ", ".join(cols) + ") VALUES (?,?," + ",".join("?" * len(cols)) + ")",
+                        (slug, at, *[dump(d[k]) if k in ("title_options", "voice_lines") else d[k] for k in cols]))
+            for s in d["scenes"]:
+                con.execute('INSERT INTO scenes (term_slug, n, start, "end", vo, visual, on_screen_text, prompt, hf_camera, clip_status) '
+                            "VALUES (?,?,?,?,?,?,?,?,?,?)", (slug, *[s[k] for k in SCENE_ORDER]))
+            con.execute("INSERT INTO history (term_slug, field, old, new, source, at, change_set) VALUES (?,?,?,?,?,?,?)",
+                        (slug, "_created", None, dump(d["term"]), source, at, "seed-" + slug))
+        added.append(slug)
+    return added
+
+
+def seed_if_empty(con, folder):
+    """On a fresh database, load every *.json in folder. Does nothing if there are terms already."""
+    import pathlib
+    if con.execute("SELECT COUNT(*) FROM terms").fetchone()[0]:
+        return []
+    f = pathlib.Path(folder)
+    docs = {p.stem: json.loads(p.read_text(encoding="utf-8")) for p in sorted(f.glob("*.json"))} if f.is_dir() else {}
+    return import_docs(con, docs)

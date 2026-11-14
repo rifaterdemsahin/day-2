@@ -34,7 +34,7 @@ def main():
     sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
     import stamp
     print("🕒 deploy stamp", stamp.write_stamp()["at"])
-    run(["fly", "deploy", "--remote-only", "-a", DEP["fly_app"]])
+    run(["fly", "deploy", "--remote-only", "--ha=false", "-a", DEP["fly_app"]])
     print(f"🌐 Verifying {url} …")
     for _ in range(10):
         if ok(url):
