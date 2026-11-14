@@ -162,6 +162,20 @@
     return (reviewed(PAGE) ? "✅ Reviewed: " : "📄 ") + pname(PAGE) + (parts.length ? "\n\n" + parts.join("\n\n") : "\n(no comments)");
   }
 
+  // ---- 🚀 Run on sprite: build one Terminal command that sends the notes to Claude on the Fly.io Sprite
+  function spriteCmd(notes) {
+    var S = window.SPRITE || {}, name = S.name || "day-2", dir = S.dir || "~/day-2", pages = S.pages || "";
+    var prompt = "You are on the Sprite with the day-2 repo as the current folder. Do this in order:\n" +
+      "1. git pull --rebase origin main, then read MASTER_SPEC.md (standing rules and Part B).\n" +
+      "2. Apply the owner's feedback below. Facts live in assets/short.json and scripts/, never hand-edit generated pages; add emojis; keep every page's feedback buttons.\n" +
+      "3. Run: python3 -I scripts/build_short_site.py\n" +
+      "4. Update MASTER_SPEC.md and README.md if a rule changed, and add one new entry at the top of assets/iterations.json, then rebuild.\n" +
+      "5. git add -A, commit with an emoji message, git push origin main.\n" +
+      "6. Check " + pages + " answers HTTP 200 and report what changed in 5 lines.\n" +
+      "Never commit media or secrets. Do not run destructive commands.\n\nOWNER FEEDBACK:\n" + notes;
+    return "sprite exec -s " + name + " --stdin -- bash -lc 'cd " + dir + " && claude -p \"$(cat)\" --permission-mode acceptEdits --allowedTools \"Bash(git:*) Bash(python3:*) Bash(curl:*) Bash(ls:*) Edit Write Read Glob Grep\"' <<'D2FEEDBACK'\n" + prompt + "\nD2FEEDBACK\n";
+  }
+
   // ---- floating notes panel (every page except the feedback summary)
   function allText() {
     var parts = [], n = 0;
@@ -178,7 +192,9 @@
       '<textarea id="pnote" placeholder="💬 Quick note about this whole page…"></textarea>' +
       '<div class="hltitle">✨ Highlight notes on this page <small>(select any text to add one)</small></div><div id="hlist"></div>' +
       '<label class="rvchk"><input type="checkbox" id="prev"> ✔️ I have reviewed this page</label>' +
-      '<div class="pb"><button id="pcopy" class="primary">📋 Copy this page</button><button id="pall">📋 Copy all</button><a href="feedback.html">💬 Summary</a></div>';
+      '<div class="pb"><button id="pcopy" class="primary">📋 Copy this page</button><button id="pall">📋 Copy all</button><a href="feedback.html">💬 Summary</a></div>' +
+      '<div class="pb"><button id="psp" title="Copies a Terminal command that sends this page\'s notes to Claude on your Fly.io Sprite">🚀 Run on sprite: this page</button><button id="pspa">🚀 all notes</button><a href="s2-sp.html">🛰️ Setup</a></div>' +
+      '<small id="pspmsg">Press 🚀, paste in Terminal, Claude fixes the site and redeploys.</small>';
     document.body.appendChild(fab); document.body.appendChild(panel);
     var pd = pageNote(PAGE), pn = panel.querySelector("#pnote"), pr = panel.querySelector("#prev");
     pn.value = pd.text || ""; pr.checked = reviewed(PAGE);
@@ -203,6 +219,8 @@
     pr.onchange = function () { set("rev:" + PAGE, { v: pr.checked }); paintP(); paintNav(); paintProgress(); };
     panel.querySelector("#pcopy").onclick = function () { copy(pageText(), this); };
     panel.querySelector("#pall").onclick = function () { copy(allText(), this); };
+    panel.querySelector("#psp").onclick = function () { copy(spriteCmd(pageText()), this); document.getElementById("pspmsg").textContent = "✅ Command copied. Paste it in Terminal (needs S2-SP setup done once)."; };
+    panel.querySelector("#pspa").onclick = function () { copy(spriteCmd(allText()), this); document.getElementById("pspmsg").textContent = "✅ Command with ALL notes copied. Paste it in Terminal."; };
     document.addEventListener("keydown", function (e) {
       var t = (e.target.tagName || "").toLowerCase();
       if (t === "textarea" || t === "input" || e.metaKey || e.ctrlKey || e.altKey) return;

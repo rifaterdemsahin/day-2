@@ -1,5 +1,17 @@
 [
  {
+  "v": "v0.16",
+  "date": "2026-11-14",
+  "emoji": "🚀",
+  "codes": [
+   "S2-SP",
+   "S2-W"
+  ],
+  "change": "Notes panel gets 🚀 Run on sprite (this page / all notes): copies one `sprite exec` command that sends the notes to Claude on a Fly.io Sprite, which edits the repo, rebuilds, updates spec + iterations, pushes main and checks Pages. New S2-SP page with setup sub-steps S2-SP.1-10 (login, create, Claude, clone, 7-day repo-scoped token, dry run, revoke). Sprite name/folder in short.json › sprite.",
+  "why": "Owner wanted a button in the notes section that executes on a Fly.io Sprite with Claude and sends the updates to fix the site and redeploy. Chosen: copy a ready command (no secret on the public site); owner runs the setup.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.15",
   "date": "2026-11-14",
   "emoji": "🧰",

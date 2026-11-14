@@ -27,6 +27,73 @@
       "intro": "Start here. The script explained beat by beat with diagrams, what is true and what is simplified, and why this topic matters to anyone who uses AI."
     },
     {
+      "code": "S2-SP",
+      "emoji": "🛰️",
+      "name": "Sprite setup",
+      "slug": "s2-sp",
+      "intro": "One-time setup of a Fly.io Sprite that has Claude and this repo, so the 🚀 button in the notes panel can fix the site from your notes and redeploy. You run these yourself: they involve your logins and a push token.",
+      "substeps": [
+        {
+          "code": "S2-SP.1",
+          "emoji": "🔐",
+          "text": "Log in to Sprites (opens a browser; run it in your own Terminal).",
+          "cmd": "sprite login"
+        },
+        {
+          "code": "S2-SP.2",
+          "emoji": "🛰️",
+          "text": "Create the sprite (skip if it exists; check with sprite list).",
+          "cmd": "sprite create day-2"
+        },
+        {
+          "code": "S2-SP.3",
+          "emoji": "🤖",
+          "text": "Check Claude is installed on it. If you see a version, skip the install.",
+          "cmd": "sprite exec -s day-2 --no-stdin -- bash -lc 'claude --version'"
+        },
+        {
+          "code": "S2-SP.4",
+          "emoji": "⬇️",
+          "text": "Only if .3 failed: install Claude Code on the sprite.",
+          "cmd": "sprite exec -s day-2 --no-stdin -- bash -lc 'curl -fsSL https://claude.ai/install.sh | bash'"
+        },
+        {
+          "code": "S2-SP.5",
+          "emoji": "🔑",
+          "text": "Sign in to Claude on the sprite, in its own terminal (type /login inside, then exit). Never paste keys in chat.",
+          "cmd": "sprite exec -s day-2 --tty -- bash -lc 'claude'"
+        },
+        {
+          "code": "S2-SP.6",
+          "emoji": "📦",
+          "text": "Clone this repo on the sprite.",
+          "cmd": "sprite exec -s day-2 --no-stdin -- bash -lc 'git clone https://github.com/rifaterdemsahin/day-2.git ~/day-2'"
+        },
+        {
+          "code": "S2-SP.7",
+          "emoji": "🗝️",
+          "text": "Create a fine-grained GitHub token for day-2 only (Contents: read and write, 7-day expiry) in GitHub settings. Then give it to git on the sprite by typing it when asked (the command pushes nothing, it just asks for credentials).",
+          "cmd": "sprite exec -s day-2 --tty -- bash -lc 'cd ~/day-2 && git config user.name rifaterdemsahin && git config user.email rifaterdemsahin@users.noreply.github.com && git config credential.helper store && git push --dry-run origin main'"
+        },
+        {
+          "code": "S2-SP.8",
+          "emoji": "🧪",
+          "text": "Dry run: Claude reads the repo and changes nothing (plan mode).",
+          "cmd": "sprite exec -s day-2 --no-stdin -- bash -lc 'cd ~/day-2 && git pull --rebase origin main && claude -p \"List the pages of this site and say OK\" --permission-mode plan'"
+        },
+        {
+          "code": "S2-SP.9",
+          "emoji": "🚀",
+          "text": "Use it: write notes on any page, open the 📝 panel, press 🚀 and paste the command in Terminal. Watch the output; when it finishes, reload the live site."
+        },
+        {
+          "code": "S2-SP.10",
+          "emoji": "🗑️",
+          "text": "When the work is final: revoke the GitHub token, then sprite destroy day-2 if you no longer need it."
+        }
+      ]
+    },
+    {
       "code": "S2-DEV",
       "emoji": "💻",
       "name": "Development",
@@ -432,5 +499,11 @@
         "url": "https://platform.openai.com/docs/guides/embeddings"
       }
     ]
+  },
+  "sprite": {
+    "name": "day-2",
+    "dir": "~/day-2",
+    "repo": "https://github.com/rifaterdemsahin/day-2.git",
+    "pages": "https://rifaterdemsahin.github.io/day-2/"
   }
 }

@@ -76,7 +76,7 @@ def page(fname, title, body, extra_head=""):
 {nav(fname)}
 <main>{body}</main>
 <footer>🔁 Update → deploy → feedback. Copy your feedback with 📋 and paste it back to Claude.</footer>
-<script>window.PAGES={pages};</script>
+<script>window.PAGES={pages};window.SPRITE={json.dumps(D.get("sprite", {}))};</script>
 <script src="app.js"></script>
 </body></html>"""
     (ROOT / fname).write_text(out, encoding="utf-8")
@@ -769,6 +769,21 @@ document.getElementById("wreset").onclick=function(){{if(confirm("Clear all work
     page("s2-w.html", "S2-W Workbench", body)
 
 
+def sSP():
+    st = step_by_code("S2-SP")
+    subs = "".join(
+        f'<label class="card check"><input type="checkbox" data-check="{x["code"]}"> <span class="code">{x["code"]}</span> <b>{x["emoji"]} {E(x["text"])}</b>'
+        + (f'<br><code>{E(x["cmd"])}</code><br>{copybtn(x["cmd"], "📋 Copy command")}' if x.get("cmd") else "") + '</label>' for x in st["substeps"])
+    body = step_head(st) + f"""<div class="card hero"><b>🚀 What the notes button does</b>
+<p>Open the 📝 panel on any page and press <b>🚀 Run on sprite</b>. It copies one Terminal command that sends your notes (this page or all pages) to Claude on the sprite <code>{E(D['sprite']['name'])}</code>. Claude edits the repo, rebuilds the site, updates the spec and iterations, commits, pushes main and checks that Pages is live.</p>
+<p>🔒 Why a command and not a direct call: a public page cannot hold a secret. The command runs from your Terminal, with your own Sprites login, so nothing sensitive is on the site.</p>
+<p>⚠️ Only your own notes should go in: they become Claude's instructions and it has push rights to this repo.</p></div>
+<h2>🔢 Steps to follow (tick each one)</h2>{subs}
+<ul><li>🔁 If the sprite and you both push to main, the command starts with a pull and rebase, so they stay in step.</li>
+<li>🧾 Sprite name and folder come from <code>assets/short.json › sprite</code>.</li></ul>{fb('S2-SP', '🛰️ Sprite setup: what failed or was unclear?')}"""
+    page("s2-sp.html", "S2-SP Sprite setup", body)
+
+
 def s00():
     st = step_by_code("S2-00")
     m = D["scenes"]
@@ -977,7 +992,7 @@ def md_page(fname, title, src, emoji):
     page(fname, title, body)
 
 
-hub(); sW(); sR(); sDev(); sAnalytics(); s00(); s01(); s02(); s03(); s03b(); s04(); s05(); s06(); s07(); s08(); iterations(); feedback()
+hub(); sW(); sSP(); sR(); sDev(); sAnalytics(); s00(); s01(); s02(); s03(); s03b(); s04(); s05(); s06(); s07(); s08(); iterations(); feedback()
 md_page("spec.html", "Master spec", "MASTER_SPEC.md", "📖")
 md_page("readme.html", "Script draft (README)", "README.md", "📄")
 (ROOT / ".nojekyll").write_text("")

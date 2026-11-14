@@ -792,6 +792,7 @@ The first draft of each short's script lives in the repo `README.md` (title, vis
 
 | Code | Step | Output | Who |
 |---|---|---|---|
+| `S2-SP` | 🛰️ **Sprite setup:** one-time Fly.io Sprite with Claude + this repo, numbered sub-steps `S2-SP.1-10` (login, create, Claude, clone, 7-day repo-scoped push token, dry run, revoke) | sprite ready | owner |
 | `S2-W` | 🧰 **Workbench:** guided checklist for the manual work with the two-Chrome-windows setup (A = site, B = Flow/Higgsfield/Studio pinned), per-clip copy/paste/download/tick, next-up banner, progress in localStorage (shared with S2-04 and S2-06 ticks) | workbench page | owner |
 | `S2-R` | 🔬 **Research first:** the script explained beat by beat with inline-SVG diagrams, honest notes on what the short simplifies, why the topic matters, sources | research page | Claude |
 | `S2-DEV` | 💻 **Development:** runnable code, interactive browser playground (token lookup, cosine distance, king − man + woman live vector arithmetic), and beat-by-beat code mapping to the script | development page & demo script | Claude |
@@ -894,5 +895,7 @@ Every page on the site carries its code in the menu and the heading. Feedback is
 | 18 | 2026-11-14 | Creators guess what topic to produce instead of listening to channel retention outliers | B2: `S2-A` YouTube Analytics page; anchor every sequel directly in the channel's highest-retention asset (Day 1 Tokenization: 247.1% view rate, 1:56 duration on 0:47 video) and use its loop & brevity metrics as hard design constraints |
 
 | 17 | 2026-11-14 | The workbench is where the owner spends their time, so it is where feedback is most needed | Standing rule 3: open the workbench after every deploy; every workbench card/section has feedback buttons; iterate on it each round |
+
+| 18 | 2026-11-14 | Fixing the site from notes should not need a chat session, but a public page cannot hold a secret | Notes panel 🚀 button builds one `sprite exec` command (notes + fix/redeploy instructions) the owner pastes in Terminal; runs Claude on the Sprite configured in `short.json › sprite`; repo-scoped 7-day push token, revoked after; no tokens on the site |
 
 **How to retrain:** at the end of each project add rows here, then copy the whole file to the next project. Keep rows short: lesson, then the rule.
