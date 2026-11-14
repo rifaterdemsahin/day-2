@@ -1,5 +1,16 @@
 [
  {
+  "v": "v0.39",
+  "date": "2026-11-14",
+  "emoji": "🔄",
+  "codes": [
+   "all pages"
+  ],
+  "change": "Refresh banner: a green banner at the top of the page with a 🔄 Refresh now button appears (1) as soon as a 🚀 run ends with DONE (changed): \"Your note was applied, pushed and deployed. Refresh to see the new version\", and (2) on any open page when the site is deployed again (the page checks deployed.json every 45 s and compares it with the deploy it loaded). Dismiss with ✖️. Checked in Chrome: the poll raised the banner after a changed deploy stamp.",
+  "why": "Owner: after a run completes (DONE changed), add a refresh banner to the page.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.41",
   "date": "2026-11-14",
   "emoji": "👁️",
@@ -20,11 +31,11 @@
   ],
   "change": "Hide approved pages from the top menu: once a page is ticked ✔️ I have reviewed this page (or marked ✅ approve), its menu link disappears (display:none) and the ✔️ mark is gone, so the menu only shows pages still needing review. Reviewed state is per-browser in localStorage, so it persists across rebuilds.",
   "why": "✅ Reviewed: 🔬 S2-R Research\n\n💬 [page:s2-r.html] 📄 🔬 S2-R Research — ✅ approve\nI have approved https://day-2-short.fly.dev/s2-r.html the page on the top menu hide the pages that are approved\n\n💬 [S2-R.c1] 🔬 c1 research — ✅ approve\n\n💬 [S2-R] 🔬 Research overall: what to add, cut or fix? — ✅ approve",
-   "status": "🚀 deployed"
-  },
-  {
-   "v": "v0.39",
-   "date": "2026-11-14",
+  "status": "🚀 deployed"
+ },
+ {
+  "v": "v0.39",
+  "date": "2026-11-14",
   "emoji": "🗂️",
   "codes": [
    "S2-RC"

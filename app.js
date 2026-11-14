@@ -181,6 +181,24 @@
     return "sprite exec -s " + name + " --stdin -- bash -lc 'cd " + dir + " && claude -p \"$(cat)\" --permission-mode acceptEdits --allowedTools \"Bash(git:*) Bash(python3:*) Bash(curl:*) Bash(ls:*) Edit Write Read Glob Grep\"' <<'D2FEEDBACK'\n" + prompt + "\nD2FEEDBACK\n";
   }
 
+  // ---- refresh banner: shown after a 🚀 run deploys, or when a newer deploy is live than the one this page loaded
+  function showBanner(text) {
+    var b = document.getElementById("rbanner");
+    if (!b) { b = document.createElement("div"); b.id = "rbanner"; document.body.appendChild(b); }
+    b.innerHTML = '<span id="rbtext"></span> <button id="rbgo" class="primary">🔄 Refresh now</button> <button id="rbx" aria-label="Dismiss">✖️</button>';
+    b.querySelector("#rbtext").textContent = text; b.hidden = false;
+    b.querySelector("#rbgo").onclick = function () { location.reload(); };
+    b.querySelector("#rbx").onclick = function () { b.hidden = true; };
+  }
+  (function watchDeploys() {
+    var seen = null;
+    function check() { fetch("deployed.json", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+      if (!d) return; if (seen === null) { seen = d.at; return; }
+      if (d.at !== seen) { seen = d.at; showBanner("🆕 A newer version is live (deployed " + d.at.replace("T", " ").replace("Z", " UTC") + ")."); }
+    }).catch(function () {}); }
+    check(); setInterval(check, 45000);
+  })();
+
   // ---- shared: stream a run from the local runner into a <pre>
   function runAgent(notes, btn, agent, out, msg) {
     var port = (window.SPRITE && window.SPRITE.runner_port) || 8947;
@@ -193,7 +211,7 @@
         function pump() { return rd.read().then(function (x) { if (x.done) return; out.textContent += dec.decode(x.value, { stream: true }); out.scrollTop = out.scrollHeight; return pump(); }); }
         return pump();
       })
-      .then(function () { msg.innerHTML = /🎉 DONE \(changed\)/.test(out.textContent) ? '✅ Deployed. <a href="" onclick="location.reload();return false">🔄 Reload this page</a>' : (/❌/.test(out.textContent) ? "❌ Run failed, see the log." : "ℹ️ Finished."); })
+      .then(function () { if (/🎉 DONE \(changed\)/.test(out.textContent)) showBanner("✅ Your note was applied, pushed and deployed. Refresh to see the new version."); msg.innerHTML = /🎉 DONE \(changed\)/.test(out.textContent) ? '✅ Deployed. <a href="" onclick="location.reload();return false">🔄 Reload this page</a>' : (/❌/.test(out.textContent) ? "❌ Run failed, see the log." : "ℹ️ Finished."); })
       .catch(function () { out.textContent += "\n❌ Runner not reachable. Start it in Terminal: python3 scripts/notes_runner.py   (or press 📋 command and paste that instead)"; })
       .then(function () { btn.disabled = false; });
   }

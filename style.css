@@ -70,3 +70,9 @@ body.pbig #pback{display:block}
 #panel.big textarea{min-height:34vh;font-size:16px}
 #panel.big #pspout{max-height:32vh;font-size:13px}
 #panel.big .ph b{font-size:18px}
+
+/* refresh banner */
+#rbanner{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:40;max-width:min(720px,94vw);background:var(--ok);color:#001;border-radius:12px;padding:10px 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;box-shadow:0 10px 40px #000a;font-weight:600}
+#rbanner[hidden]{display:none}
+#rbanner button,#rbanner button.primary{background:#001;color:#fff;border:0;border-radius:8px;padding:6px 12px;cursor:pointer;white-space:nowrap;width:auto}
+#rbanner span{flex:1 1 260px}
