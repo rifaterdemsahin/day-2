@@ -210,7 +210,7 @@
   if (PAGE !== "feedback.html") {
     var fab = document.createElement("button"); fab.id = "fab"; fab.title = "Notes (press N)"; fab.textContent = "📝";
     var panel = document.createElement("div"); panel.id = "panel"; panel.hidden = true;
-    panel.innerHTML = '<div class="ph"><b>📝 Notes · ' + pname(PAGE) + '</b><button id="pclose" aria-label="Close">✖️</button></div>' +
+    panel.innerHTML = '<div class="ph"><b>📝 Notes · ' + pname(PAGE) + '</b><span><button id="pbig" title="Big centered view (Esc to shrink)" aria-label="Big view">⤢ Big</button> <button id="pclose" aria-label="Close">✖️</button></span></div>' +
       '<div class="st"><button data-s="ok">✅ Approve</button><button data-s="chg">🔧 Change</button><button data-s="cut">❌ Cut</button></div>' +
       '<textarea id="pnote" placeholder="💬 Quick note about this whole page…"></textarea>' +
       '<div class="hltitle">✨ Highlight notes on this page <small>(select any text to add one)</small></div><div id="hlist"></div>' +
@@ -219,7 +219,11 @@
       '<div class="pb"><select id="pagent" title="auto picks by note size: small to kilo (free), medium to claude haiku, larger to claude"><option value="auto">🧭 auto (by size)</option><option value="kilo">🧠 kilo (free)</option><option value="claude:haiku">🤖 claude haiku (cheap)</option><option value="claude">🤖 claude (primary)</option><option value="antigravity">🪐 antigravity</option></select><button id="psp" class="primary" title="Sends this page\'s notes to the agent on your Fly.io Sprite, then pushes and redeploys">🚀 Run: this page</button><button id="pspa">🚀 all notes</button></div>' +
       '<div class="pb"><button id="pspc" title="Copies a Terminal command instead (no runner needed)">📋 command</button><a href="s2-sp.html">🛰️ Setup</a></div>' +
       '<small id="pspmsg">Start the runner once: <code>python3 scripts/notes_runner.py</code>, then press 🚀. The agent edits, the runner pushes and redeploys.</small><pre id="pspout" hidden></pre>';
-    document.body.appendChild(fab); document.body.appendChild(panel);
+    var pback = document.createElement("div"); pback.id = "pback";
+    document.body.appendChild(pback); document.body.appendChild(fab); document.body.appendChild(panel);
+    function setBig(on) { panel.classList.toggle("big", on); document.body.classList.toggle("pbig", on); var b = panel.querySelector("#pbig"); b.textContent = on ? "⤡ Small" : "⤢ Big"; try { localStorage.setItem("d2big", on ? "1" : "0"); } catch (e) {} if (on) { panel.hidden = false; panel.querySelector("#pnote").focus(); } }
+    panel.querySelector("#pbig").onclick = function () { setBig(!panel.classList.contains("big")); };
+    pback.onclick = function () { setBig(false); };
     var pd = pageNote(PAGE), pn = panel.querySelector("#pnote"), pr = panel.querySelector("#prev");
     pn.value = pd.text || ""; pr.checked = reviewed(PAGE);
     function paintP() { panel.querySelectorAll(".st button").forEach(function (b) { b.classList.toggle("on", b.dataset.s === pd.s); }); fab.classList.toggle("done", reviewed(PAGE)); fab.textContent = reviewed(PAGE) ? "✅" : (pd.text || pd.s || HL.list.length ? "📝●" : "📝"); }
@@ -235,7 +239,8 @@
       paintP();
     };
     renderHL();
-    function toggle(open) { panel.hidden = open === undefined ? !panel.hidden : !open; try { localStorage.setItem("d2panel", panel.hidden ? "0" : "1"); } catch (e) {} if (!panel.hidden) pn.focus(); }
+    function toggle(open) { panel.hidden = open === undefined ? !panel.hidden : !open; try { localStorage.setItem("d2panel", panel.hidden ? "0" : "1"); } catch (e) {} if (panel.hidden) { panel.classList.remove("big"); document.body.classList.remove("pbig"); panel.querySelector("#pbig").textContent = "⤢ Big"; } if (!panel.hidden) pn.focus(); }
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && panel.classList.contains("big")) { e.preventDefault(); setBig(false); } });
     fab.onclick = function () { toggle(); };
     panel.querySelector("#pclose").onclick = function () { toggle(false); };
     panel.querySelectorAll(".st button").forEach(function (b) { b.onclick = function () { pd.s = (pd.s === b.dataset.s) ? "" : b.dataset.s; set("page:" + PAGE, pd); pr.checked = reviewed(PAGE); paintP(); paintNav(); paintProgress(); }; });
@@ -251,9 +256,9 @@
     document.addEventListener("keydown", function (e) {
       var t = (e.target.tagName || "").toLowerCase();
       if (t === "textarea" || t === "input" || e.metaKey || e.ctrlKey || e.altKey) return;
-      if (e.key === "n" || e.key === "N") { e.preventDefault(); toggle(); } else if (e.key === "Escape") toggle(false);
+      if (e.key === "n" || e.key === "N") { e.preventDefault(); toggle(); } else if (e.key === "Escape") { if (panel.classList.contains("big")) setBig(false); else toggle(false); }
     });
-    try { if (localStorage.getItem("d2panel") === "1") panel.hidden = false; } catch (e) {}
+    try { if (localStorage.getItem("d2panel") === "1") panel.hidden = false; if (localStorage.getItem("d2big") === "1" && !panel.hidden) setBig(true); } catch (e) {}
   }
 
   // ---- footer: when this was last deployed (site/deployed.json is written at deploy time)

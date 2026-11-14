@@ -1,15 +1,15 @@
 {
- "when": "2026-11-14 17:19",
- "mode": "live",
- "passed": 47,
- "total": 47,
+ "when": "2026-11-14 17:27",
+ "mode": "offline",
+ "passed": 32,
+ "total": 32,
  "results": [
   {
    "group": "build",
    "name": "builds without error and is idempotent",
    "ok": true,
    "detail": "second build changed: []",
-   "s": 0.3
+   "s": 0.2
   },
   {
    "group": "pages",
@@ -227,111 +227,6 @@
    "ok": true,
    "detail": "",
    "s": 0.0
-  },
-  {
-   "group": "fly",
-   "name": "Fly.io serves /",
-   "ok": true,
-   "detail": "status 200",
-   "s": 0.1
-  },
-  {
-   "group": "fly",
-   "name": "Fly.io serves /s2-w.html",
-   "ok": true,
-   "detail": "status 200",
-   "s": 0.1
-  },
-  {
-   "group": "fly",
-   "name": "Fly.io serves /s2-sp.html",
-   "ok": true,
-   "detail": "status 200",
-   "s": 0.1
-  },
-  {
-   "group": "fly",
-   "name": "Fly.io serves /s2-r.html",
-   "ok": true,
-   "detail": "status 200",
-   "s": 0.2
-  },
-  {
-   "group": "fly",
-   "name": "Fly.io serves /s2-07.html",
-   "ok": true,
-   "detail": "status 200",
-   "s": 0.3
-  },
-  {
-   "group": "fly",
-   "name": "Fly.io serves /iterations.html",
-   "ok": true,
-   "detail": "status 200",
-   "s": 0.3
-  },
-  {
-   "group": "fly",
-   "name": "Fly.io serves /style.css",
-   "ok": true,
-   "detail": "status 200",
-   "s": 0.1
-  },
-  {
-   "group": "fly",
-   "name": "Fly.io serves /app.js",
-   "ok": true,
-   "detail": "status 200",
-   "s": 0.1
-  },
-  {
-   "group": "fly",
-   "name": "Fly.io serves /assets/short.json",
-   "ok": true,
-   "detail": "status 200",
-   "s": 0.1
-  },
-  {
-   "group": "redirect",
-   "name": "old GitHub Pages address redirects to Fly.io",
-   "ok": true,
-   "detail": "status 200, stub target present: True",
-   "s": 0.2
-  },
-  {
-   "group": "fly",
-   "name": "live site contains the latest iteration entry (deployed = repo)",
-   "ok": true,
-   "detail": "live page lacks latest iteration v0.36",
-   "s": 0.1
-  },
-  {
-   "group": "sprite",
-   "name": "sprite is reachable (sprite exec)",
-   "ok": true,
-   "detail": "line 22: bind: warning: line editing not enabled\n/home/sprite/.bashrc: line 23: bind: warning: line editing not enabled\n",
-   "s": 0.3
-  },
-  {
-   "group": "sprite",
-   "name": "agent key is readable from Azure Key Vault (value never printed)",
-   "ok": true,
-   "detail": "true\n",
-   "s": 0.8
-  },
-  {
-   "group": "agent",
-   "name": "agent (kilo) runs on the sprite in plan mode and returns",
-   "ok": true,
-   "detail": "   😀 Dry run: 0 files changed — no edits, no iterations entry, no build (nothing to change).\n   ===AGENT-DONE===\n🧪 dry run finished; patch bytes would be 0; nothing applied",
-   "s": 29.0
-  },
-  {
-   "group": "agent",
-   "name": "claude, kilo and antigravity (agy) CLIs are installed on the sprite",
-   "ok": true,
-   "detail": "✅ claude       cli=claude installed=True  2.1.319 (Claude Code)  ready\n✅ kilo         cli=kilo   installed=True  7.8.27                 ready: answered the smoke test\n✅ antigravity  cli=agy    installed=True  1.5.9                  ready\n",
-   "s": 27.6
   }
  ]
 }

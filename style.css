@@ -62,3 +62,11 @@ kbd{border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;paddi
 label.check input{margin-right:6px}details{margin-top:8px}summary{cursor:pointer;color:var(--mut)}
 #pspout{max-height:220px;overflow:auto;white-space:pre-wrap;font:11px/1.35 ui-monospace,Menlo,monospace;background:#070b1c;color:#cfe;border:1px solid var(--line);border-radius:8px;padding:8px;margin-top:6px}
 #pagent{background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:4px}
+
+/* big centered notes modal (button ⤢ in the panel header, Esc or ⤡ to shrink) */
+#pback{position:fixed;inset:0;z-index:19;background:#000a;display:none}
+body.pbig #pback{display:block}
+#panel.big{right:auto;bottom:auto;left:50%;top:50%;transform:translate(-50%,-50%);width:min(920px,94vw);max-height:90vh;padding:18px;z-index:21;box-shadow:0 20px 80px #000c}
+#panel.big textarea{min-height:34vh;font-size:16px}
+#panel.big #pspout{max-height:32vh;font-size:13px}
+#panel.big .ph b{font-size:18px}

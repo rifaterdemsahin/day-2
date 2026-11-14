@@ -1,5 +1,16 @@
 [
  {
+  "v": "v0.37",
+  "date": "2026-11-14",
+  "emoji": "⤢",
+  "codes": [
+   "all pages"
+  ],
+  "change": "Notes panel: new ⤢ Big button turns it into a large centered modal (up to 920 px wide, 90% of the screen high, dimmed backdrop, bigger text box and run log). ⤡ Small, Esc (even while typing) or a click on the backdrop shrinks it; closing the panel also resets it. The size choice is remembered per browser. Checked in Chrome: centered, Esc shrinks, backdrop clears.",
+  "why": "Owner: a button to size the notes section centered and big like a modal popup.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.36",
   "date": "2026-11-14",
   "emoji": "♻️",
