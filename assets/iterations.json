@@ -1,5 +1,17 @@
 [
  {
+  "v": "v0.24",
+  "date": "2026-11-14",
+  "emoji": "🧪",
+  "codes": [
+   "S2-SP",
+   "S2-EV"
+  ],
+  "change": "S2-SP: new \"Agent CLIs on the sprite\" table (installed, version, signed in, docs and site links to verify, one-time sign-in command) fed by scripts/sprite_check.py; live eval that all three CLIs are installed. Fix: antigravity on the sprite is the `agy` CLI, so the runner now calls `agy -p … --mode accept-edits` (it called a non-existent `antigravity -z`). Findings: kilo ✅ ready; claude and agy installed but NOT signed in.",
+  "why": "Owner: a sprite test for the claude, kilo and antigravity installs with links to verify them so the sprite can complete the task.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.23",
   "date": "2026-11-14",
   "emoji": "📋",

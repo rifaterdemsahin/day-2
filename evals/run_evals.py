@@ -222,6 +222,11 @@ def live():
         return any("dry run finished" in l for l in lines), "\n".join(lines[-3:])
     check("agent", "agent (kilo) runs on the sprite in plan mode and returns", dry_run)
 
+    def installs():
+        c, o = sh([sys.executable, "-I", str(ROOT / "scripts/sprite_check.py")])
+        return c == 0, o[-300:]
+    check("agent", "claude, kilo and antigravity (agy) CLIs are installed on the sprite", installs)
+
 
 # ------------------------------------------------------------------ end to end
 def e2e():

@@ -47,7 +47,8 @@ def agent_cmd(agent, dry):
         return ('export PATH=$(npm prefix -g)/bin:$PATH; command -v kilo >/dev/null || npm i -g @kilocode/cli >/dev/null 2>&1; '
                 f'kilo run -m {SPR.get("kilo_model", "kilo/kilo-auto/free")} {ag} "$(cat /tmp/d2prompt.txt)"')
     if agent == "antigravity":
-        return 'antigravity -z "$(cat /tmp/d2prompt.txt)"'
+        mode = "plan" if dry else "accept-edits"
+        return f'agy -p "$(cat /tmp/d2prompt.txt)" --mode {mode}'
     raise ValueError(agent)
 
 

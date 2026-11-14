@@ -1,0 +1,30 @@
+{
+ "when": "2026-11-14 13:32 GMT",
+ "sprite": "day-2",
+ "agents": [
+  {
+   "agent": "claude",
+   "cli": "claude",
+   "installed": true,
+   "version": "2.1.319 (Claude Code)",
+   "ready": false,
+   "note": "installed but not signed in"
+  },
+  {
+   "agent": "kilo",
+   "cli": "kilo",
+   "installed": true,
+   "version": "7.8.27",
+   "ready": true,
+   "note": "ready: answered the smoke test"
+  },
+  {
+   "agent": "antigravity",
+   "cli": "agy",
+   "installed": true,
+   "version": "1.5.9",
+   "ready": false,
+   "note": "installed but not signed in"
+  }
+ ]
+}
