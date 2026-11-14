@@ -792,6 +792,7 @@ The first draft of each short's script lives in the repo `README.md` (title, vis
 
 | Code | Step | Output | Who |
 |---|---|---|---|
+| `S2-R` | 🔬 **Research first:** the script explained beat by beat with inline-SVG diagrams, honest notes on what the short simplifies, why the topic matters, sources | research page | Claude |
 | `S2-00` | 🧭 **Title + thumbnail first**, Why (first principles, producer only), brief, hook and loop design | title options, thumbnail draft, why section, loop plan | Claude + owner |
 | `S2-01` | 📝 Script (voice-over lines per scene) | VO text with timings | Claude, owner reviews |
 | `S2-02` | 🗺️ Storyboard (scenes, camera, on-screen text) | scene cards | Claude, owner reviews |
@@ -882,5 +883,7 @@ Every page on the site carries its code in the menu and the heading. Feedback is
 | 13 | 2026-11-12 | An API key should not outlive its job; Whisper mishears numbers and words, which would put typos in captions; the real voice was shorter than the planned timeline | B2c: 7-day keys revoked after use; align timings onto the script's words; scene cuts follow the voice (`scene_timing.json`) |
 
 | 14 | 2026-11-14 | One video tool is a single point of failure and a manual chore | B1/`S2-03b`: keep a Flow vs Higgsfield comparison page per short, re-researched each project; per-scene `hf_camera` in data |
+
+| 15 | 2026-11-14 | A short is only as good as the producer's understanding of the topic, and a script simplifies | B2: `S2-R` research page first in every pipeline (data in `short.json › research`, diagrams in the site generator), each beat with an honest-note on what the short simplifies |
 
 **How to retrain:** at the end of each project add rows here, then copy the whole file to the next project. Keep rows short: lesson, then the rule.
