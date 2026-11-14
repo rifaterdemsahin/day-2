@@ -677,5 +677,117 @@
   "checks": {
    "S2-05.4": true
   }
+ },
+ "workbench_top": {
+  "title": "Update the project with the Sprite, and keep the pipeline mentally sound",
+  "intro": "Two things on top of the checklist below: how a change travels from your eyes to the live site, and the loop that keeps making the pipeline better instead of just bigger.",
+  "update": [
+   [
+    "📝",
+    "Write it where you see it",
+    "Open 📝 notes, press 🎯 Pick element, point at the thing, and say what to change. One change per round."
+   ],
+   [
+    "🚀",
+    "Press Sprite Implement",
+    "The window maximizes. DeepSeek rewrites your note as Role / Context / Rules / Constraints (Role = product manager). You edit that prompt, then press Send."
+   ],
+   [
+    "🛰️",
+    "The Sprite does the edit",
+    "An agent works in a fresh clone on the Sprite and returns a patch. Watch the log, in ⛶ full screen if you like. No GitHub token ever goes to the Sprite."
+   ],
+   [
+    "📋",
+    "Read the RESULT block",
+    "It shows the git commit, the push check, the Fly deploy, tokens and cost, or the exact step that failed. A failure never leaves the site half-changed."
+   ],
+   [
+    "🔄",
+    "Refresh, look, answer",
+    "The banner offers a refresh. Check the page, then mark ✅ 🔧 ❌ again. The footer shows when and from which commit it was deployed."
+   ]
+  ],
+  "loop": [
+   [
+    "🧭",
+    "Plan",
+    "S2-00 to S2-02: brief, script, storyboard"
+   ],
+   [
+    "🎞️",
+    "Make",
+    "S2-03 to S2-05: prompts, Flow clips, voice"
+   ],
+   [
+    "🎛️",
+    "Assemble",
+    "S2-06: Remotion, loop check, render"
+   ],
+   [
+    "📤",
+    "Publish",
+    "S2-07 and S2-08: title, captions, upload"
+   ],
+   [
+    "📈",
+    "Learn",
+    "S2-A and S2-V: numbers, similar videos, your feedback"
+   ]
+  ],
+  "sound": [
+   [
+    "1️⃣",
+    "One thing at a time",
+    "Next up shows the single next step. Each round changes one thing, so cause and effect stay clear."
+   ],
+   [
+    "💾",
+    "Nothing gets lost",
+    "Facts are in short.json, progress is read from the files on disk, every change is a commit with a reason."
+   ],
+   [
+    "↩️",
+    "Everything can be undone",
+    "Small commits on main and git revert: you can try something without fear."
+   ],
+   [
+    "🔒",
+    "Calm about secrets",
+    "Keys stay in the Key Vault and the Keychain, never on the site or in the repo."
+   ],
+   [
+    "🪞",
+    "You always see what will happen",
+    "The prompt preview, the RESULT block and the deploy footer remove guessing."
+   ]
+  ],
+  "evolve": [
+   [
+    "🔁",
+    "Every round is logged",
+    "One Iterations entry per change: what, why and which feedback."
+   ],
+   [
+    "🧠",
+    "Lessons go into the spec",
+    "Each project adds rows to the retrain log, so the next short starts smarter (S3 reuses this pipeline)."
+   ],
+   [
+    "🧪",
+    "Every bug becomes a check",
+    "A failure is turned into an eval, so the same mistake cannot return unnoticed."
+   ],
+   [
+    "💡",
+    "Recommendations graduate",
+    "Items on S2-RC move from suggested to done as they are built and verified."
+   ],
+   [
+    "📊",
+    "The numbers steer the next hook",
+    "After upload, the S2-08 numbers and S2-A decide what to change in the next Short."
+   ]
+  ]
  }
 }

@@ -55,7 +55,16 @@ def build():
                   f'{fb("S2-W." + c, "🧰 " + c + " in Flow: how did the take come out? what to change in the prompt?")}</div>')
     mv = "mkdir -p ~/projects/day-2/remotion/public/clips && cp ~/Downloads/day-2/S2-04-c*.mp4 ~/projects/day-2/remotion/public/clips/ && cd ~/projects/day-2/remotion && npm run sync && cd ~/projects/day-2 && python3 -I scripts/sync_status.py --commit"
     loop = "".join(chk(f"S2-06.{k}", t) for k, t in [("a", "🎞️ Last frame matches first frame"), ("b", "🗣️ Last word flows into first word"), ("c", "🥚 Tiny 9246 visible in the Queen on the 2nd watch"), ("d", "💬 Captions in safe area, large"), ("e", "⏱️ 45 s or less, 9:16")])
-    body = step_head(st) + f"""<div class="card hero" id="next"><b>👉 Next up</b> <small>· every card has ✅ 🔧 ❌ and a 📋 Copy feedback button; paste it to Claude and I iterate</small><p id="next-txt">…</p><div class="bar-track"><div class="bar-fill" id="wbar" style="width:0%"></div></div><small id="wcount"></small><br><button id="goto">⬇️ Jump to it</button> <button id="wreset">↩️ Reset workbench ticks</button></div>
+    wt = D["workbench_top"]
+    li = lambda rows: '<ol class="why">' + "".join(f"<li><b>{a} {E(b)}</b><br>{E(c)}</li>" for a, b, c in rows) + "</ol>"
+    loop = '<div class="loopchips">' + ' <span class="arrow">→</span> '.join(f'<span class="chip"><b>{a} {E(b)}</b><br><small>{E(c)}</small></span>' for a, b, c in wt["loop"]) + ' <span class="arrow">↺</span></div>'
+    top = (f'<div class="card hero" id="wb-top"><h2 style="margin-top:0">🔄 {E(wt["title"])}</h2><p class="intro">{E(wt["intro"])}</p>'
+           f'<h3>🛰️ Update the project with the Sprite</h3>{li(wt["update"])}'
+           f'<h3>🧠 A pipeline that stays mentally sound</h3>{loop}{li(wt["sound"])}'
+           f'<h3>🌱 …and evolves</h3>{li(wt["evolve"])}{fb("S2-W.top", "🔄 Sprite update + evolving pipeline: what is unclear or missing?")}</div>')
+    head = step_head(st)
+    head = head.replace('<p class="intro">', top + '<p class="intro">', 1)
+    body = head + f"""<div class="card hero" id="next"><b>👉 Next up</b> <small>· every card has ✅ 🔧 ❌ and a 📋 Copy feedback button; paste it to Claude and I iterate</small><p id="next-txt">…</p><div class="bar-track"><div class="bar-fill" id="wbar" style="width:0%"></div></div><small id="wcount"></small><br><button id="goto">⬇️ Jump to it</button> <button id="wreset">↩️ Reset workbench ticks</button></div>
 <h2>📁 Production status (from disk)</h2><div class="card">{prod_table}<p><small>Source: <code>assets/short.json › production</code>, written by <code>python3 -I scripts/sync_status.py</code> (also run by <code>npm run sync|studio|render</code>). Flow, Higgsfield and the render stay manual.</small></p>{copybtn("cd ~/projects/day-2 && python3 -I scripts/sync_status.py --commit", "📋 Copy: sync status + commit")}</div>
 <h2>🪟 The two-window rule</h2>{layout_svg()}
 <ul><li>🚫 Never open a third kind of tab. Close extras with <kbd>⌘ W</kbd>.</li><li>🔁 The buttons reuse the same tab each time, so you never pile up Flow tabs.</li><li>⌨️ <kbd>⌘ 1…9</kbd> jumps to a pinned tab, <kbd>⌘ ⌥ →</kbd> cycles tabs.</li>

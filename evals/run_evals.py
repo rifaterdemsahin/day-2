@@ -278,6 +278,12 @@ def offline():
         return all(x in js for x in ("ensureLogBar", "requestFullscreen", "logFull")) and ".logfull" in css and ".logbar.onfull" in css, "the run log needs a full screen button, a fallback overlay and a visible exit button"
     check("runner", "the run log window has a full screen mode (button, Esc, visible exit, copy log)", log_fullscreen)
 
+    def workbench_top():
+        h = (ROOT / "site/s2-w.html").read_text(encoding="utf-8")
+        i, j = h.find('id="wb-top"'), h.find("Do the work here")
+        return 0 < i < j and "Sprite Implement" in h[i:j] and "evolves" in h[i:j] and 'data-fb="S2-W.top"' in h, "the Sprite-update and evolving-pipeline section must sit above the checklist intro with a feedback box"
+    check("workbench", "workbench has the Sprite update and evolving pipeline section on top", workbench_top)
+
     def enhancer_wiring():
         src = (ROOT / "scripts/notes_runner.py").read_text(encoding="utf-8")
         js = (ROOT / "app.js").read_text(encoding="utf-8")

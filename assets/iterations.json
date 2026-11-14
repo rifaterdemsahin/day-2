@@ -1,5 +1,16 @@
 [
  {
+  "v": "v0.49",
+  "date": "2026-11-14",
+  "emoji": "🔄",
+  "codes": [
+   "S2-W"
+  ],
+  "change": "Workbench top section (above the checklist intro): \"Update the project with the Sprite, and keep the pipeline mentally sound\". (1) Five moves from eye to live site: write with the 🎯 picker, Sprite Implement (maximized window, DeepSeek Role/Context/Rules/Constraints prompt you can edit), the Sprite edits in a fresh clone, read the RESULT block, refresh and answer. (2) A loop Plan → Make → Assemble → Publish → Learn ↺ with five reasons it stays mentally sound (one thing at a time, nothing lost, undoable, calm about secrets, you see what will happen). (3) How it evolves (every round logged, lessons into the spec, every bug becomes an eval, recommendations graduate, numbers steer the next hook). Data in short.json › workbench_top; own feedback box S2-W.top.",
+  "why": "Owner (via the 🎯 picker on the S2-W intro paragraph): on the top add updating the project with the Sprite and creating a mentally sound video production pipeline that evolves section.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.48",
   "date": "2026-11-14",
   "emoji": "⛶",
