@@ -1,5 +1,16 @@
 [
  {
+  "v": "v0.15",
+  "date": "2026-11-14",
+  "emoji": "🧰",
+  "codes": [
+   "S2-W"
+  ],
+  "change": "Workbench now has feedback buttons (✅ 🔧 ❌ + 📋 Copy feedback) on every clip and on the setup and bring-in sections, with a hint in the Next up card. Standing rule 3 now says to open the workbench after every deploy.",
+  "why": "Owner: always open the workbench and have feedback buttons so they can feed back to Claude and we iterate on it.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.16",
   "date": "2026-11-14",
   "emoji": "📊",

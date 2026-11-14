@@ -736,19 +736,20 @@ def sW():
                   f'<li>Download it and rename to <code>S2-04-{c}.mp4</code> in <code>~/Downloads/day-2/</code>.</li></ol>'
                   f'<label class="check"><input type="checkbox" data-check="W.gen.{c}"> 🎞️ generated a take I like</label> '
                   f'<label class="check"><input type="checkbox" data-check="S2-04.{c}"> 💾 saved as <code>S2-04-{c}.mp4</code></label>'
-                  f'<details><summary>🌈 Second opinion in Higgsfield ({E(s["hf_camera"])})</summary>{copybtn(hf, "📋 Copy Higgsfield prompt")}{openbtn("higgs", "🌈 Go to Higgsfield", "d2-higgs")}</details></div>')
+                  f'<details><summary>🌈 Second opinion in Higgsfield ({E(s["hf_camera"])})</summary>{copybtn(hf, "📋 Copy Higgsfield prompt")}{openbtn("higgs", "🌈 Go to Higgsfield", "d2-higgs")}</details>'
+                  f'{fb("S2-W." + c, "🧰 " + c + " in Flow: how did the take come out? what to change in the prompt?")}</div>')
     mv = "mkdir -p ~/projects/day-2/remotion/public/clips && cp ~/Downloads/day-2/S2-04-c*.mp4 ~/projects/day-2/remotion/public/clips/ && cd ~/projects/day-2/remotion && npm run sync"
     loop = "".join(chk(f"S2-06.{k}", t) for k, t in [("a", "🎞️ Last frame matches first frame"), ("b", "🗣️ Last word flows into first word"), ("c", "🥚 Tiny 9246 visible in the Queen on the 2nd watch"), ("d", "💬 Captions in safe area, large"), ("e", "⏱️ 45 s or less, 9:16")])
-    body = step_head(st) + f"""<div class="card hero" id="next"><b>👉 Next up</b><p id="next-txt">…</p><div class="bar-track"><div class="bar-fill" id="wbar" style="width:0%"></div></div><small id="wcount"></small><br><button id="goto">⬇️ Jump to it</button> <button id="wreset">↩️ Reset workbench ticks</button></div>
+    body = step_head(st) + f"""<div class="card hero" id="next"><b>👉 Next up</b> <small>· every card has ✅ 🔧 ❌ and a 📋 Copy feedback button; paste it to Claude and I iterate</small><p id="next-txt">…</p><div class="bar-track"><div class="bar-fill" id="wbar" style="width:0%"></div></div><small id="wcount"></small><br><button id="goto">⬇️ Jump to it</button> <button id="wreset">↩️ Reset workbench ticks</button></div>
 <h2>🪟 The two-window rule</h2>{layout_svg()}
 <ul><li>🚫 Never open a third kind of tab. Close extras with <kbd>⌘ W</kbd>.</li><li>🔁 The buttons reuse the same tab each time, so you never pile up Flow tabs.</li><li>⌨️ <kbd>⌘ 1…9</kbd> jumps to a pinned tab, <kbd>⌘ ⌥ →</kbd> cycles tabs.</li>
 <li>💾 Progress is saved on this device for this address. Ticks here also tick S2-04 and S2-06.</li></ul>
 <h2>1️⃣ Set up once (5 minutes)</h2>{s_html}
-<h2>2️⃣ Make the clips (the long part)</h2><p class="intro">Do one clip at a time: copy here, paste in Flow, download, tick. When both boxes of a clip are ticked, move to the next.</p>{clips}
+{fb("S2-W.setup", "🧰 Setup: what was unclear?")}<h2>2️⃣ Make the clips (the long part)</h2><p class="intro">Do one clip at a time: copy here, paste in Flow, download, tick. When both boxes of a clip are ticked, move to the next.</p>{clips}
 <h2>3️⃣ Bring the clips into the video</h2>
 {chk("W.move", "📂 Move the downloads into the project and refresh the sync (one command, in Terminal).", copybtn(mv, "📋 Copy move + sync command"))}
 {chk("W.studio", "🎛️ In the Studio tab press reload (<kbd>⌘ R</kbd>) and watch it once with sound.", openbtn("studio", "🎛️ Go to Studio", "d2-studio"))}
-<h2>4️⃣ Loop and bait check</h2>{loop}
+{fb("S2-W.bring", "🧰 Bringing clips into Studio: problems?")}<h2>4️⃣ Loop and bait check</h2>{loop}
 <h2>5️⃣ Export and publish</h2>
 {chk("W.render", "🎬 Render the final video.", copybtn("cd ~/projects/day-2/remotion && npm run render", "📋 Copy render command"))}
 {chk("W.publish", '📤 Add title, description and hashtags, upload, then paste the numbers on S2-08. <a href="s2-07.html">Open S2-07</a>')}
