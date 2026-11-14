@@ -30,6 +30,7 @@ def ok(url):
 
 def main():
     url = DEP["url"] + (sys.argv[1].lstrip("/") if len(sys.argv) > 1 else "s2-w.html")
+    run([sys.executable, "-I", "scripts/sync_spec_log.py"])
     run([sys.executable, "-I", "scripts/build_short_site.py"])
     run(["fly", "deploy", "--remote-only", "-a", DEP["fly_app"]])
     print(f"🌐 Verifying {url} …")

@@ -1,5 +1,5 @@
 {
- "when": "2026-11-14 13:34",
+ "when": "2026-11-14 13:46",
  "mode": "offline",
  "passed": 21,
  "total": 21,
@@ -65,7 +65,7 @@
    "name": "no API keys or tokens in tracked files",
    "ok": true,
    "detail": "possible secret in: ",
-   "s": 0.0
+   "s": 0.1
   },
   {
    "group": "security",

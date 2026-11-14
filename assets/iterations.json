@@ -1,5 +1,16 @@
 [
  {
+  "v": "v0.26",
+  "date": "2026-11-14",
+  "emoji": "🌳",
+  "codes": [
+   "spec"
+  ],
+  "change": "Master spec: rule 2 now says push and deploy to Fly every time; new rule 8 trunk-based development (main only, small commits, revert instead of rewriting history); new B7 lists every update the owner asked for, generated from iterations.json by scripts/sync_spec_log.py (run on every deploy). The 10 similar videos were opened in Chrome.",
+  "why": "Owner: always push and deploy, trunk based development, mention all the updates I have done in the master spec, open the top 10 similar YouTube videos.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.25",
   "date": "2026-11-14",
   "emoji": "📊",
