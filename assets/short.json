@@ -631,37 +631,35 @@
   "clips": {
    "c1": {
     "clip": "missing",
-    "voice": "ready",
+    "voice": "pending",
     "render": "pending"
    },
    "c2": {
     "clip": "missing",
-    "voice": "ready",
+    "voice": "pending",
     "render": "pending"
    },
    "c3": {
     "clip": "missing",
-    "voice": "ready",
+    "voice": "pending",
     "render": "pending"
    },
    "c4": {
     "clip": "missing",
-    "voice": "ready",
+    "voice": "pending",
     "render": "pending"
    },
    "c5": {
     "clip": "missing",
-    "voice": "ready",
+    "voice": "pending",
     "render": "pending"
    },
    "c6": {
     "clip": "missing",
-    "voice": "ready",
+    "voice": "pending",
     "render": "pending"
    }
   },
-  "checks": {
-   "S2-05.4": true
-  }
+  "checks": {}
  }
 }

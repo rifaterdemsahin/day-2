@@ -1,5 +1,17 @@
 [
  {
+  "v": "v0.41",
+  "date": "2026-11-14",
+  "emoji": "👁️",
+  "codes": [
+   "S2-W",
+   "all pages"
+  ],
+  "change": "Add a 👁️ Show approved (hidden) pages toggle on the S2-W Workbench: once a page is ticked ✔️ reviewed its menu link disappears, and this switch brings those hidden pages back to the top menu (remembered per browser in localStorage). Un-reviewing a page still brings its own link back.",
+  "why": "📄 🧰 S2-W Workbench — have the ability to bring hidden pages back to life\n\n💬 [S2-W.setup] 🧰 Setup: what was unclear? — ✅ approve",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.40",
   "date": "2026-11-14",
   "emoji": "🫥",

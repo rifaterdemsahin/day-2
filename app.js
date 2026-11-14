@@ -56,7 +56,8 @@
       if (!a.dataset.t) a.dataset.t = a.textContent;
       a.textContent = (done ? "✔️ " : "") + a.dataset.t;
       // owner feedback: approved pages are hidden from the top menu (shown again if un-reviewed)
-      a.style.display = done ? "none" : "";
+      var force = localStorage.getItem("d2showHidden") === "1";
+      a.style.display = (done && !force) ? "none" : "";
     });
   }
 
@@ -274,6 +275,8 @@
   })();
 
   paintNav(); paintProgress(); paintHL();
+  var sh = document.getElementById("showHidden");
+  if (sh) { sh.checked = localStorage.getItem("d2showHidden") === "1"; sh.onchange = function () { localStorage.setItem("d2showHidden", sh.checked ? "1" : ""); paintNav(); }; }
 
   // ---- feedback page
   if (window.FB_IDS) {

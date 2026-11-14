@@ -1,5 +1,5 @@
 {
- "when": "2026-11-14 17:29",
+ "when": "2026-11-14 17:46",
  "mode": "offline",
  "passed": 34,
  "total": 34,
@@ -9,7 +9,7 @@
    "name": "builds without error and is idempotent",
    "ok": true,
    "detail": "second build changed: []",
-   "s": 0.2
+   "s": 0.3
   },
   {
    "group": "pages",
@@ -121,7 +121,7 @@
    "name": "a patch is not applied if the repo changed (dirty or new commit) while the agent worked",
    "ok": true,
    "detail": "clean=True dirty=False moved=False",
-   "s": 0.3
+   "s": 0.0
   },
   {
    "group": "build",
@@ -184,7 +184,7 @@
    "name": "patch contains source changes only (no generated site/ or stub html)",
    "ok": true,
    "detail": "got ['assets/short.json', 'new.txt']",
-   "s": 0.1
+   "s": 0.0
   },
   {
    "group": "runner-http",
