@@ -1,5 +1,16 @@
 [
  {
+  "v": "v0.30",
+  "date": "2026-11-14",
+  "emoji": "💡",
+  "codes": [
+   "S2-X"
+  ],
+  "change": "S2-X top: one plain-English sentence right under the title: \"In one sentence: take pride, remove what vanity adds, add honor, and you land on virtue.\"",
+  "why": "Owner: add one plain-English sentence at the very top of the page, right under the title, that says: In one sentence: take pride, remove what vanity adds, add honor, and you land on virtue.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.29",
   "date": "2026-11-14",
   "emoji": "📖",

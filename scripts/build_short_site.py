@@ -832,7 +832,8 @@ def sX():
     st = step_by_code("S2-X")
     sb = json.loads((ROOT / "assets/sandbox_pride.json").read_text(encoding="utf-8"))
     words = "".join(f"<option>{E(w)}</option>" for w in sb["words"])
-    body = step_head(st) + f"""<div class="card hero"><b>🪞 The idea</b><p>King − Man + Woman ≈ Queen works because one direction (male → female) is shared by many word pairs. Does a direction like <b>healthy → hollow</b> exist for pride and vanity? Try <code>vanity − pride + confidence</code>: if the direction is real, the answer should be the hollow twin of confidence (arrogance).</p></div>
+    one = '<p class="intro"><b>💡 In one sentence:</b> take pride, remove what vanity adds, add honor, and you land on virtue.</p>'
+    body = step_head(st).replace("</h1>", "</h1>" + one, 1) + f"""<div class="card hero"><b>🪞 The idea</b><p>King − Man + Woman ≈ Queen works because one direction (male → female) is shared by many word pairs. Does a direction like <b>healthy → hollow</b> exist for pride and vanity? Try <code>vanity − pride + confidence</code>: if the direction is real, the answer should be the hollow twin of confidence (arrogance).</p></div>
 <div class="card"><b>🧮 Sandbox</b><br>
 <select id="xa">{words}</select> − <select id="xb">{words}</select> + <select id="xc">{words}</select>
 <label><input type="checkbox" id="xex" checked> exclude the three input words (what the original experiments did)</label>
