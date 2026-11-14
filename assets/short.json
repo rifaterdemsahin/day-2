@@ -504,7 +504,8 @@
     "name": "day-2",
     "dir": "~/day-2",
     "repo": "https://github.com/rifaterdemsahin/day-2.git",
-    "pages": "https://day-2-short.fly.dev/"
+    "pages": "https://day-2-short.fly.dev/",
+    "runner_port": 8791
   },
   "deploy": {
     "host": "fly.io",

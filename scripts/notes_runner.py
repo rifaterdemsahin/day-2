@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Local runner behind the 🚀 button in the notes panel.
 
-  python3 scripts/notes_runner.py            # listens on 127.0.0.1:8787
+  python3 scripts/notes_runner.py            # listens on 127.0.0.1:8791
 
 Flow for one run (everything streams back to the notes panel):
   1. checks this repo is clean and in sync with origin/main
@@ -262,7 +262,7 @@ class H(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--port", type=int, default=8787)
+    ap.add_argument("--port", type=int, default=SPR.get("runner_port", 8791))
     a = ap.parse_args()
     print(f"🚀 notes runner on http://127.0.0.1:{a.port} · sprite {SPR['name']} · origins {sorted(ALLOWED)} · Ctrl+C to stop")
     ThreadingHTTPServer(("127.0.0.1", a.port), H).serve_forever()
