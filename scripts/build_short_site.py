@@ -2,11 +2,12 @@
 """Build the short-form site from assets/short.json (facts live in data, not code).
 Run: python3 -I scripts/build_short_site.py
 """
-import html, json, pathlib, shutil
+import html, json, pathlib, shutil, subprocess, sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 import hashlib
 ASSET_V = {n: hashlib.md5((ROOT / n).read_bytes()).hexdigest()[:8] for n in ("style.css", "app.js")}  # cache-busting: browsers reload changed files
+subprocess.run([sys.executable, "-I", str(ROOT / "scripts/build_spec.py")], check=True, stdout=subprocess.DEVNULL)  # MASTER_SPEC.md is generated from spec/*.md
 D = json.loads((ROOT / "assets/short.json").read_text(encoding="utf-8"))
 SITE = ROOT / "site"  # the real site (deployed to Fly.io); root *.html are only redirect stubs for GitHub Pages
 SITE.mkdir(exist_ok=True)

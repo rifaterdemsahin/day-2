@@ -55,10 +55,10 @@ def agent_cmd(agent, dry):
 
 def task_prompt(notes, dry):
     return f"""You are working in a fresh clone of the day-2 repo (current folder). Do this:
-1. Read MASTER_SPEC.md (standing rules and Part B). Facts live in assets/short.json and scripts/build_short_site.py; never hand-edit generated files (site/, root *.html).
+1. The briefing is CLAUDE.md in this folder (claude loads it itself; if your tool did not, read just that file). Do NOT read MASTER_SPEC.md; open at most ONE spec/*.md file, and only if the task needs it. Facts live in assets/short.json; each page is one module in pages/; never hand-edit generated files (site/, MASTER_SPEC.md).
 2. Apply the owner's feedback below with the smallest correct change. Keep emojis and the feedback buttons on every page.
 3. Run: python3 -I scripts/build_short_site.py and fix any error.
-4. Add ONE new entry at the top of assets/iterations.json (next version number, today's date, codes, change, why = the owner's feedback, status "🚀 deployed"), update MASTER_SPEC.md / README.md only if a rule changed, then rebuild.
+4. Add ONE new entry at the top of assets/iterations.json (next version number, today's date, codes, change, why = the owner's feedback, status "🚀 deployed"), edit the matching spec/*.md or README.md only if a rule changed, then rebuild.
 5. Do NOT commit, push or deploy: the runner does that. Never touch secrets or media.
 6. Finish with 5 lines: what changed and in which files.
 {"DRY RUN: plan only, change nothing." if dry else ""}

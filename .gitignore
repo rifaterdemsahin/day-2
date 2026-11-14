@@ -5,3 +5,4 @@
 .DS_Store
 site/deployed.json
 __pycache__/
+MASTER_SPEC.md

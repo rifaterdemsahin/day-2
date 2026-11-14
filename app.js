@@ -166,10 +166,10 @@
   function spriteCmd(notes) {
     var S = window.SPRITE || {}, name = S.name || "day-2", dir = S.dir || "~/day-2", pages = S.pages || "";
     var prompt = "You are on the Sprite with the day-2 repo as the current folder. Do this in order:\n" +
-      "1. git pull --rebase origin main, then read MASTER_SPEC.md (standing rules and Part B).\n" +
+      "1. git pull --rebase origin main. The briefing is CLAUDE.md (do NOT read MASTER_SPEC.md; open at most one spec/*.md file if needed).\n" +
       "2. Apply the owner's feedback below. Facts live in assets/short.json and scripts/, never hand-edit generated pages; add emojis; keep every page's feedback buttons.\n" +
       "3. Run: python3 -I scripts/build_short_site.py\n" +
-      "4. Update MASTER_SPEC.md and README.md if a rule changed, and add one new entry at the top of assets/iterations.json, then rebuild.\n" +
+      "4. Edit the matching spec/*.md and README.md if a rule changed, and add one new entry at the top of assets/iterations.json, then rebuild.\n" +
       "5. git add -A, commit with an emoji message, git push origin main.\n" +
       "6. Check " + pages + " answers HTTP 200 and report what changed in 5 lines.\n" +
       "Never commit media or secrets. Do not run destructive commands.\n\nOWNER FEEDBACK:\n" + notes;

@@ -30,7 +30,6 @@ def ok(url):
 
 def main():
     url = DEP["url"] + (sys.argv[1].lstrip("/") if len(sys.argv) > 1 else "s2-w.html")
-    run([sys.executable, "-I", "scripts/sync_spec_log.py"])
     run([sys.executable, "-I", "scripts/build_short_site.py"])
     sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
     import stamp
