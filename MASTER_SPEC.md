@@ -794,7 +794,8 @@ The first draft of each short's script lives in the repo `README.md` (title, vis
 
 | Code | Step | Output | Who |
 |---|---|---|---|
-| `S2-SP` | 🛰️ **Sprite setup:** one-time Fly.io Sprite with Claude + this repo, numbered sub-steps `S2-SP.1-10` (login, create, Claude, clone, 7-day repo-scoped push token, dry run, revoke) | sprite ready | owner |
+| `S2-EV` | 🧪 **Evals:** `evals/run_evals.py` (offline / `--live` / `--e2e`) with results on a site page | pass/fail table | Claude |
+| `S2-SP` | 🛰️ **Sprite + runner setup:** Fly.io Sprite `day-2`, sprite CLI signed in with the Key Vault token, `scripts/notes_runner.py` behind the notes panel's 🚀 button (agent kilo/claude/antigravity on the sprite, key from Azure Key Vault on stdin, patch back, push, Fly deploy); skill `.claude/skills/sprite-run` | runner ready | owner |
 | `S2-W` | 🧰 **Workbench:** guided checklist for the manual work with the two-Chrome-windows setup (A = site, B = Flow/Higgsfield/Studio pinned), per-clip copy/paste/download/tick, next-up banner, progress in localStorage (shared with S2-04 and S2-06 ticks) | workbench page | owner |
 | `S2-R` | 🔬 **Research first:** the script explained beat by beat with inline-SVG diagrams, honest notes on what the short simplifies, why the topic matters, sources | research page | Claude |
 | `S2-DEV` | 💻 **Development:** runnable code, interactive browser playground (token lookup, cosine distance, king − man + woman live vector arithmetic), and beat-by-beat code mapping to the script | development page & demo script | Claude |
@@ -901,5 +902,7 @@ Every page on the site carries its code in the menu and the heading. Feedback is
 | 18 | 2026-11-14 | Fixing the site from notes should not need a chat session, but a public page cannot hold a secret | Notes panel 🚀 button builds one `sprite exec` command (notes + fix/redeploy instructions) the owner pastes in Terminal; runs Claude on the Sprite configured in `short.json › sprite`; repo-scoped 7-day push token, revoked after; no tokens on the site |
 
 | 19 | 2026-11-14 | GitHub Pages is a second system to wait for and keep; the owner already runs on Fly.io | Part B hosts on Fly.io (`site/` + Dockerfile + fly.toml), GitHub Pages only redirects; deploy script builds, deploys, verifies 200, opens Chrome; localStorage ticks reset when the address changes |
+
+| 20 | 2026-11-14 | A button that runs an agent needs proof it works end to end, and bugs hide in the seams (kilo swallowed the piped script on stdin; ports 8787/8791 were taken; the vault's Anthropic keys returned 401) | Evals: offline/live/e2e with the e2e note reverted afterwards; agents run with stdin from /dev/null; check a port is free and a key is valid (HTTP status only) before relying on them; patch-only return so no git token reaches the sprite; sprite-run skill documents it |
 
 **How to retrain:** at the end of each project add rows here, then copy the whole file to the next project. Keep rows short: lesson, then the rule.

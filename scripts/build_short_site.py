@@ -780,13 +780,31 @@ def sSP():
         f'<label class="card check"><input type="checkbox" data-check="{x["code"]}"> <span class="code">{x["code"]}</span> <b>{x["emoji"]} {E(x["text"])}</b>'
         + (f'<br><code>{E(x["cmd"])}</code><br>{copybtn(x["cmd"], "📋 Copy command")}' if x.get("cmd") else "") + '</label>' for x in st["substeps"])
     body = step_head(st) + f"""<div class="card hero"><b>🚀 What the notes button does</b>
-<p>Open the 📝 panel on any page and press <b>🚀 Run on sprite</b>. It copies one Terminal command that sends your notes (this page or all pages) to Claude on the sprite <code>{E(D['sprite']['name'])}</code>. Claude edits the repo, rebuilds the site, updates the spec and iterations, commits, pushes main and checks that Pages is live.</p>
-<p>🔒 Why a command and not a direct call: a public page cannot hold a secret. The command runs from your Terminal, with your own Sprites login, so nothing sensitive is on the site.</p>
-<p>⚠️ Only your own notes should go in: they become Claude's instructions and it has push rights to this repo.</p></div>
+<p>Press <b>🚀 Run</b> in the 📝 panel. The local runner reads the agent key from Azure Key Vault, runs the agent (<b>kilo</b>, claude or antigravity) on the sprite <code>{E(D['sprite']['name'])}</code> with your notes as the task, brings back a <b>patch</b>, applies it here, rebuilds, commits, pushes main and deploys to Fly.io. The log streams into the panel.</p>
+<p>🔒 No secret is on the site. The key goes to the sprite only on stdin for that run, and no GitHub token goes to the sprite at all (it returns a patch). The runner listens on 127.0.0.1 only and accepts only this site's origin.</p>
+<p>⚠️ Only your own notes should go in: they become the agent's instructions.</p></div>
 <h2>🔢 Steps to follow (tick each one)</h2>{subs}
-<ul><li>🔁 If the sprite and you both push to main, the command starts with a pull and rebase, so they stay in step.</li>
+<ul><li>🔁 The runner refuses to start a run unless this repo is clean and equal to origin/main, so the patch always applies.</li>
 <li>🧾 Sprite name and folder come from <code>assets/short.json › sprite</code>.</li></ul>{fb('S2-SP', '🛰️ Sprite setup: what failed or was unclear?')}"""
     page("s2-sp.html", "S2-SP Sprite setup", body)
+
+
+def sEv():
+    st = step_by_code("S2-EV")
+    rp = ROOT / "evals/results.json"
+    if rp.exists():
+        r = json.loads(rp.read_text(encoding="utf-8"))
+        rows = "".join(f'<tr><td>{"✅" if x["ok"] else "❌"}</td><td><code>{E(x["group"])}</code></td><td>{E(x["name"])}</td><td>{x["s"]} s</td></tr>' for x in r["results"])
+        head = f'<div class="card hero"><b>{"🎉" if r["passed"] == r["total"] else "⚠️"} {r["passed"]} / {r["total"]} checks passed</b> · mode <code>{E(r["mode"])}</code> · 📅 {E(r["when"])}</div>'
+        tbl = f'{head}<div class="tablewrap"><table class="cmp"><tr><th></th><th>Group</th><th>Check</th><th>Time</th></tr>{rows}</table></div>'
+    else:
+        tbl = "<p>No run yet.</p>"
+    cmds = "".join(f'<div class="card">{copybtn(c, "📋 Copy")} <code>{E(c)}</code> <small>{E(n)}</small></div>' for c, n in [
+        ("python3 evals/run_evals.py", "offline, seconds: build, pages, stubs, security, command syntax, runner access rules"),
+        ("python3 evals/run_evals.py --live", "adds Fly.io pages, Pages redirect, sprite reachable, Key Vault readable, agent dry run"),
+        ("python3 evals/run_evals.py --e2e", "adds one real note through sprite → patch → push → Fly deploy, verified live, then reverted")])
+    body = step_head(st) + tbl + "<h2>▶️ Run them</h2>" + cmds + fb("S2-EV", "🧪 Evals: what else should be checked?")
+    page("s2-ev.html", "S2-EV Evals", body)
 
 
 def s00():
@@ -997,7 +1015,7 @@ def md_page(fname, title, src, emoji):
     page(fname, title, body)
 
 
-hub(); sW(); sSP(); sR(); sDev(); sAnalytics(); s00(); s01(); s02(); s03(); s03b(); s04(); s05(); s06(); s07(); s08(); iterations(); feedback()
+hub(); sW(); sSP(); sEv(); sR(); sDev(); sAnalytics(); s00(); s01(); s02(); s03(); s03b(); s04(); s05(); s06(); s07(); s08(); iterations(); feedback()
 md_page("spec.html", "Master spec", "MASTER_SPEC.md", "📖")
 md_page("readme.html", "Script draft (README)", "README.md", "📄")
 (ROOT / ".nojekyll").write_text("")

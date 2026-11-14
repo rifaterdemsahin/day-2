@@ -8,7 +8,8 @@
 
 | Code | Step | Page |
 |---|---|---|
-| `S2-SP` | 🛰️ Sprite setup (Claude on a Fly.io Sprite, fix + redeploy from notes) | [open](https://day-2-short.fly.dev/s2-sp.html) |
+| `S2-EV` | 🧪 Evals (40 checks: site, runner, notes → sprite → redeploy) | [open](https://day-2-short.fly.dev/s2-ev.html) |
+| `S2-SP` | 🛰️ Sprite + runner setup (🚀 button: agent on a Fly.io Sprite fixes the site from notes and redeploys) | [open](https://day-2-short.fly.dev/s2-sp.html) |
 | `S2-W` | 🧰 Workbench (do the work: two Chrome windows, per-clip checklist) | [open](https://day-2-short.fly.dev/s2-w.html) |
 | `S2-R` | 🔬 Research (script explained with diagrams, why it matters) | [open](https://day-2-short.fly.dev/s2-r.html) |
 | `S2-00` | 🧭 Brief, hook, loop | [open](https://day-2-short.fly.dev/s2-00.html) |

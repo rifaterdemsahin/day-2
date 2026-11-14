@@ -1,5 +1,18 @@
 [
  {
+  "v": "v0.19",
+  "date": "2026-11-14",
+  "emoji": "🧪",
+  "codes": [
+   "S2-SP",
+   "S2-EV",
+   "S2-W"
+  ],
+  "change": "Notes panel 🚀 now executes: agent picker (kilo default, claude, antigravity), live log, runs on Fly.io Sprite day-2 via scripts/notes_runner.py with the key read from Azure Key Vault (stdin only), patch back, apply, build, commit, push, Fly deploy, verify 200. Proven from a real Chrome click on the live site. New evals (40 checks: offline, live, e2e with revert) and S2-EV page; sprite-run skill; S2-SP page rewritten to the real setup. Findings: vault ANTHROPIC-API-KEY returns 401 (claude agent unusable until replaced); kilo works on the free model; ports 8787/8791 were in use so the runner uses 8947.",
+  "why": "Owner: execute my notes with the keys in Azure Key Vault, add evals, test it works and complete end-to-end updates over the notes section.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.18",
   "date": "2026-11-14",
   "emoji": "💬",
