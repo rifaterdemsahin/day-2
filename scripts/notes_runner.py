@@ -77,6 +77,21 @@ def sh(cmd, cwd=ROOT, timeout=600):
     return r.returncode, (r.stdout + r.stderr).strip()
 
 
+PATCH_EXCLUDES = "':!site' ':!*.html' ':!404.html'"
+
+
+def build_script(notes, agent, dry, prelude=""):
+    """The bash script piped to `sprite exec ... bash -l -s` (secrets only in `prelude`, only on stdin)."""
+    return (prelude + "set -e\nexport CI=1\nD=$HOME/day-2\n"
+            f"[ -d $D/.git ] || git clone -q {SPR['repo']} $D\ncd $D\n"
+            "git fetch -q origin main && git reset -q --hard origin/main && git clean -fdq\n"
+            "cat > /tmp/d2prompt.txt <<'D2PROMPT'\n" + task_prompt(notes, dry) + "D2PROMPT\n"
+            + agent_cmd(agent, dry) + " </dev/null\n"
+            "echo '===AGENT-DONE==='\ngit add -A\n"
+            f"git diff --cached --binary -- . {PATCH_EXCLUDES} | base64 -w0 > /tmp/d2patch.b64\n"
+            "echo '===PATCH-BEGIN==='; cat /tmp/d2patch.b64; echo; echo '===PATCH-END==='\n")
+
+
 def run_job(notes, agent, dry, say):
     secrets = []
 
@@ -106,14 +121,7 @@ def run_job(notes, agent, dry, say):
         out("🔑 2/6 no key needed for this agent (it uses its own login on the sprite)")
 
     # 3. agent on the sprite
-    script = (prelude + "set -e\nexport CI=1\nD=$HOME/day-2\n"
-              f"[ -d $D/.git ] || git clone -q {SPR['repo']} $D\ncd $D\n"
-              "git fetch -q origin main && git reset -q --hard origin/main && git clean -fdq\n"
-              "cat > /tmp/d2prompt.txt <<'D2PROMPT'\n" + task_prompt(notes, dry) + "D2PROMPT\n"
-              + agent_cmd(agent, dry) + " </dev/null\n"
-              "echo '===AGENT-DONE==='\ngit add -A\n"
-              "git diff --cached --binary -- . ':!site' ':!*.html' ':!404.html' | base64 -w0 > /tmp/d2patch.b64\n"
-              "echo '===PATCH-BEGIN==='; cat /tmp/d2patch.b64; echo; echo '===PATCH-END==='\n")
+    script = build_script(notes, agent, dry, prelude)
     out(f"🛰️ 3/6 running {agent} on sprite {SPR['name']} …")
     p = subprocess.Popen(["sprite", "exec", "-s", SPR["name"], "--stdin", "--", "bash", "-l", "-s"], stdin=subprocess.PIPE,
                          stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)

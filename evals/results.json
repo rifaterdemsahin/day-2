@@ -1,0 +1,155 @@
+{
+ "when": "2026-11-14 10:57",
+ "mode": "offline",
+ "passed": 20,
+ "total": 21,
+ "results": [
+  {
+   "group": "build",
+   "name": "builds without error and is idempotent",
+   "ok": true,
+   "detail": "second build changed files",
+   "s": 0.2
+  },
+  {
+   "group": "pages",
+   "name": "every page has menu, notes script (app.js) and a heading",
+   "ok": true,
+   "detail": "",
+   "s": 0.0
+  },
+  {
+   "group": "pages",
+   "name": "every step page carries feedback buttons",
+   "ok": true,
+   "detail": "no feedback box on: ",
+   "s": 0.0
+  },
+  {
+   "group": "pages",
+   "name": "emojis in every heading (standing rule)",
+   "ok": false,
+   "detail": "no emoji in h1: s2-03b.html",
+   "s": 0.0
+  },
+  {
+   "group": "workbench",
+   "name": "workbench has next-up, per-clip feedback, shared ticks, reusable tab links",
+   "ok": true,
+   "detail": "workbench missing pieces",
+   "s": 0.0
+  },
+  {
+   "group": "redirect",
+   "name": "every root page is a stub redirecting to the Fly.io site",
+   "ok": true,
+   "detail": "stub not redirecting: ",
+   "s": 0.0
+  },
+  {
+   "group": "notes",
+   "name": "notes panel has agent picker, 🚀 run, command fallback and the sprite config",
+   "ok": true,
+   "detail": "",
+   "s": 0.0
+  },
+  {
+   "group": "notes",
+   "name": "runner port in the page equals short.json",
+   "ok": true,
+   "detail": "",
+   "s": 0.0
+  },
+  {
+   "group": "security",
+   "name": "no API keys or tokens in tracked files",
+   "ok": true,
+   "detail": "possible secret in: ",
+   "s": 0.1
+  },
+  {
+   "group": "security",
+   "name": "runner never puts keys on a command line (stdin only)",
+   "ok": true,
+   "detail": "a secret may reach a command line",
+   "s": 0.0
+  },
+  {
+   "group": "runner",
+   "name": "generated sprite script is valid bash and keeps quoted notes literal",
+   "ok": true,
+   "detail": "bash -n failed",
+   "s": 0.0
+  },
+  {
+   "group": "runner",
+   "name": "agents run with stdin from /dev/null (regression: kilo swallowed the script)",
+   "ok": true,
+   "detail": "",
+   "s": 0.0
+  },
+  {
+   "group": "runner",
+   "name": "patch contains source changes only (no generated site/ or stub html)",
+   "ok": true,
+   "detail": "got ['assets/short.json', 'new.txt']",
+   "s": 0.1
+  },
+  {
+   "group": "runner-http",
+   "name": "health answers the site's own origin",
+   "ok": true,
+   "detail": "",
+   "s": 0.0
+  },
+  {
+   "group": "runner-http",
+   "name": "POST from a foreign origin is refused (403)",
+   "ok": true,
+   "detail": "",
+   "s": 0.0
+  },
+  {
+   "group": "runner-http",
+   "name": "POST without an Origin header is refused (403)",
+   "ok": true,
+   "detail": "",
+   "s": 0.0
+  },
+  {
+   "group": "runner-http",
+   "name": "wrong Host header is refused (DNS-rebinding guard)",
+   "ok": true,
+   "detail": "",
+   "s": 0.0
+  },
+  {
+   "group": "runner-http",
+   "name": "non-JSON content type is refused",
+   "ok": true,
+   "detail": "",
+   "s": 0.0
+  },
+  {
+   "group": "runner-http",
+   "name": "empty notes are rejected (400)",
+   "ok": true,
+   "detail": "",
+   "s": 0.0
+  },
+  {
+   "group": "runner-http",
+   "name": "unknown agent is rejected (400)",
+   "ok": true,
+   "detail": "",
+   "s": 0.0
+  },
+  {
+   "group": "runner-http",
+   "name": "oversized notes are rejected (400)",
+   "ok": true,
+   "detail": "",
+   "s": 0.0
+  }
+ ]
+}

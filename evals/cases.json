@@ -1,0 +1,12 @@
+{
+ "e2e": [
+  {
+   "id": "pinned-hint",
+   "agent": "kilo",
+   "notes": "💬 [S2-07] Pinned comment: end it with the sentence \"Hint: EVALMARK-{ts} is hidden in the Queen.\"",
+   "expect_live": [{"page": "s2-07.html", "contains": "EVALMARK-{ts}"}],
+   "expect_files": [{"file": "assets/short.json", "contains": "EVALMARK-{ts}"}, {"file": "assets/iterations.json", "contains": "EVALMARK-{ts}"}],
+   "revert": true
+  }
+ ]
+}
