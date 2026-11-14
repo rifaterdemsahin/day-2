@@ -1,5 +1,16 @@
 [
- {
+  {
+   "v": "v0.51",
+   "date": "2026-11-14",
+   "emoji": "🏷️",
+   "codes": [
+    "S2-00"
+   ],
+   "change": "🏷️ Title options on 🧭 S2-00 Brief, hook and loop: rewrote all five titles to be shorter and plainer; option 1 simple and interesting, option 2 simpler, option 3 interesting, option 4 modern and non-technical, option 5 keeps direction but clearly implies secrets are revealed. Labels and emojis unchanged; nothing else on the page or site changed.",
+   "why": "Owner feedback: On the Brief, hook and loop page, rewrite title option 1 to be simple and create interest. Rewrite title option 2 to be simpler. Rewrite title option 3 to be interesting. Rewrite title option 4 to be modern and non-technical. Rewrite title option 5 to keep its direction but clearly suggest revealing secrets. Keep each option's label and emoji unchanged.",
+   "status": "🚀 deployed"
+  },
+  {
   "v": "v0.50",
   "date": "2026-11-14",
   "emoji": "🏷️",
