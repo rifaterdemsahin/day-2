@@ -411,11 +411,12 @@ def offline():
         new_db = connect(pathlib.Path(tempfile.mkdtemp()) / "b.db")
         seeded = seed_if_empty(new_db, ROOT / "assets/terms")
         again = seed_if_empty(new_db, ROOT / "assets/terms")
-        same = [dumps(d) for d in all_docs(new_db).values()] == [dumps(d) for d in all_docs(src).values()]
+        files = {f.stem: json.loads(f.read_text(encoding="utf-8")) for f in sorted((ROOT / "assets/terms").glob("*.json"))}
+        same = [dumps(d) for d in all_docs(new_db).values()] == [dumps(files[k]) for k in sorted(files)]
         secrets_in_files = re.search(r"EDIT_TOKEN\s*=\s*[\"']?[A-Za-z0-9]{8,}", ft + df + wf)
         ok = ('destination = "/data"' in ft and "/api/health" in ft and "internal_port = 8080" in ft and "D2_DB=/data/terms.db" in df
               and "uvicorn" in df and "!api" in di and all("--ha=false" in x for x in deploys) and "export_terms.py --api" in wf
-              and "contents: write" in wf and seeded == ["tokenization-embeddings"] and again == [] and same and not secrets_in_files)
+              and "contents: write" in wf and seeded == sorted(files) and again == [] and bool(seeded) and same and not secrets_in_files)
         return ok, f"volume+health+port in fly.toml, uvicorn image, --ha=false everywhere, nightly backup workflow, seed {seeded}/{again}, seeded export identical {same}"
     check("terms", "Fly setup: volume at /data, health check, one machine, API image, nightly backup, seed on empty volume, no token in files", fly_dictionary)
 
