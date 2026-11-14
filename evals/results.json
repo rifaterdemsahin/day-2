@@ -1,8 +1,8 @@
 {
- "when": "2026-11-14 10:57",
- "mode": "offline",
- "passed": 20,
- "total": 21,
+ "when": "2026-11-14 10:59",
+ "mode": "live",
+ "passed": 35,
+ "total": 35,
  "results": [
   {
    "group": "build",
@@ -28,8 +28,8 @@
   {
    "group": "pages",
    "name": "emojis in every heading (standing rule)",
-   "ok": false,
-   "detail": "no emoji in h1: s2-03b.html",
+   "ok": true,
+   "detail": "no emoji in h1: ",
    "s": 0.0
   },
   {
@@ -65,7 +65,7 @@
    "name": "no API keys or tokens in tracked files",
    "ok": true,
    "detail": "possible secret in: ",
-   "s": 0.1
+   "s": 0.0
   },
   {
    "group": "security",
@@ -150,6 +150,104 @@
    "ok": true,
    "detail": "",
    "s": 0.0
+  },
+  {
+   "group": "fly",
+   "name": "Fly.io serves /",
+   "ok": true,
+   "detail": "status 200",
+   "s": 0.1
+  },
+  {
+   "group": "fly",
+   "name": "Fly.io serves /s2-w.html",
+   "ok": true,
+   "detail": "status 200",
+   "s": 0.1
+  },
+  {
+   "group": "fly",
+   "name": "Fly.io serves /s2-sp.html",
+   "ok": true,
+   "detail": "status 200",
+   "s": 0.2
+  },
+  {
+   "group": "fly",
+   "name": "Fly.io serves /s2-r.html",
+   "ok": true,
+   "detail": "status 200",
+   "s": 0.2
+  },
+  {
+   "group": "fly",
+   "name": "Fly.io serves /s2-07.html",
+   "ok": true,
+   "detail": "status 200",
+   "s": 0.1
+  },
+  {
+   "group": "fly",
+   "name": "Fly.io serves /iterations.html",
+   "ok": true,
+   "detail": "status 200",
+   "s": 0.1
+  },
+  {
+   "group": "fly",
+   "name": "Fly.io serves /style.css",
+   "ok": true,
+   "detail": "status 200",
+   "s": 0.1
+  },
+  {
+   "group": "fly",
+   "name": "Fly.io serves /app.js",
+   "ok": true,
+   "detail": "status 200",
+   "s": 0.1
+  },
+  {
+   "group": "fly",
+   "name": "Fly.io serves /assets/short.json",
+   "ok": true,
+   "detail": "status 200",
+   "s": 0.2
+  },
+  {
+   "group": "redirect",
+   "name": "old GitHub Pages address redirects to Fly.io",
+   "ok": true,
+   "detail": "status 200, stub target present: True",
+   "s": 0.2
+  },
+  {
+   "group": "fly",
+   "name": "live site contains the latest iteration entry (deployed = repo)",
+   "ok": true,
+   "detail": "live page lacks latest iteration v0.18",
+   "s": 0.0
+  },
+  {
+   "group": "sprite",
+   "name": "sprite is reachable (sprite exec)",
+   "ok": true,
+   "detail": "line 22: bind: warning: line editing not enabled\n/home/sprite/.bashrc: line 23: bind: warning: line editing not enabled\n",
+   "s": 0.4
+  },
+  {
+   "group": "sprite",
+   "name": "agent key is readable from Azure Key Vault (value never printed)",
+   "ok": true,
+   "detail": "true\n",
+   "s": 0.6
+  },
+  {
+   "group": "agent",
+   "name": "agent (kilo) runs on the sprite in plan mode and returns",
+   "ok": true,
+   "detail": "   **Files read (no edits):** `MASTER_SPEC.md` (B2 row 810, B4), `assets/short.json`, `scripts/build_short_site.py`, `site/s2-07.html`, `evals/cases.json`, `evals/results.json`.\n   ===AGENT-DONE===\n🧪 dry run finished; patch bytes would be 4468; nothing applied",
+   "s": 100.6
   }
  ]
 }
