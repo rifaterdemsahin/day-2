@@ -115,3 +115,13 @@ body.picking{cursor:crosshair}
 .loopchips{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0}
 .loopchips .chip{background:var(--bg);border:1px solid var(--acc);border-radius:10px;padding:6px 10px;min-width:120px}
 .loopchips .arrow{font-size:20px;color:var(--acc)}
+/* dictionary */
+.frow{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.dfield,#d2conn label,#d2terms label{display:block;margin:8px 0;font-size:14px;color:var(--mut)}
+.dfield input,.dfield textarea,.dfield select,#d2conn input,#d2terms input,#d2terms textarea{display:block;width:100%;margin-top:3px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:7px 9px;font:inherit}
+textarea.mono{font-family:ui-monospace,Menlo,monospace;font-size:13px;width:100%;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:8px}
+.board{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.chip{border-radius:999px;padding:4px 14px}.chip.on{background:var(--acc);color:#001;border-color:var(--acc)}
+.scene{border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin:10px 0}
+.dmsg{margin:8px 0;padding:0;font-size:14px}.dmsg.good{color:var(--ok)}.dmsg.bad{color:var(--cut)}
+tr.rbad td{background:#f8717122}tr.rchg td{background:#fbbf2418}

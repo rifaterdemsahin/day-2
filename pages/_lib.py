@@ -83,6 +83,8 @@ FAVICONS = {
     "s2-06.html": ("✂️", "s2-06"),
     "s2-07.html": ("💬", "s2-07"),
     "s2-08.html": ("📈", "s2-08"),
+    "terms.html": ("📚", "terms"),
+    "term.html": ("✏️", "term"),
     "iterations.html": ("🔁", "iterations"),
     "feedback.html": ("💬", "feedback"),
     "spec.html": ("📖", "spec"),

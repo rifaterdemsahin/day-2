@@ -1,5 +1,16 @@
 [
  {
+  "v": "v0.55",
+  "date": "2026-11-14",
+  "emoji": "📚",
+  "codes": [
+   "S2-T"
+  ],
+  "change": "📚 Dictionary step 3: new page S2-T Dictionary (terms.html: connection box with API address + edit token kept only in this browser, status board with counts and filter, term list, new term, bulk update panel with paste/upload, Preview diff table, Apply only after a clean preview of the same text, Undo) and the term editor (term.html?slug=…: all fields, status dropdown, 6 scene rows, Save sends only changed fields, Undo this save). Vanilla JS in app.js, text rendered with textContent only. Tested against a local API: preview/apply/undo, invalid values, markup in data stays text. The live Fly site shows 'API not reachable' until step 5.",
+  "why": "Owner: Step 3 of the dictionary: editor UI in the site, no React, token kept in localStorage, bulk panel with Preview / Apply / Undo, feedback buttons on every new page.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.54",
   "date": "2026-11-14",
   "emoji": "🔌",

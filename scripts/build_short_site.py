@@ -15,7 +15,7 @@ subprocess.run([sys.executable, "-I", str(ROOT / "scripts/build_spec.py")], chec
 
 from pages import _lib  # noqa: E402
 
-ORDER = ['index', 's2_w', 's2_sp', 's2_ev', 's2_r', 's2_v', 's2_x', 's2_rc', 's2_dev', 's2_a', 's2_00', 's2_01', 's2_02', 's2_03', 's2_03b', 's2_04', 's2_05', 's2_06', 's2_07', 's2_08', 'iterations', 'feedback']  # build order = feedback-box order
+ORDER = ['index', 's2_w', 's2_sp', 's2_ev', 's2_r', 's2_v', 's2_x', 's2_rc', 's2_dev', 's2_a', 's2_00', 's2_01', 's2_02', 's2_03', 's2_03b', 's2_04', 's2_05', 's2_06', 's2_07', 's2_08', 'terms', 'iterations', 'feedback']  # build order = feedback-box order
 
 for name in ORDER:
     importlib.import_module(f"pages.{name}").build()

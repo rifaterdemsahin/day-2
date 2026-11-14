@@ -357,6 +357,16 @@ def offline():
         return r.returncode == 0, (r.stdout + r.stderr)[-500:]
     check("terms", "API over HTTP: public reads, token on every write, preview/apply/undo, conflicts, fail closed", api_http)
 
+    def dict_pages():
+        t, e = (ROOT / "site/terms.html").read_text(encoding="utf-8"), (ROOT / "site/term.html").read_text(encoding="utf-8")
+        js = (ROOT / "app.js").read_text(encoding="utf-8")
+        leak = re.search(r"EDIT_TOKEN\s*=|Bearer [A-Za-z0-9_-]{8,}", t + e + js)
+        ok = ('data-fb="S2-T"' in t and 'data-fb="S2-T.term"' in e and 'id="d2conn"' in t and 'id="d2term"' in e
+              and all(x in js for x in ("/api/bulk/preview", "/api/bulk/apply", "/api/bulk/undo/", "d2token", "d2filter"))
+              and "innerHTML" not in js[js.index("// ---- dictionary"):] and not leak)
+        return ok, "dictionary pages need feedback boxes, the bulk calls, a token kept in localStorage, no innerHTML in the editor code (XSS) and no token in the files"
+    check("terms", "dictionary pages: feedback boxes, bulk panel wiring, no innerHTML, no token in the site", dict_pages)
+
     def docker_builds_site():
         d = (ROOT / "Dockerfile").read_text(encoding="utf-8")
         return "build_short_site.py" in d and "COPY --from=build" in d, "Dockerfile must compile site/ in a build stage"

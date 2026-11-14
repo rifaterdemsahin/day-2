@@ -486,4 +486,185 @@
       }
     };
   }
+
+  // ---- dictionary: status board, term editor, bulk update (talks to api/main.py)
+  if (document.getElementById("d2conn")) {
+    var DC = window.DICT || {}, STE = DC.statuses || {}, STS = Object.keys(STE);
+    function ls(k, v) { try { if (v === undefined) return localStorage.getItem(k) || ""; if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} return ""; }
+    function el(tag, attrs, kids) {
+      var n = document.createElement(tag);
+      Object.keys(attrs || {}).forEach(function (k) { if (k === "text") n.textContent = attrs[k]; else if (k === "onclick") n.onclick = attrs[k]; else n.setAttribute(k, attrs[k]); });
+      (kids || []).forEach(function (c) { n.appendChild(typeof c === "string" ? document.createTextNode(c) : c); });
+      return n;
+    }
+    function apiBase() { var b = ls("d2api").trim(); if (b) return b.replace(/\/$/, ""); return /^(127\.0\.0\.1|localhost)$/.test(location.hostname) ? DC.local_api : ""; }
+    function api(method, path, body) {
+      var h = { "Content-Type": "application/json" }, t = ls("d2token");
+      if (method !== "GET" && t) h.Authorization = "Bearer " + t;
+      return fetch(apiBase() + path, { method: method, headers: h, body: body === undefined ? undefined : JSON.stringify(body) }).then(function (r) {
+        return r.text().then(function (tx) {
+          var j = null; try { j = JSON.parse(tx); } catch (e) {}
+          if (!r.ok) { var d = j && j.detail; throw new Error(r.status + " " + (typeof d === "string" ? d : d && d.rows ? d.rows.filter(function (x) { return x.error; }).map(function (x) { return x.field + ": " + x.error; }).join("; ") : d ? JSON.stringify(d).slice(0, 300) : tx.slice(0, 120))); }
+          return j;
+        });
+      });
+    }
+    function writeNeedsToken() { if (!ls("d2token")) throw new Error("Enter the edit token first (🔌 Connection)."); }
+    var cmsg = document.getElementById("d2cmsg"), ia = document.getElementById("d2api"), it = document.getElementById("d2tok");
+    ia.value = ls("d2api"); it.value = ls("d2token");
+    function test() {
+      cmsg.textContent = "…";
+      return api("GET", "/api/health").then(function (h) {
+        cmsg.textContent = "✅ API reachable · " + h.terms + " term(s) · writes " + (h.writes_enabled ? "enabled on the server" : "DISABLED on the server (no EDIT_TOKEN)") + (ls("d2token") ? " · token saved in this browser" : " · no token yet (read only)");
+        return true;
+      }, function (e) { cmsg.textContent = "⚠️ API not reachable at “" + (apiBase() || "this site") + "”: " + e.message + ". Start it (see CLAUDE.md) or set the address."; return false; });
+    }
+    document.getElementById("d2save").onclick = function () { ls("d2api", ia.value.trim() || null); if (it.value) ls("d2token", it.value.trim()); it.value = ls("d2token"); start(); };
+    document.getElementById("d2forget").onclick = function () { ls("d2token", null); it.value = ""; test(); };
+    function msgBox(parent) { var m = el("div", { "class": "dmsg", role: "status" }); parent.appendChild(m); return function (txt, ok) { m.textContent = txt; m.className = "dmsg " + (ok === false ? "bad" : ok ? "good" : ""); }; }
+    function lastCs(v) { return v === undefined ? ls("d2lastcs") : ls("d2lastcs", v); }
+
+    // ---- diff table (used by bulk preview)
+    function diffTable(p) {
+      var t = el("table", { "class": "cmp" }, [el("tr", {}, ["#", "Term", "Field", "Old", "→ New", "Result"].map(function (x) { return el("th", { text: x }); }))]);
+      function show(v) { var s = v === null || v === undefined ? "∅" : (typeof v === "string" ? v : JSON.stringify(v)); return s.length > 140 ? s.slice(0, 140) + "…" : s; }
+      p.rows.forEach(function (r) {
+        t.appendChild(el("tr", { "class": r.error ? "rbad" : r.changed ? "rchg" : "" }, [r.i + 1, r.slug, r.field, show(r.old), show(r.new), r.error ? "❌ " + r.error : r.changed ? "🔧 change" : "➖ same"].map(function (x) { return el("td", { text: String(x) }); })));
+      });
+      return el("div", { "class": "tablewrap" }, [t]);
+    }
+
+    // ---- index page: status board + term list + new term + bulk
+    var host = document.getElementById("d2terms");
+    function renderIndex() {
+      host.textContent = "";
+      var filter = ls("d2filter") || "";
+      api("GET", "/api/terms").then(function (d) {
+        var board = el("div", { "class": "board" }), total = d.terms.length;
+        function chip(key, label, n) { board.appendChild(el("button", { "class": "chip" + (filter === key ? " on" : ""), onclick: function () { ls("d2filter", key || null); renderIndex(); }, text: label + " " + n })); }
+        chip("", "📚 all", total);
+        STS.forEach(function (s) { chip(s, STE[s] + " " + s, d.counts[s] || 0); });
+        host.appendChild(el("h2", { text: "📊 Status board" })); host.appendChild(board);
+        var rows = d.terms.filter(function (x) { return !filter || x.status === filter; });
+        var tb = el("table", { "class": "cmp" }, [el("tr", {}, ["Term", "Status", "Hook", "Views", "Rewatch %", "Published"].map(function (x) { return el("th", { text: x }); }))]);
+        rows.forEach(function (x) {
+          tb.appendChild(el("tr", {}, [el("td", {}, [el("a", { href: "term.html?slug=" + encodeURIComponent(x.slug), text: x.term }), el("br"), el("small", { text: x.slug })]),
+            el("td", { text: (STE[x.status] || "") + " " + x.status }), el("td", { text: x.hook }), el("td", { text: x.views == null ? "" : String(x.views) }), el("td", { text: x.rewatch_pct == null ? "" : String(x.rewatch_pct) }), el("td", { text: x.publish_date || "" })]));
+        });
+        host.appendChild(rows.length ? el("div", { "class": "tablewrap" }, [tb]) : el("p", { "class": "intro", text: "No terms with this status." }));
+        newTerm(); bulk();
+      }, function (e) { host.appendChild(el("p", { "class": "dmsg bad", text: "⚠️ " + e.message })); });
+    }
+    function newTerm() {
+      var c = el("div", { "class": "card" }), say = null;
+      var s = el("input", { id: "ntslug", placeholder: "slug, e.g. attention" }), t = el("input", { id: "ntterm", placeholder: "Term, e.g. Attention" });
+      c.appendChild(el("h3", { text: "➕ New term" }));
+      c.appendChild(el("div", { "class": "frow" }, [el("label", {}, ["Slug", s]), el("label", {}, ["Term", t])]));
+      c.appendChild(el("button", { "class": "primary", text: "➕ Create (status idea)", onclick: function () {
+        try { writeNeedsToken(); } catch (e) { return say(e.message, false); }
+        api("POST", "/api/terms", { slug: s.value.trim(), term: t.value.trim() }).then(function () { location.href = "term.html?slug=" + encodeURIComponent(s.value.trim()); }, function (e) { say("⚠️ " + e.message, false); });
+      } }));
+      say = msgBox(c); host.appendChild(c);
+    }
+    function bulk() {
+      var c = el("div", { "class": "card hero", id: "d2bulk" }), say = null, prev = null, prevText = null;
+      c.appendChild(el("h3", { text: "🛰️ Bulk update" }));
+      c.appendChild(el("p", { "class": "intro", text: "Paste or upload a changes list: [{slug, field, value}, …]. Preview shows the diff and writes nothing. Apply is only possible after a clean preview of exactly this text. Undo reverts a whole change set." }));
+      var ta = el("textarea", { id: "d2bulkta", rows: "8", placeholder: JSON.stringify(DC.example, null, 1), "class": "mono" });
+      var file = el("input", { type: "file", accept: ".json,application/json" });
+      var out = el("div", {}), bApply = el("button", { "class": "primary", text: "✅ Apply", disabled: "disabled" });
+      var bPrev = el("button", { text: "👀 Preview" }), bUndo = el("button", { text: "↩️ Undo last" });
+      var uid = el("input", { id: "d2undoid", placeholder: "change set id (cs-…)", value: lastCs() });
+      function parse() { var j = JSON.parse(ta.value); return Array.isArray(j) ? j : j.changes; }
+      file.onchange = function () { var f = file.files[0]; if (!f) return; var r = new FileReader(); r.onload = function () { ta.value = r.result; stale(); }; r.readAsText(f); };
+      function stale() { prev = null; bApply.setAttribute("disabled", "disabled"); }
+      ta.oninput = stale;
+      bPrev.onclick = function () {
+        out.textContent = ""; stale(); var ch;
+        try { ch = parse(); } catch (e) { return say("⚠️ Not valid JSON: " + e.message, false); }
+        try { writeNeedsToken(); } catch (e) { return say(e.message, false); }
+        api("POST", "/api/bulk/preview", { changes: ch }).then(function (p) {
+          if (p.error) return say("❌ " + p.error, false);
+          out.appendChild(diffTable(p));
+          if (p.ok) { prev = { p: p, ch: ch }; prevText = ta.value; bApply.removeAttribute("disabled"); say("✅ " + p.count + " row(s), " + (p.count - p.unchanged) + " would change. Nothing written yet. Check the table, then Apply.", true); }
+          else say("❌ " + p.errors + " row(s) with errors. Fix them and preview again. Nothing was written.", false);
+        }, function (e) { say("⚠️ " + e.message, false); });
+      };
+      bApply.onclick = function () {
+        if (!prev || ta.value !== prevText) return say("⚠️ Preview this exact text first.", false);
+        api("POST", "/api/bulk/apply", { changes: prev.ch, preview_id: prev.p.preview_id, source: "ui" }).then(function (r) {
+          lastCs(r.change_set); uid.value = r.change_set; stale();
+          say("✅ Applied " + r.applied + " change(s) as " + r.change_set + ". Undo reverts exactly this set.", true);
+        }, function (e) { say("⚠️ " + e.message, false); });
+      };
+      bUndo.onclick = function () {
+        var id = uid.value.trim(); if (!id) return say("⚠️ No change set id.", false);
+        try { writeNeedsToken(); } catch (e) { return say(e.message, false); }
+        api("POST", "/api/bulk/undo/" + encodeURIComponent(id)).then(function (r) { say("↩️ Reverted " + r.reverted + " change(s) of " + id + ".", true); stale(); }, function (e) { say("⚠️ " + e.message, false); });
+      };
+      [ta, el("div", {}, [el("label", {}, ["Or upload a .json file ", file])]), el("div", { "class": "bar" }, [bPrev, bApply]), out, el("div", { "class": "bar" }, [uid, bUndo])].forEach(function (x) { c.appendChild(x); });
+      say = msgBox(c); host.appendChild(c);
+    }
+
+    // ---- term page
+    var tp = document.getElementById("d2term");
+    var TEXT = [["term", "Term", 1], ["hook", "Hook", 3], ["definition", "Definition", 4], ["analogy", "Analogy", 3], ["chosen_title", "Chosen title", 1]];
+    var LISTS = [["title_options", "Title options (one per line, max 10)", 6], ["voice_lines", "Voice lines (one per line, max 6)", 6]];
+    var OTHER = [["rewatch_pct", "Rewatch %", "number"], ["views", "Views", "number"], ["publish_date", "Publish date (YYYY-MM-DD)", "text"], ["youtube_url", "YouTube link", "text"]];
+    var SC_TEXT = [["vo", "Voice-over", 2], ["visual", "Visual", 2], ["on_screen_text", "On-screen text", 1], ["prompt", "Flow prompt", 3], ["hf_camera", "Higgsfield camera", 1]];
+    function field(label, ctl) { return el("label", { "class": "dfield" }, [label, ctl]); }
+    function ctlText(id, val, rows) { var c = rows > 1 ? el("textarea", { id: id, rows: String(rows) }) : el("input", { id: id }); c.value = val == null ? "" : val; return c; }
+    function ctlSel(id, opts, val) { var s = el("select", { id: id }); opts.forEach(function (o) { var op = el("option", { value: o, text: (STE[o] ? STE[o] + " " : "") + o }); if (o === val) op.selected = true; s.appendChild(op); }); return s; }
+    function renderTerm(note) {
+      var slug = new URLSearchParams(location.search).get("slug");
+      if (!slug) { tp.appendChild(el("p", { "class": "dmsg bad", text: "No ?slug= in the address. Pick a term from the dictionary." })); return; }
+      tp.textContent = "";
+      api("GET", "/api/terms/" + encodeURIComponent(slug)).then(function (t) {
+        document.getElementById("d2tname").textContent = t.term + " · " + t.slug;
+        var form = el("div", { "class": "card" }), say, fields = {};
+        form.appendChild(field("Status", fields.status = ctlSel("f-status", STS, t.status)));
+        TEXT.forEach(function (f) { form.appendChild(field(f[1], fields[f[0]] = ctlText("f-" + f[0], t[f[0]], f[2]))); });
+        LISTS.forEach(function (f) { form.appendChild(field(f[1], fields[f[0]] = ctlText("f-" + f[0], (t[f[0]] || []).join("\n"), f[2]))); });
+        var fr = el("div", { "class": "frow" }); OTHER.forEach(function (f) { fr.appendChild(field(f[1], fields[f[0]] = ctlText("f-" + f[0], t[f[0]], 1))); }); form.appendChild(fr);
+        var sc = {}; form.appendChild(el("h3", { text: "🎬 Scenes" }));
+        t.scenes.forEach(function (s) {
+          var box = el("div", { "class": "scene" }, [el("b", { text: "Scene " + s.n })]), r = el("div", { "class": "frow" });
+          sc[s.n] = {};
+          r.appendChild(field("Start (s)", sc[s.n].start = ctlText("s" + s.n + "-start", s.start, 1)));
+          r.appendChild(field("End (s)", sc[s.n].end = ctlText("s" + s.n + "-end", s.end, 1)));
+          r.appendChild(field("Clip", sc[s.n].clip_status = ctlSel("s" + s.n + "-clip", ["missing", "ready"], s.clip_status)));
+          box.appendChild(r);
+          SC_TEXT.forEach(function (f) { box.appendChild(field(f[1], sc[s.n][f[0]] = ctlText("s" + s.n + "-" + f[0], s[f[0]], f[2]))); });
+          form.appendChild(box);
+        });
+        function changes() {
+          var out = {};
+          function put(name, val, old) { if (JSON.stringify(val) !== JSON.stringify(old == null ? null : old)) out[name] = val; }
+          put("status", fields.status.value, t.status);
+          TEXT.forEach(function (f) { put(f[0], fields[f[0]].value, t[f[0]]); });
+          LISTS.forEach(function (f) { put(f[0], fields[f[0]].value.split("\n").map(function (x) { return x.trim(); }).filter(Boolean), t[f[0]]); });
+          OTHER.forEach(function (f) { var v = fields[f[0]].value.trim(); put(f[0], v === "" ? null : f[2] === "number" ? Number(v) : v, t[f[0]]); });
+          t.scenes.forEach(function (s) {
+            ["start", "end"].forEach(function (k) { var v = sc[s.n][k].value.trim(); put("scenes." + s.n + "." + k, v === "" ? null : Number(v), s[k]); });
+            put("scenes." + s.n + ".clip_status", sc[s.n].clip_status.value, s.clip_status);
+            SC_TEXT.forEach(function (f) { put("scenes." + s.n + "." + f[0], sc[s.n][f[0]].value, s[f[0]]); });
+          });
+          return out;
+        }
+        var save = el("button", { "class": "primary", text: "💾 Save", onclick: function () {
+          var ch = changes(), n = Object.keys(ch).length;
+          if (!n) return say("➖ Nothing changed.", true);
+          try { writeNeedsToken(); } catch (e) { return say(e.message, false); }
+          api("PUT", "/api/terms/" + encodeURIComponent(slug), ch).then(function (r) {
+            lastCs(r.change_set); renderTerm({ text: "✅ Saved " + r.applied + " change(s) as " + r.change_set + ".", cs: r.change_set });
+          }, function (e) { say("⚠️ " + e.message, false); });
+        } });
+        form.appendChild(el("div", { "class": "bar" }, [save, el("button", { text: "🔄 Reload from server", onclick: function () { renderTerm(); } })]));
+        say = msgBox(form); tp.appendChild(form);
+        if (note) { say(note.text, true); if (note.cs) form.appendChild(el("button", { text: "↩️ Undo this save", onclick: function () { api("POST", "/api/bulk/undo/" + note.cs).then(function () { renderTerm({ text: "↩️ Reverted " + note.cs + ".", cs: null }); }, function (e) { say("⚠️ " + e.message, false); }); } })); }
+      }, function (e) { tp.appendChild(el("p", { "class": "dmsg bad", text: "⚠️ " + e.message })); });
+    }
+    function start() { test().then(function (ok) { if (!ok) { if (host) host.textContent = ""; if (tp) tp.textContent = ""; return; } if (host) renderIndex(); if (tp) renderTerm(); }); }
+    start();
+  }
 })();

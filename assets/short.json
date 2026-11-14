@@ -129,6 +129,13 @@
    "intro": "Why I focus on this video: Day 1 analytics reveal 247.1% average percentage viewed (1:56 on a 47 s short). The retention data that justifies the Day 2 sequel and drives our production blueprint."
   },
   {
+   "code": "S2-T",
+   "emoji": "📚",
+   "name": "Dictionary",
+   "slug": "terms",
+   "intro": "Up to 100 AI terms, one short each. Edit every term here (SQLite behind a small API), see the status board, and send bulk updates from the Sprite with preview, apply and undo."
+  },
+  {
    "code": "S2-00",
    "emoji": "🧭",
    "name": "Brief, hook and loop",
@@ -804,6 +811,13 @@
     "The numbers steer the next hook",
     "After upload, the S2-08 numbers and S2-A decide what to change in the next Short."
    ]
+  ]
+ },
+ "dictionary": {
+  "local_api": "http://127.0.0.1:8960",
+  "bulk_example": [
+   {"slug": "tokenization-embeddings", "field": "analogy", "value": "A map where similar words live close together"},
+   {"slug": "tokenization-embeddings", "field": "scenes.1.on_screen_text", "value": "TOKEN 9246"}
   ]
  }
 }
