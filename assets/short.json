@@ -505,7 +505,9 @@
     "dir": "~/day-2",
     "repo": "https://github.com/rifaterdemsahin/day-2.git",
     "pages": "https://day-2-short.fly.dev/",
-    "runner_port": 8947
+    "runner_port": 8947,
+    "kilo_model": "kilo/kilo-auto/free",
+    "default_agent": "kilo"
   },
   "deploy": {
     "host": "fly.io",

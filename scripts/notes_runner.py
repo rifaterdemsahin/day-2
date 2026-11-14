@@ -41,7 +41,9 @@ def agent_cmd(agent, dry):
         tools = '"Edit Write Read Glob Grep Bash(python3:*) Bash(git status:*) Bash(git diff:*) Bash(ls:*) Bash(cat:*)"'
         return f'claude -p "$(cat /tmp/d2prompt.txt)" --permission-mode {mode} --allowedTools {tools}'
     if agent == "kilo":
-        return 'command -v kilo >/dev/null || npm i -g @kilocode/cli >/dev/null 2>&1; kilo run "$(cat /tmp/d2prompt.txt)"'
+        ag = "--agent plan" if dry else "--auto"
+        return ('export PATH=$(npm prefix -g)/bin:$PATH; command -v kilo >/dev/null || npm i -g @kilocode/cli >/dev/null 2>&1; '
+                f'kilo run -m {SPR.get("kilo_model", "kilo/kilo-auto/free")} {ag} "$(cat /tmp/d2prompt.txt)"')
     if agent == "antigravity":
         return 'antigravity -z "$(cat /tmp/d2prompt.txt)"'
     raise ValueError(agent)
