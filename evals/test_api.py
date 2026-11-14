@@ -24,6 +24,8 @@ def t(name, ok, extra=""):
 
 t("GET /api/terms is public, counts per status", (lambda r: r.status_code == 200 and r.json()["counts"]["script"] == 1 and len(r.json()["terms"]) == 1)(c.get("/api/terms")))
 t("GET /api/terms?status=bogus is 422", c.get("/api/terms?status=bogus").status_code == 422)
+e = c.get("/api/export")
+t("GET /api/export is public and returns every term as a document", e.status_code == 200 and list(e.json()) == [S] and e.json()[S]["scenes"][0]["n"] == 1 and "updated_at" not in e.json()[S])
 r = c.get(f"/api/terms/{S}")
 t("GET /api/terms/{slug} has 6 scenes and decoded lists", r.status_code == 200 and len(r.json()["scenes"]) == 6 and isinstance(r.json()["title_options"], list))
 t("unknown slug is 404", c.get("/api/terms/nope").status_code == 404)

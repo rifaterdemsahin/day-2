@@ -10,6 +10,7 @@ from fastapi import Body, Depends, FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from . import changes as ch
+from .export import all_docs
 from .db import STATUSES, connect
 
 app = FastAPI(title="day-2 dictionary", docs_url="/api/docs", openapi_url="/api/openapi.json")
@@ -60,6 +61,12 @@ def list_terms(status: str | None = None, con=Depends(db)):
     if status:
         q, a = q + " WHERE status=?", (status,)
     return {"counts": counts, "terms": [dict(r) for r in con.execute(q + " ORDER BY slug", a)]}
+
+
+@app.get("/api/export")
+def export(con=Depends(db)):
+    """Every term as the documents written to assets/terms/ (public, like the other reads)."""
+    return all_docs(con)
 
 
 @app.get("/api/terms/{slug}")

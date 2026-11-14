@@ -664,7 +664,7 @@
         if (note) { say(note.text, true); if (note.cs) form.appendChild(el("button", { text: "↩️ Undo this save", onclick: function () { api("POST", "/api/bulk/undo/" + note.cs).then(function () { renderTerm({ text: "↩️ Reverted " + note.cs + ".", cs: null }); }, function (e) { say("⚠️ " + e.message, false); }); } })); }
       }, function (e) { tp.appendChild(el("p", { "class": "dmsg bad", text: "⚠️ " + e.message })); });
     }
-    function start() { test().then(function (ok) { if (!ok) { if (host) host.textContent = ""; if (tp) tp.textContent = ""; return; } if (host) renderIndex(); if (tp) renderTerm(); }); }
+    function start() { test().then(function (ok) { if (!ok) return; if (host) renderIndex(); if (tp) renderTerm(); }); }
     start();
   }
 })();

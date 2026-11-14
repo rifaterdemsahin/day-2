@@ -1,5 +1,17 @@
 [
  {
+  "v": "v0.56",
+  "date": "2026-11-14",
+  "emoji": "📦",
+  "codes": [
+   "S2-DB",
+   "S2-T"
+  ],
+  "change": "📦 Dictionary step 4: scripts/export_terms.py writes assets/terms/<slug>.json from the database (--db, or --api URL to back up the live Fly database via the new public GET /api/export; --check for drift; unchanged files untouched; stale files removed; an empty source is refused). Files carry a 'do not edit by hand' note and no updated_at, so exports only diff when content changes. The site build reads them (pages/_lib.TERMS): terms.html has a read-only offline copy that the live board replaces when the API answers. First export: tokenization-embeddings.",
+  "why": "Owner: Step 4 of the dictionary: export to git so the generator reads files and builds work offline; the exported JSON is never edited by hand.",
+  "status": "🚀 deployed"
+ },
+ {
   "v": "v0.55",
   "date": "2026-11-14",
   "emoji": "📚",

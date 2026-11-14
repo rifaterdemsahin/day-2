@@ -18,7 +18,14 @@ def build():
             '<label>Edit token<input id="d2tok" type="password" autocomplete="off" placeholder="Bearer token"></label></div>'
             '<button id="d2save" class="primary">💾 Save and test</button><button id="d2forget">🧹 Forget token</button>'
             '<p id="d2cmsg" class="intro">…</p></div>')
-    body = (step_head(st) + conn + '<div id="d2terms"></div>'
+    counts = {k: sum(1 for t in TERMS if t["status"] == k) for k in STATUS_EMOJI}
+    chips = "".join(f'<span class="chip">{STATUS_EMOJI[k]} {k} {n}</span>' for k, n in counts.items())
+    rows = "".join(f'<tr><td><a href="term.html?slug={E(t["slug"], quote=True)}">{E(t["term"])}</a><br><small>{E(t["slug"])}</small></td>'
+                   f'<td>{STATUS_EMOJI[t["status"]]} {E(t["status"])}</td><td>{E(t["hook"])}</td></tr>' for t in TERMS)
+    static = (f'<div id="d2static"><h2>📦 Offline copy</h2><p class="intro">Read only, from the last export to git (assets/terms/). '
+              f'It is replaced by the live board when the API answers.</p><div class="board">{chips}</div>'
+              f'<div class="tablewrap"><table class="cmp"><tr><th>Term</th><th>Status</th><th>Hook</th></tr>{rows}</table></div></div>')
+    body = (step_head(st) + conn + f'<div id="d2terms">{static}</div>'
             + fb("S2-T", "📚 Dictionary: index and status board"))
     page("terms.html", "S2-T Dictionary", body, head)
     body2 = ('<h1>✏️ <span class="code">S2-T</span> <span id="d2tname">Term</span></h1>'

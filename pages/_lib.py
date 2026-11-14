@@ -11,6 +11,7 @@ SITE = ROOT / "site"  # generated and git-ignored: built here and again inside t
 SITE.mkdir(exist_ok=True)
 WRITTEN = []
 FLY = D["deploy"]["url"]
+TERMS = [json.loads(f.read_text(encoding="utf-8")) for f in sorted((ROOT / "assets/terms").glob("*.json"))]  # exported from the database (scripts/export_terms.py)
 E = html.escape
 
 
@@ -190,4 +191,4 @@ def md_page(fname, title, src, emoji):
     page(fname, title, body)
 
 
-__all__ = ['hashlib', 'html', 'json', 'pathlib', 'shutil', 'ROOT', 'ASSET_V', 'D', 'SITE', 'WRITTEN', 'FLY', 'E', '_TP', '_TM', 'clip_label', 'CLIPS', 'SCENE_NAMES', 'FULL_VO', 'NAV', 'nav', 'FAVICONS', 'page', 'copybtn', 'FB_IDS', 'fb', 'step_head', 'step_by_code', 'thumb_svg', 'title_thumb_block', '_svg', '_t', 'md_page']
+__all__ = ['hashlib', 'html', 'json', 'pathlib', 'shutil', 'ROOT', 'ASSET_V', 'D', 'SITE', 'WRITTEN', 'FLY', 'TERMS', 'E', '_TP', '_TM', 'clip_label', 'CLIPS', 'SCENE_NAMES', 'FULL_VO', 'NAV', 'nav', 'FAVICONS', 'page', 'copybtn', 'FB_IDS', 'fb', 'step_head', 'step_by_code', 'thumb_svg', 'title_thumb_block', '_svg', '_t', 'md_page']

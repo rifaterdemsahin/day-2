@@ -367,6 +367,36 @@ def offline():
         return ok, "dictionary pages need feedback boxes, the bulk calls, a token kept in localStorage, no innerHTML in the editor code (XSS) and no token in the files"
     check("terms", "dictionary pages: feedback boxes, bulk panel wiring, no innerHTML, no token in the site", dict_pages)
 
+    def export_terms():
+        import tempfile
+        sys.path.insert(0, str(ROOT))
+        from api.db import connect
+        from api import changes as ch
+        import migrate_short_json as mg, export_terms as ex
+        from api.export import all_docs
+        con = connect(pathlib.Path(tempfile.mkdtemp()) / "t.db")
+        mg.migrate(con, DATA)
+        out = pathlib.Path(tempfile.mkdtemp()) / "terms"
+        (out.parent / "stale").mkdir()
+        w1 = ex.sync(all_docs(con), out)
+        w2 = ex.sync(all_docs(con), out)
+        f = out / "tokenization-embeddings.json"
+        doc = json.loads(f.read_text(encoding="utf-8"))
+        ch.create_term(con, "attention", "Attention")
+        drift = ex.sync(all_docs(con), out, check=True)[0]
+        ex.sync(all_docs(con), out)
+        (out / "gone.json").write_text("{}")
+        removed = ex.sync(all_docs(con), out)[1]
+        refuse = subprocess.run([sys.executable, "-I", str(ROOT / "scripts/export_terms.py"), "--db", str(pathlib.Path(tempfile.mkdtemp()) / "empty.db"), "--out", str(out)], capture_output=True, text=True)
+        committed = sorted((ROOT / "assets/terms").glob("*.json"))
+        ok_files = bool(committed) and all(json.loads(x.read_text(encoding="utf-8")).get("slug") == x.stem and "Do not edit by hand" in x.read_text(encoding="utf-8") for x in committed)
+        st = (ROOT / "site/terms.html").read_text(encoding="utf-8")
+        ok = (w1[0] == ["tokenization-embeddings"] and w2 == ([], [], ["tokenization-embeddings"]) and doc["status"] == "script" and len(doc["scenes"]) == 6
+              and "updated_at" not in doc and drift == ["attention"] and removed == ["gone"] and refuse.returncode != 0 and (out / "attention.json").exists()
+              and ok_files and "Offline copy" in st and all(x.stem in st for x in committed))
+        return ok, f"first {w1}, second {w2}, drift {drift}, removed {removed}, empty-db exit {refuse.returncode}, committed files ok {ok_files}"
+    check("terms", "export: files match the database, unchanged files untouched, drift and stale files handled, empty source refused, site builds from them", export_terms)
+
     def docker_builds_site():
         d = (ROOT / "Dockerfile").read_text(encoding="utf-8")
         return "build_short_site.py" in d and "COPY --from=build" in d, "Dockerfile must compile site/ in a build stage"
