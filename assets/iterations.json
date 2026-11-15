@@ -1,5 +1,16 @@
 [
  {
+  "v": "v0.60",
+  "date": "2026-11-15",
+  "emoji": "📐",
+  "codes": [
+   "S2-DB"
+  ],
+  "change": "📐 New spec part spec/part-c-dictionary-pipeline.md (also in the Spec page): what the dictionary has today (steps 1-6, live), the problem found (voice, timing, clips and Remotion input are single-video, so term #2 would overwrite term #1), decisions D1-D7, the target design (media/<slug>/, an active term via prepare_term.py, new production fields, term workspace tabs), a four-commit plan with acceptance tests, risks and open questions. Proposal only: nothing built yet. CLAUDE.md file map and retrain log row 29 updated.",
+  "why": "Owner: explain in a new spec document what you suggest I do, commit and push that spec document.",
+  "status": "📝 proposal, waiting for the owner's OK"
+ },
+ {
   "v": "v0.59",
   "date": "2026-11-14",
   "emoji": "🌱",

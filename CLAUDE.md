@@ -18,14 +18,14 @@ A note may contain element references made by the 🎯 picker: `🎯 [s2-x.html 
 - `assets/short.json`: ALL facts (scenes, voice lines, steps, prompts, sprite, deploy, production status). Edit data here first.
 - `pages/*.py`: one module per page (`pages/s2_x.py` builds s2-x.html); `pages/_lib.py` shared helpers (page, fb, copybtn, nav).
 - `scripts/build_short_site.py`: build entry (imports every page module). `scripts/build_spec.py`: joins `spec/*.md`.
-- `spec/rules.md` (rules + contents), `spec/part-a-long.md` (long form), `spec/part-b-short.md` (shorts, pipeline B2, retrain log B6).
+- `spec/rules.md` (rules + contents), `spec/part-a-long.md` (long form), `spec/part-b-short.md` (shorts, pipeline B2, retrain log B6), `spec/part-c-dictionary-pipeline.md` (dictionary: what is built, the per-term pipeline proposal).
 - `app.js`, `style.css`: vanilla JS and CSS (notes panel, ticks, footer). No React, no JS build chain.
 - `assets/iterations.json`, `assets/recommendations.json`, `assets/similar_videos.json`, `assets/sandbox_pride.json`: page data.
 - `scripts/notes_runner.py` (🚀 runner on the laptop), `scripts/sprite_check.py`, `scripts/sync_status.py`, `scripts/deploy_and_wait.py`, `scripts/serve_local.py`, `evals/run_evals.py`.
 - Generated, git-ignored, never edit: `site/`, `MASTER_SPEC.md`, `deployed.json`. Tracked root `index.html` is only the GitHub Pages redirect to Fly.
 
 ## Spec: load ONE file, only if the task needs it
-Do NOT read `MASTER_SPEC.md` (generated, ~30k tokens). Rules in this file are enough for most notes. Otherwise open exactly one: a short-form or pipeline question → `spec/part-b-short.md`; long-form video → `spec/part-a-long.md`; deep rules/contents → `spec/rules.md`. Grep first, read a section, not the file.
+Do NOT read `MASTER_SPEC.md` (generated, ~30k tokens). Rules in this file are enough for most notes. Otherwise open exactly one: a short-form or pipeline question → `spec/part-b-short.md`; the dictionary / per-term pipeline plan (SQLite, API, media folders, term workspace) → `spec/part-c-dictionary-pipeline.md`; long-form video → `spec/part-a-long.md`; deep rules/contents → `spec/rules.md`. Grep first, read a section, not the file.
 
 ## Commands
 - Build: `python3 -I scripts/build_short_site.py` (under 1 s; writes `site/`)

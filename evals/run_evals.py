@@ -109,9 +109,9 @@ def offline():
         p = ROOT / "spec"
         names = sorted(x.name for x in p.glob("*.md"))
         full = (ROOT / "MASTER_SPEC.md").read_text(encoding="utf-8")
-        ok = names == ["part-a-long.md", "part-b-short.md", "rules.md"] and "GENERATED" in full[:200] and "B7." not in "".join((p / n).read_text(encoding="utf-8") for n in names)
+        ok = names == ["part-a-long.md", "part-b-short.md", "part-c-dictionary-pipeline.md", "rules.md"] and "Dictionary pipeline" in full and "GENERATED" in full[:200] and "B7." not in "".join((p / n).read_text(encoding="utf-8") for n in names)
         return ok, f"spec files {names}"
-    check("refactor", "spec is split into 3 files, B7 removed, MASTER_SPEC.md is generated", spec_split)
+    check("refactor", "spec is split into 4 files (rules, parts A, B, C), B7 removed, MASTER_SPEC.md is generated", spec_split)
 
     def briefing():
         s = (ROOT / "CLAUDE.md").read_text(encoding="utf-8")
